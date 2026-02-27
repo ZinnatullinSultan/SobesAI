@@ -1,35 +1,38 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+## SOBES AI
+SobesAI — мобильный тренажер для подготовки к IT-собеседованиям на базе искусственного интеллекта (Gemini API).
+Приложение позволяет пользователям проходить симуляцию технического интервью. ИИ выступает в роли Senior-разработчика: задает вопросы по выбранной технологии в режиме реального времени, оценивает ответы кандидата и по итогу формирует подробный фидбек с рекомендациями для обучения.
+## 🔐 Авторизация
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+Авторизация по токену (JWT) через Supabase / Firebase Auth.
+Сохранение токена локально (DataStore/EncryptedSharedPreferences), перехват HTTP-ошибок (401 Unauthorized) через Ktor Interceptors с принудительным разлогином пользователя.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## 🌐 Работа с сетью
 
-### Build and Run Android Application
+Реализация через Ktor Client + Kotlinx Serialization. Запланировано использование следующих API-эндпоинтов:
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+POST /auth/login — авторизация пользователя и получение токена.
 
-### Build and Run iOS Application
+GET /interview/topics — получение списка доступных направлений (Android, iOS, Backend и т.д.) с поддержкой пагинации (limit/offset).
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+POST /gemini/v1beta/chat (Gemini API) — отправка контекста диалога и ответа кандидата, генерация следующего вопроса или финального фидбека (создание новой сущности "Сообщение/Отчет" на сервере).
 
----
+Обработка ошибок: реализована через sealed class Result (Success, Error, Loading) для корректного отображения UI-состояний.
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## 📄 Списки
+
+Экран "Каталог тем": отображение списка доступных технологий для собеседования (RecyclerView/LazyColumn).
+
+Фичи: пагинация (подгрузка по мере скролла), Pull-to-refresh для обновления списка тем. Корректная обработка состояния пустого списка или ошибки сети.
+
+## 🗂 Детальный экран
+
+Детальный экран "Профиль собеседования": экран с описанием выбранной темы, уровня сложности и кнопкой "Начать интервью".
+
+Экран "Чат с ИИ" / "Фидбек": отображение истории переписки. После завершения собеседования ИИ генерирует детальный фидбек с оценкой.
+
+Действия пользователя: сохранение переписки/удачного фидбека в "Избранное" (локально), выбор уровня сложности, отправка текстового ответа нейросети. Работа с изображениями — загрузка аватарок технологий (Coil).
+
+## 💾 Локальное хранение
+
+SQLDelight.
+Список доступных тем и история прошедших собеседований кэшируются в локальную БД. Если пользователь открывает приложение без интернета, он видит закешированные данные. Сохраненные в "Избранное" результаты собеседований также доступны в офлайн-режиме.

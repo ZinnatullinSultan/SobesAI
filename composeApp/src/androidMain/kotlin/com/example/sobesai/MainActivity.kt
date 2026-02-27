@@ -16,9 +16,11 @@ class MainActivity : ComponentActivity() {
 
         val insetsController = WindowCompat.getInsetsController(window, window.decorView)
 
+
         setContent {
-            insetsController.isAppearanceLightStatusBars = true
-            insetsController.isAppearanceLightNavigationBars = true
+            val isDark = isSystemInDarkTheme()
+            insetsController.isAppearanceLightStatusBars = !isDark
+            insetsController.isAppearanceLightNavigationBars = !isDark
             App()
         }
     }
