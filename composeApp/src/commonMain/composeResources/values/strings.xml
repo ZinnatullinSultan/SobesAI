@@ -11,8 +11,10 @@
     <string name="password_label">Пароль</string>
     <string name="password_placeholder">Введите ваш пароль</string>
     <string name="login_error_text">Неизвестная ошибка</string>
-
+    <string name="login_password_show">Показать пароль</string>
+    <string name="login_password_hide">Скрыть пароль</string>
     <string name="login_button">Войти</string>
 
     <string name="main_title">Выберите направление</string>
+    <string name="main_icon_description">Закрепить</string>
 </resources>

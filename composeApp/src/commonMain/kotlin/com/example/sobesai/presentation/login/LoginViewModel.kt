@@ -12,33 +12,37 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val repository: LoginRepository = LoginRepository()): ViewModel() {
+class LoginViewModel(
+    private val repository: LoginRepository = LoginRepository()
+) : ViewModel() {
     private val _state = MutableStateFlow(LoginUiState())
     val state: StateFlow<LoginUiState> = _state.asStateFlow()
 
     private val _events = MutableSharedFlow<LoginUiEvent>()
     val events: SharedFlow<LoginUiEvent> = _events.asSharedFlow()
 
-    fun onUsernameChanged(newValue: String){
-        _state.update{
+    fun onUsernameChanged(newValue: String) {
+        _state.update {
             it.copy(username = newValue, error = null)
         }
         checkButtonActive()
     }
 
-    fun onPasswordChanged(newValue: String){
+    fun onPasswordChanged(newValue: String) {
         _state.update {
             it.copy(password = newValue, error = null)
         }
         checkButtonActive()
     }
 
-    private fun checkButtonActive(){
+    private fun checkButtonActive() {
         val isActive = _state.value.username.isNotBlank() && _state.value.password.isNotBlank()
-        _state.update { it.copy(isLoginButtonActive = isActive) }
+        _state.update {
+            it.copy(isLoginButtonActive = isActive)
+        }
     }
 
-    fun onLoginClicked(){
+    fun onLoginClicked() {
         val currentUsername = _state.value.username
         val currentPassword = _state.value.password
         val result = repository.login(currentUsername, currentPassword)
@@ -48,8 +52,10 @@ class LoginViewModel(private val repository: LoginRepository = LoginRepository()
                 _events.emit(LoginUiEvent.LoginSuccessEvent)
             }
         }
-        result.onFailure {
-            exception -> _state.update { it.copy(error = exception.message)  }
+        result.onFailure { exception ->
+            _state.update {
+                it.copy(error = exception.message)
+            }
         }
     }
 }

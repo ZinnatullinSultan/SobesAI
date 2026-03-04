@@ -6,17 +6,18 @@ import com.example.sobesai.data.TopicsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlin.time.Clock.System
 
-class MainViewModel(private val repository: TopicsRepository = TopicsRepository()): ViewModel(){
+class MainViewModel(
+    private val repository: TopicsRepository = TopicsRepository()
+) : ViewModel() {
     private val _topics = MutableStateFlow(repository.getList())
     val topics = _topics.asStateFlow()
     private var pinOrderCounter = 0
 
-    fun onPinClicked(topicId: Int){
+    fun onPinClicked(topicId: Int) {
         _topics.update {
-            val updatedList = it.map{ topic ->
-                if(topic.id == topicId){
+            val updatedList = it.map { topic ->
+                if (topic.id == topicId) {
                     val newPinnedState = !topic.isPinned
                     topic.copy(
                         isPinned = newPinnedState,
@@ -26,7 +27,11 @@ class MainViewModel(private val repository: TopicsRepository = TopicsRepository(
                     topic
                 }
             }
-            updatedList.sortedWith(compareByDescending<Topic> { it.isPinned }.thenByDescending { it.pinOrder ?: 0 }.thenBy { it.id })
+            updatedList.sortedWith(
+                compareByDescending<Topic> { it.isPinned }
+                    .thenByDescending { it.pinOrder ?: 0 }
+                    .thenBy { it.id }
+            )
         }
     }
 }
