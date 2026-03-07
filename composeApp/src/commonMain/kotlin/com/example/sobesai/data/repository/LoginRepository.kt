@@ -1,4 +1,4 @@
-package com.example.sobesai.data
+package com.example.sobesai.data.repository
 
 class LoginRepository {
     fun login(username: String, password: String): Result<Unit> {

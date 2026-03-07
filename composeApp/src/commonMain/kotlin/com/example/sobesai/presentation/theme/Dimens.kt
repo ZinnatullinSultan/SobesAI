@@ -23,5 +23,6 @@ object AppDimens {
         val ButtonHeight = 50.dp
         val ButtonMaxWeight = 400.dp
         val CardElevation = 4.dp
+        val ProgressIndicatorSize = 24.dp
     }
 }
