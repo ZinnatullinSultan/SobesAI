@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -38,6 +40,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -55,12 +60,6 @@ import sobesai.composeapp.generated.resources.main_empty_state_text
 import sobesai.composeapp.generated.resources.main_icon_description
 import sobesai.composeapp.generated.resources.main_refresh_button
 import sobesai.composeapp.generated.resources.main_search_placeholder
-
-@Preview(showSystemUi = true)
-@Composable
-fun PreviewMainScreen() {
-    MainScreen()
-}
 
 @Composable
 fun MainScreen(
@@ -103,7 +102,9 @@ fun MainScreen(
                     SpecializationList(
                         items = state.items,
                         isNextPageLoading = state.isNextPageLoading,
-                        onPinClick = { },
+                        onPinClick = { id ->
+                            viewModel.onPinClicked(id)
+                        },
                         onLoadNextPage = { viewModel.loadNextPage() }
                     )
                 }
@@ -137,20 +138,25 @@ fun SpecializationList(
         state = listState,
         modifier = Modifier.fillMaxSize(),
     ) {
+        item(key = "scroll_anchor") {
+            Spacer(modifier = Modifier.height(AppDimens.Padding.Tiny))
+        }
+
         items(
             items = items,
             key = { it.id }
         ) { specialization ->
             SpecializationCard(
                 specialization = specialization,
-                onPinClick = { onPinClick(specialization.id) }
+                onPinClick = { onPinClick(specialization.id) },
+                modifier = Modifier.animateItem()
             )
         }
         if (isNextPageLoading) {
             item {
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
                         .padding(AppDimens.Padding.Normal),
                     contentAlignment = Alignment.Center
                 ) {
@@ -166,6 +172,9 @@ fun SearchTopBar(
     query: String,
     onQueryChange: (String) -> Unit,
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
     TextField(
         value = query,
         onValueChange = onQueryChange,
@@ -180,6 +189,18 @@ fun SearchTopBar(
                 contentDescription = null
             )
         },
+        singleLine = true,
+
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Search
+        ),
+
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                keyboardController?.hide()
+                focusManager.clearFocus()
+            }
+        ),
         shape = MaterialTheme.shapes.medium,
         colors = TextFieldDefaults.colors(
             focusedContainerColor = MaterialTheme.colorScheme.surface,
@@ -247,10 +268,11 @@ fun EmptyState() {
 @Composable
 fun SpecializationCard(
     specialization: Specialization,
-    onPinClick: () -> Unit
+    onPinClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(vertical = AppDimens.Padding.Small),
         elevation = CardDefaults.cardElevation(defaultElevation = AppDimens.Components.CardElevation),
@@ -275,9 +297,10 @@ fun SpecializationCard(
             ) {
                 Text(
                     text = specialization.title,
-                    style = AppTypography.titleSmall
+                    style = AppTypography.titleSmall,
+                    modifier = Modifier.weight(1f)
                 )
-                IconButton(onClick = onPinClick) {
+                IconButton(onClick = { onPinClick() }) {
                     Icon(
                         imageVector = Icons.Default.Star,
                         contentDescription = stringResource(Res.string.main_icon_description),
@@ -293,4 +316,10 @@ fun SpecializationCard(
             )
         }
     }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun PreviewMainScreen() {
+    MainScreen()
 }

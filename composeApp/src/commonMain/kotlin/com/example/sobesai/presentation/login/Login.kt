@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sobesai.presentation.components.AppButton
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
@@ -55,18 +56,9 @@ import sobesai.composeapp.generated.resources.login_title
 import sobesai.composeapp.generated.resources.password_label
 import sobesai.composeapp.generated.resources.password_placeholder
 
-@Preview
-@Composable
-fun PreviewLoginScreen() {
-    LoginScreen(
-        viewModel = LoginViewModel(),
-        onNavigateToMain = {}
-    )
-}
-
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel,
+    viewModel: LoginViewModel = viewModel(),
     onNavigateToMain: () -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -198,6 +190,13 @@ fun LoginScreen(
 
         }
     }
+}
 
-
+@Preview
+@Composable
+fun PreviewLoginScreen() {
+    LoginScreen(
+        viewModel = LoginViewModel(),
+        onNavigateToMain = {}
+    )
 }

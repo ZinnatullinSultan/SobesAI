@@ -10,6 +10,8 @@ data class SpecializationDto(
     val description: String?,
     @SerialName("is_pinned")
     val isPinned: Boolean = false,
+    @SerialName("pin_order")
+    val pinOrder: Int? = null,
     @SerialName("image_url")
     val imageUrl: String? = null
 )

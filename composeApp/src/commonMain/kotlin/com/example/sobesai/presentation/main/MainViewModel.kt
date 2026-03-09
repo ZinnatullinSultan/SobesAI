@@ -25,7 +25,8 @@ sealed interface SpecializationsUiState {
     object Empty : SpecializationsUiState
     data class Success(
         val items: List<Specialization>,
-        val isNextPageLoading: Boolean = false
+        val isNextPageLoading: Boolean = false,
+        val updateCount: Int = 0
     ) : SpecializationsUiState
 
     data class Error(val message: StringResource) : SpecializationsUiState
@@ -37,12 +38,13 @@ class MainViewModel(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
-    private var allLoadedItems = mutableListOf<Specialization>()
+    private val allLoadedItems = mutableListOf<Specialization>()
 
     private var currentPage = 0
     private val pageSize = 10
     private var isLastPage = false
-//    private var pinOrderCounter = 0
+    private var pinOrderCounter = 0
+    private var updateCounter = 0
 
     private val _uiState = MutableStateFlow<SpecializationsUiState>(SpecializationsUiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -75,15 +77,58 @@ class MainViewModel(
             .launchIn(viewModelScope)
     }
 
+    fun onPinClicked(id: Long) {
+        val itemIndex = allLoadedItems.indexOfFirst { it.id == id }
+        if (itemIndex == -1) return
+
+        val currentItem = allLoadedItems[itemIndex]
+        val nextPinnedState = !currentItem.isPinned
+        val nextPinOrder = if (nextPinnedState) ++pinOrderCounter else null
+
+        viewModelScope.launch {
+            val result = repository.updatePinStatus(id, nextPinnedState, nextPinOrder)
+
+            result.onSuccess {
+                allLoadedItems[itemIndex] = currentItem.copy(
+                    isPinned = nextPinnedState,
+                    pinOrder = nextPinOrder
+                )
+                updateUiWithSorting()
+                Napier.d(tag = "PIN_DEBUG") { "Элемент ${currentItem.title} успешно обновлен"}
+            }.onFailure { error ->
+                Napier.e(tag = "PIN_DEBUG", throwable = error) { "Ошибка при обновлении Pin статуса" }
+            }
+        }
+    }
+
+    private fun updateUiWithSorting() {
+        updateCounter++
+        _uiState.value = SpecializationsUiState.Success(
+            items = getSortedList(),
+            isNextPageLoading = false,
+            updateCount = updateCounter
+        )
+    }
+
+    private fun getSortedList(): List<Specialization> {
+        return allLoadedItems.toList().sortedWith(
+            compareByDescending<Specialization> { it.isPinned }
+                .thenByDescending { it.pinOrder ?: 0 }
+                .thenBy { it.id }
+        )
+    }
+
     private fun processFirstPage(result: Result<List<Specialization>>): SpecializationsUiState {
         return result.fold(
             onSuccess = { items ->
+                allLoadedItems.clear()
                 if (items.isEmpty()) {
                     SpecializationsUiState.Empty
                 } else {
+                    updatePinOrderCounter(items)
                     allLoadedItems.addAll(items)
                     if (items.size < pageSize) isLastPage = true
-                    SpecializationsUiState.Success(allLoadedItems.toList())
+                    SpecializationsUiState.Success(getSortedList())
                 }
             },
             onFailure = {
@@ -92,12 +137,19 @@ class MainViewModel(
         )
     }
 
+    private fun updatePinOrderCounter(items: List<Specialization>) {
+        val maxOrder = items.mapNotNull { it.pinOrder }.maxOrNull() ?: 0
+        if (maxOrder > pinOrderCounter) {
+            pinOrderCounter = maxOrder
+        }
+    }
+
     fun loadNextPage() {
         if (isLastPage || _uiState.value is SpecializationsUiState.Loading ||
             (_uiState.value as? SpecializationsUiState.Success)?.isNextPageLoading == true
         ) return
         viewModelScope.launch {
-            val currentItems = allLoadedItems.toList()
+            val currentItems = getSortedList()
             _uiState.value = SpecializationsUiState.Success(currentItems, isNextPageLoading = true)
 
             currentPage++
@@ -107,19 +159,19 @@ class MainViewModel(
                 if (newItems.isEmpty()) {
                     isLastPage = true
                 } else {
+                    updatePinOrderCounter(newItems)
                     allLoadedItems.addAll(newItems)
                     if (newItems.size < pageSize) isLastPage = true
                 }
-                _uiState.value = SpecializationsUiState.Success(allLoadedItems.toList(), false)
+                updateUiWithSorting()
             }.onFailure {
-                _uiState.value = SpecializationsUiState.Success(allLoadedItems.toList(), false)
+                updateUiWithSorting()
             }
         }
     }
 
     fun retry() {
         _uiState.value = SpecializationsUiState.Loading
-
         val currentQuery = _searchQuery.value
         _searchQuery.value = ""
         _searchQuery.value = currentQuery
@@ -128,25 +180,4 @@ class MainViewModel(
     fun onSearchQueryChanged(query: String) {
         _searchQuery.value = query
     }
-
-//    fun onPinClicked(specializationId: Int) {
-//        _specializations.update {
-//            val updatedList = it.map { specialization ->
-//                if (specialization.id == specializationId) {
-//                    val newPinnedState = !specialization.isPinned
-//                    specialization.copy(
-//                        isPinned = newPinnedState,
-//                        pinOrder = if (newPinnedState) ++pinOrderCounter else null
-//                    )
-//                } else {
-//                    specialization
-//                }
-//            }
-//            updatedList.sortedWith(
-//                compareByDescending<Specialization> { it.isPinned }
-//                    .thenByDescending { it.pinOrder ?: 0 }
-//                    .thenBy { it.id }
-//            )
-//        }
-//    }
 }
