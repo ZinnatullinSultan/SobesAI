@@ -58,4 +58,10 @@ class LoginViewModel(
             }
         }
     }
+
+    fun onGitHubLoginClicked() {
+        viewModelScope.launch {
+            _events.emit(LoginUiEvent.StartOAuthEvent("github"))
+        }
+    }
 }

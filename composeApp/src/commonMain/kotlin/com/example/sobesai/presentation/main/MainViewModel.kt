@@ -6,6 +6,7 @@ import com.example.sobesai.data.repository.SpecializationsRepository
 import com.example.sobesai.domain.model.Specialization
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 import sobesai.composeapp.generated.resources.Res
@@ -38,6 +40,8 @@ class MainViewModel(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
+    private val refreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+
     private val allLoadedItems = mutableListOf<Specialization>()
 
     private var currentPage = 0
@@ -59,14 +63,16 @@ class MainViewModel(
             .debounce(500)
             .distinctUntilChanged()
             .flatMapLatest { query ->
-                currentPage = 0
-                isLastPage = false
-                allLoadedItems.clear()
+                refreshTrigger.onStart { emit(Unit) }.flatMapLatest {
+                    currentPage = 0
+                    isLastPage = false
+                    allLoadedItems.clear()
 
-                flow {
-                    emit(SpecializationsUiState.Loading)
-                    val result = repository.getSpecializations(query, 0, pageSize)
-                    emit(processFirstPage(result))
+                    flow {
+                        emit(SpecializationsUiState.Loading)
+                        val result = repository.getSpecializations(query, 0, pageSize)
+                        emit(processFirstPage(result))
+                    }
                 }
             }
             .catch { e ->
@@ -94,9 +100,12 @@ class MainViewModel(
                     pinOrder = nextPinOrder
                 )
                 updateUiWithSorting()
-                Napier.d(tag = "PIN_DEBUG") { "Элемент ${currentItem.title} успешно обновлен"}
+                Napier.d(tag = "PIN_DEBUG") { "Элемент ${currentItem.title} успешно обновлен" }
             }.onFailure { error ->
-                Napier.e(tag = "PIN_DEBUG", throwable = error) { "Ошибка при обновлении Pin статуса" }
+                Napier.e(
+                    tag = "PIN_DEBUG",
+                    throwable = error
+                ) { "Ошибка при обновлении Pin статуса" }
             }
         }
     }
@@ -171,10 +180,7 @@ class MainViewModel(
     }
 
     fun retry() {
-        _uiState.value = SpecializationsUiState.Loading
-        val currentQuery = _searchQuery.value
-        _searchQuery.value = ""
-        _searchQuery.value = currentQuery
+        refreshTrigger.tryEmit(Unit)
     }
 
     fun onSearchQueryChanged(query: String) {

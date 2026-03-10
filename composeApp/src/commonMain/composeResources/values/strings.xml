@@ -14,6 +14,7 @@
     <string name="login_password_show">Показать пароль</string>
     <string name="login_password_hide">Скрыть пароль</string>
     <string name="login_button">Войти</string>
+    <string name="login_button_git">Войти через GitHub</string>
 
     <string name="main_title">Выберите направление</string>
     <string name="main_icon_description">Закрепить</string>

@@ -21,6 +21,7 @@ data class UpdatePinRequest(
 )
 
 class SpecializationsRepository {
+
     suspend fun getSpecializations(
         query: String,
         offset: Int,
