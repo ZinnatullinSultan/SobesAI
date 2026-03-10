@@ -1,6 +1,7 @@
 package com.example.sobesai.presentation.main
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
@@ -63,7 +65,8 @@ import sobesai.composeapp.generated.resources.main_search_placeholder
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = viewModel()
+    viewModel: MainViewModel = viewModel(),
+    onSpecializationClick: (Long) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
@@ -102,6 +105,7 @@ fun MainScreen(
                     SpecializationList(
                         items = state.items,
                         isNextPageLoading = state.isNextPageLoading,
+                        onItemClick = onSpecializationClick,
                         onPinClick = { id ->
                             viewModel.onPinClicked(id)
                         },
@@ -118,7 +122,8 @@ fun SpecializationList(
     items: List<Specialization>,
     isNextPageLoading: Boolean,
     onPinClick: (Long) -> Unit,
-    onLoadNextPage: () -> Unit
+    onLoadNextPage: () -> Unit,
+    onItemClick : (Long) -> Unit
 ) {
     val listState = rememberLazyListState()
     val shouldLoadNextPage = remember {
@@ -149,7 +154,8 @@ fun SpecializationList(
             SpecializationCard(
                 specialization = specialization,
                 onPinClick = { onPinClick(specialization.id) },
-                modifier = Modifier.animateItem()
+                modifier = Modifier.animateItem(),
+                onItemClick = { onItemClick(specialization.id) }
             )
         }
         if (isNextPageLoading) {
@@ -205,8 +211,8 @@ fun SearchTopBar(
         colors = TextFieldDefaults.colors(
             focusedContainerColor = MaterialTheme.colorScheme.surface,
             unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
-            unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
             cursorColor = MaterialTheme.colorScheme.primary
         )
     )
@@ -269,17 +275,19 @@ fun EmptyState() {
 fun SpecializationCard(
     specialization: Specialization,
     onPinClick: () -> Unit,
+    onItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = AppDimens.Padding.Small),
+            .padding(vertical = AppDimens.Padding.Small)
+            .clickable { onItemClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = AppDimens.Components.CardElevation),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface
-        )
+        ),
 
     ) {
         Column(
@@ -321,5 +329,5 @@ fun SpecializationCard(
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewMainScreen() {
-    MainScreen()
+    MainScreen(onSpecializationClick = {})
 }

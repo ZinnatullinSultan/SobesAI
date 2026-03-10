@@ -71,4 +71,24 @@ class SpecializationsRepository {
             Napier.e(tag = "REPO", throwable = error) { "Не удалось сохранить закрепление в БД" }
         }
     }
+
+    suspend fun getSpecializationById(id: Long): Result<Specialization> {
+        return runCatching {
+            val response: List<SpecializationDto> = NetworkClient.httpClient
+                .get("specializations") {
+                    parameter("select", "*")
+                    parameter("id", "eq.$id")
+                }
+                .body()
+
+            val dto = response.first()
+            Specialization(
+                id = dto.id,
+                title = dto.title,
+                description = dto.description ?: "",
+                isPinned = dto.isPinned,
+                pinOrder = dto.pinOrder
+            )
+        }
+    }
 }
