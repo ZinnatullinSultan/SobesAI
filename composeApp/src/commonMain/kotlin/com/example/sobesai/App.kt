@@ -3,6 +3,7 @@ package com.example.sobesai
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -24,31 +25,40 @@ fun App(
     viewModel: MainViewModel = koinViewModel()
 ) {
     val state by viewModel.appState.collectAsState()
-    AppTheme {
-        val navController = rememberNavController()
 
+    AppTheme {
         if (state is MainViewModel.AppState.Loading) {
             return@AppTheme
         }
 
-        NavHost(
-            navController = navController,
-            startDestination = when (state) {
+        val navController = rememberNavController()
+
+        val startDestination = remember {
+            when (state) {
                 is MainViewModel.AppState.OnBoarding -> WelcomeRoute
                 is MainViewModel.AppState.Login -> LoginRoute
                 else -> MainRoute
-            },
+            }
+        }
+
+        NavHost(
+            navController = navController,
+            startDestination = startDestination,
         ) {
             composable<WelcomeRoute> {
                 WelcomeScreen(
-                    onNavigateToLogin = { navController.navigate(LoginRoute) }
+                    onNavigateToLogin = {
+                        navController.navigate(LoginRoute) {
+                            popUpTo(WelcomeRoute) { inclusive = true }
+                        }
+                    }
                 )
             }
             composable<LoginRoute> {
                 LoginScreen(
                     onNavigateToMain = {
-                        navController.navigate(LoginRoute) {
-                            popUpTo(WelcomeRoute) { inclusive = true }
+                        navController.navigate(MainRoute) {
+                            popUpTo(LoginRoute) { inclusive = true }
                         }
                     }
                 )
