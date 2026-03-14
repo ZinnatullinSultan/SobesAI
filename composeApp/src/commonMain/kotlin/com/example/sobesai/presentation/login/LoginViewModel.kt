@@ -3,6 +3,7 @@ package com.example.sobesai.presentation.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sobesai.data.repository.LoginRepository
+import com.example.sobesai.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -13,7 +14,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val repository: LoginRepository = LoginRepository()
+    private val repository: LoginRepository = LoginRepository(),
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginUiState())
     val state: StateFlow<LoginUiState> = _state.asStateFlow()
@@ -47,8 +49,9 @@ class LoginViewModel(
         val currentPassword = _state.value.password
         val result = repository.login(currentUsername, currentPassword)
 
-        result.onSuccess {
+        result.onSuccess { token ->
             viewModelScope.launch {
+                settingsRepository.saveToken(token)
                 _events.emit(LoginUiEvent.LoginSuccessEvent)
             }
         }

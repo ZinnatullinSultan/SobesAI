@@ -29,19 +29,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sobesai.core.rememberAuthManager
-import com.example.sobesai.data.local.TokenStorage
 import com.example.sobesai.presentation.components.AppButton
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
 import com.example.sobesai.presentation.theme.TextError
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import sobesai.composeapp.generated.resources.Res
 import sobesai.composeapp.generated.resources.app_title
 import sobesai.composeapp.generated.resources.email_label
@@ -53,25 +49,14 @@ import sobesai.composeapp.generated.resources.password_label
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = viewModel(),
-    onNavigateToMain: () -> Unit
+    onNavigateToMain: () -> Unit,
+    viewModel: LoginViewModel = koinViewModel()
 ) {
     val scrollState = rememberScrollState()
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
     val state by viewModel.state.collectAsState()
-
     val authManager = rememberAuthManager()
-
-    val currentToken by TokenStorage.token.collectAsState()
-
-    LaunchedEffect(currentToken) {
-        if (currentToken != null) {
-            onNavigateToMain()
-        }
-    }
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -165,11 +150,11 @@ fun LoginScreen(
     }
 }
 
-@Preview
-@Composable
-fun PreviewLoginScreen() {
-    LoginScreen(
-        viewModel = LoginViewModel(),
-        onNavigateToMain = {}
-    )
-}
+//@Preview
+//@Composable
+//fun PreviewLoginScreen() {
+//    LoginScreen(
+//        viewModel = LoginViewModel(),
+//        onNavigateToMain = {}
+//    )
+//}

@@ -10,11 +10,15 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
-import com.example.sobesai.data.local.TokenStorage
+import androidx.lifecycle.lifecycleScope
+import com.example.sobesai.domain.repository.SettingsRepository
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
+    private val settingsRepository: SettingsRepository by inject()
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -49,7 +53,10 @@ class MainActivity : ComponentActivity() {
 
                 val accessToken = params["access_token"]
                 if (accessToken != null) {
-                    TokenStorage.saveToken(accessToken)
+                    lifecycleScope.launch {
+                        settingsRepository.saveToken(accessToken)
+                        Napier.d(tag = "AUTH") { "Токен успешно сохранен в DataStore!" }
+                    }
 
                 }
             }

@@ -19,7 +19,7 @@ data class SpecializationUiState(
 )
 
 class SpecializationViewModel(
-    private val repository: SpecializationsRepository = SpecializationsRepository(),
+    private val repository: SpecializationsRepository,
     private val id: Long
 ) : ViewModel() {
     private val _state = MutableStateFlow(SpecializationUiState())

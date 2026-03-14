@@ -1,9 +1,9 @@
 package com.example.sobesai.data.repository
 
-import com.example.sobesai.data.remote.NetworkClient
 import com.example.sobesai.data.remote.SpecializationDto
 import com.example.sobesai.domain.model.Specialization
 import io.github.aakira.napier.Napier
+import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -20,7 +20,9 @@ data class UpdatePinRequest(
     @SerialName("pin_order") val pinOrder: Int?
 )
 
-class SpecializationsRepository {
+class SpecializationsRepository(
+    private val client: HttpClient
+) {
 
     suspend fun getSpecializations(
         query: String,
@@ -29,7 +31,7 @@ class SpecializationsRepository {
     ): Result<List<Specialization>> {
         return runCatching {
             val response: List<SpecializationDto> =
-                NetworkClient.httpClient
+                client
                     .get("specializations") {
                         parameter("select", "*")
                         if (query.isNotEmpty()) {
@@ -61,20 +63,20 @@ class SpecializationsRepository {
         pinOrder: Int?
     ): Result<Unit> {
         return runCatching {
-            NetworkClient.httpClient.patch("specializations") {
+            client.patch("specializations") {
                 parameter("id", "eq.$id")
                 contentType(ContentType.Application.Json)
                 setBody(UpdatePinRequest(isPinned, pinOrder))
             }
             Unit
         }.onFailure { error ->
-            Napier.e(tag = "REPO", throwable = error) { "Не удалось сохранить закрепление в БД" }
+            Napier.e(tag = "REPO", throwable = error) { "Не удалось сохранить закрепление" }
         }
     }
 
     suspend fun getSpecializationById(id: Long): Result<Specialization> {
         return runCatching {
-            val response: List<SpecializationDto> = NetworkClient.httpClient
+            val response: List<SpecializationDto> = client
                 .get("specializations") {
                     parameter("select", "*")
                     parameter("id", "eq.$id")

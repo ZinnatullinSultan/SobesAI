@@ -1,6 +1,6 @@
 package com.example.sobesai.data.remote
 
-import com.example.sobesai.data.local.TokenStorage
+import com.example.sobesai.domain.repository.SettingsRepository
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpResponseValidator
@@ -16,14 +16,14 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.flow.first
 import kotlinx.serialization.json.Json
 
-object NetworkClient {
-    private const val BASE_URL = "https://rrhykitzjowtpbikkjkz.supabase.co/rest/v1/"
-    private const val ANON_KEY =
+fun createHttpClient(settingsRepository: SettingsRepository): HttpClient {
+    val BASE_URL = "https://rrhykitzjowtpbikkjkz.supabase.co/rest/v1/"
+    val ANON_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyaHlraXR6am93dHBiaWtramt6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3ODc0NTgsImV4cCI6MjA4ODM2MzQ1OH0.RMGHGL4QKsHtmOkLOZxzj_wFhBs-B0bLeUS3rhDiKTU"
-
-    val httpClient = HttpClient {
+    return HttpClient {
         defaultRequest {
             url(BASE_URL)
             header("apikey", ANON_KEY)
@@ -32,7 +32,7 @@ object NetworkClient {
         install(Auth) {
             bearer {
                 loadTokens {
-                    val token = TokenStorage.getToken()
+                    val token = settingsRepository.authToken.first()
                     if (!token.isNullOrBlank()) {
                         BearerTokens(token, "")
                     } else {
@@ -66,7 +66,7 @@ object NetworkClient {
             validateResponse { response ->
                 if (response.status == HttpStatusCode.Unauthorized) {
                     Napier.e(tag = "AUTH_ERROR") { "Сессия истекла (401), сброс токена" }
-                    TokenStorage.clearToken()
+                    settingsRepository.clearData()
                 }
             }
         }

@@ -31,6 +31,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.appauth)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -54,7 +55,11 @@ kotlin {
             implementation(libs.ktor.client.auth)
             implementation(libs.multiplatform.settings)
             implementation(libs.multiplatform.settings.no.arg)
-
+            implementation(libs.androidx.datastore)
+            implementation(libs.androidx.datastore.preferences)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

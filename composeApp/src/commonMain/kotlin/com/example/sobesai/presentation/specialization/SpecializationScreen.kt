@@ -36,13 +36,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sobesai.domain.model.Specialization
 import com.example.sobesai.presentation.components.AppButton
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
 import com.example.sobesai.presentation.theme.Border
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import sobesai.composeapp.generated.resources.Res
 import sobesai.composeapp.generated.resources.app_title
 import sobesai.composeapp.generated.resources.specialization_description
@@ -56,7 +57,7 @@ fun SpecializationScreen(
     id: Long,
     onBackClick: () -> Unit,
     onStartInterview: (Long, DifficultyLevel) -> Unit,
-    viewModel: SpecializationViewModel = viewModel { SpecializationViewModel(id = id) }
+    viewModel: SpecializationViewModel = koinViewModel(parameters = { parametersOf(id) })
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -250,7 +251,13 @@ fun SpecializationTopBar(onBackClick: () -> Unit) {
                     .clip(CircleShape)
             )
         },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent)
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            scrolledContainerColor = Color.Unspecified,
+            navigationIconContentColor = Color.Unspecified,
+            titleContentColor = Color.Unspecified,
+            actionIconContentColor = Color.Unspecified
+        )
     )
 }
 

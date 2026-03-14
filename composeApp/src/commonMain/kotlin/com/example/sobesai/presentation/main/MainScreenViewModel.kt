@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.sobesai.data.repository.SpecializationsRepository
 import com.example.sobesai.domain.model.Specialization
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,8 +35,8 @@ sealed interface SpecializationsUiState {
     data class Error(val message: StringResource) : SpecializationsUiState
 }
 
-class MainViewModel(
-    private val repository: SpecializationsRepository = SpecializationsRepository()
+class MainScreenViewModel(
+    private val repository: SpecializationsRepository
 ) : ViewModel() {
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
@@ -57,7 +58,7 @@ class MainViewModel(
         observeSearch()
     }
 
-    @OptIn(FlowPreview::class)
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     private fun observeSearch() {
         _searchQuery
             .debounce(500)

@@ -47,7 +47,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sobesai.domain.model.Specialization
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
@@ -56,6 +55,7 @@ import com.example.sobesai.presentation.theme.PinIconDefault
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import sobesai.composeapp.generated.resources.Res
 import sobesai.composeapp.generated.resources.empty_list
 import sobesai.composeapp.generated.resources.main_empty_state_text
@@ -65,7 +65,7 @@ import sobesai.composeapp.generated.resources.main_search_placeholder
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = viewModel(),
+    viewModel: MainScreenViewModel = koinViewModel(),
     onSpecializationClick: (Long) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -123,7 +123,7 @@ fun SpecializationList(
     isNextPageLoading: Boolean,
     onPinClick: (Long) -> Unit,
     onLoadNextPage: () -> Unit,
-    onItemClick : (Long) -> Unit
+    onItemClick: (Long) -> Unit
 ) {
     val listState = rememberLazyListState()
     val shouldLoadNextPage = remember {
@@ -289,7 +289,7 @@ fun SpecializationCard(
             contentColor = MaterialTheme.colorScheme.onSurface
         ),
 
-    ) {
+        ) {
         Column(
             modifier = Modifier.padding(
                 top = AppDimens.Padding.Tiny,
