@@ -62,11 +62,8 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
-            // Room для всех платформ
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
-            // Кроссплатформенное время
-            implementation(libs.kotlinx.datetime)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

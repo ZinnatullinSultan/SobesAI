@@ -27,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +49,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sobesai.domain.model.Specialization
+import com.example.sobesai.presentation.components.PullRefreshWrapper
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
 import com.example.sobesai.presentation.theme.PinIconActive
@@ -63,6 +65,7 @@ import sobesai.composeapp.generated.resources.main_icon_description
 import sobesai.composeapp.generated.resources.main_refresh_button
 import sobesai.composeapp.generated.resources.main_search_placeholder
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     viewModel: MainScreenViewModel = koinViewModel(),
@@ -70,6 +73,7 @@ fun MainScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -102,15 +106,20 @@ fun MainScreen(
                 }
 
                 is SpecializationsUiState.Success -> {
-                    SpecializationList(
-                        items = state.items,
-                        isNextPageLoading = state.isNextPageLoading,
-                        onItemClick = onSpecializationClick,
-                        onPinClick = { id ->
-                            viewModel.onPinClicked(id)
-                        },
-                        onLoadNextPage = { viewModel.loadNextPage() }
-                    )
+                    PullRefreshWrapper(
+                        isRefreshing = isRefreshing,
+                        onRefresh = { viewModel.refresh() }
+                    ) {
+                        SpecializationList(
+                            items = state.items,
+                            isNextPageLoading = state.isNextPageLoading,
+                            onItemClick = onSpecializationClick,
+                            onPinClick = { id ->
+                                viewModel.onPinClicked(id)
+                            },
+                            onLoadNextPage = { viewModel.loadNextPage() }
+                        )
+                    }
                 }
             }
         }

@@ -41,6 +41,9 @@ class MainScreenViewModel(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing = _isRefreshing.asStateFlow()
+
     private val refreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
     private val allLoadedItems = mutableListOf<Specialization>()
@@ -182,6 +185,14 @@ class MainScreenViewModel(
 
     fun retry() {
         refreshTrigger.tryEmit(Unit)
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            refreshTrigger.tryEmit(Unit)
+            _isRefreshing.value = false
+        }
     }
 
     fun onSearchQueryChanged(query: String) {
