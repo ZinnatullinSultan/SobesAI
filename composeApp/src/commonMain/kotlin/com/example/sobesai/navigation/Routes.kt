@@ -10,3 +10,9 @@ object LoginRoute
 
 @Serializable
 object MainRoute
+
+@Serializable
+data class SpecializationRoute(val id: Long)
+
+@Serializable
+object ProfileRoute

@@ -31,8 +31,9 @@ fun AppButton(
             disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
         ),
         modifier = modifier
+
             .height(AppDimens.Components.ButtonHeight)
-            .widthIn(max = AppDimens.Components.ButtonMaxWeight)
+            .widthIn(max = AppDimens.Components.ButtonMaxWidth)
             .fillMaxWidth()
     )
     {
