@@ -7,8 +7,10 @@ import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 
+actual class DataStoreContext
+
 @OptIn(ExperimentalForeignApi::class)
-actual fun provideDataStore(): DataStore<Preferences> {
+actual fun provideDataStore(context: DataStoreContext): DataStore<Preferences> {
     return createDataStore {
         val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
             directory = NSDocumentDirectory,

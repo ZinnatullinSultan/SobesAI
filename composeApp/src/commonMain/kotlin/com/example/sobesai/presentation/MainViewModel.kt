@@ -3,9 +3,11 @@ package com.example.sobesai.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sobesai.domain.repository.SettingsRepository
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 
 class MainViewModel(
@@ -22,14 +24,19 @@ class MainViewModel(
         settingsRepository.isFirstLaunch,
         settingsRepository.authToken
     ) { isFirstLaunch, token ->
+        Napier.d(tag = "MAIN_VIEW_MODEL") { "combine: isFirstLaunch=$isFirstLaunch, token=${token?.take(20)}..." }
         when {
             isFirstLaunch -> AppState.OnBoarding
             token == null -> AppState.Login
             else -> AppState.Main
         }
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = AppState.Loading
-    )
+    }
+        .onEach { state ->
+            Napier.d(tag = "MAIN_VIEW_MODEL") { "appState changed to: $state" }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = AppState.Loading
+        )
 }

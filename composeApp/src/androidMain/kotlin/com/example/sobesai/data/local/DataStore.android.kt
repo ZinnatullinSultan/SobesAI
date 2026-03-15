@@ -4,14 +4,10 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 
-private lateinit var dataStoreContext: Context
+actual class DataStoreContext(val context: Context)
 
-fun initDataStoreContext(context: Context) {
-    dataStoreContext = context
-}
-
-actual fun provideDataStore(): DataStore<Preferences> {
+actual fun provideDataStore(context: DataStoreContext): DataStore<Preferences> {
     return createDataStore {
-        dataStoreContext.filesDir.resolve(SETTINGS_PREFERENCES).absolutePath
+        context.context.filesDir.resolve(SETTINGS_PREFERENCES).absolutePath
     }
 }

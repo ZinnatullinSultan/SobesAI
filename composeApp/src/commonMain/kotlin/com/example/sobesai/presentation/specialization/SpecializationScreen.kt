@@ -38,6 +38,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.sobesai.domain.model.Specialization
 import com.example.sobesai.presentation.components.AppButton
+import com.example.sobesai.presentation.specialization.DifficultyLevel
+import com.example.sobesai.presentation.specialization.SpecializationUiState
+import com.example.sobesai.presentation.specialization.SpecializationViewModel
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
 import com.example.sobesai.presentation.theme.Border

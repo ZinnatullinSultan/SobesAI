@@ -49,7 +49,6 @@ import sobesai.composeapp.generated.resources.password_label
 
 @Composable
 fun LoginScreen(
-    onNavigateToMain: () -> Unit,
     viewModel: LoginViewModel = koinViewModel()
 ) {
     val scrollState = rememberScrollState()
@@ -61,10 +60,11 @@ fun LoginScreen(
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
-                is LoginUiEvent.LoginSuccessEvent -> onNavigateToMain()
                 is LoginUiEvent.StartOAuthEvent -> {
                     authManager.startOAuthFlow(event.provider)
                 }
+
+                else -> {}
             }
         }
     }

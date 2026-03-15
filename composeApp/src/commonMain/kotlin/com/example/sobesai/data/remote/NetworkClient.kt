@@ -65,7 +65,7 @@ fun createHttpClient(settingsRepository: SettingsRepository): HttpClient {
         HttpResponseValidator {
             validateResponse { response ->
                 if (response.status == HttpStatusCode.Unauthorized) {
-                    Napier.e(tag = "AUTH_ERROR") { "Сессия истекла (401), сброс токена" }
+                    Napier.e(tag = "AUTH_ERROR") { "Сессия истекла (401)" }
                     settingsRepository.clearData()
                 }
             }

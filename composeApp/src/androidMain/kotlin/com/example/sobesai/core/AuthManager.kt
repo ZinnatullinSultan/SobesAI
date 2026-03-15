@@ -24,7 +24,6 @@ class AndroidAuthManager(private val context: Context) : AuthManager {
                 "redirect_to=com.example.sobesai://login-callback"
 
         val intent = CustomTabsIntent.Builder().build()
-//        intent.intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.launchUrl(context, authUrl.toUri())
     }
 }

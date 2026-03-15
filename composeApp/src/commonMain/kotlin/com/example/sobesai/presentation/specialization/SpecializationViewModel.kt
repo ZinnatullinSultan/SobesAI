@@ -1,4 +1,4 @@
-package com.example.sobesai.presentation.Specialization
+package com.example.sobesai.presentation.specialization
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

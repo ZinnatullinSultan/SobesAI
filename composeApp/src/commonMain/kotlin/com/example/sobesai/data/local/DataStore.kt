@@ -12,4 +12,6 @@ fun createDataStore(producePath: () -> String): DataStore<Preferences> =
 
 internal const val SETTINGS_PREFERENCES = "settings.preferences_pb"
 
-expect fun provideDataStore(): DataStore<Preferences>
+expect class DataStoreContext
+
+expect fun provideDataStore(context: DataStoreContext): DataStore<Preferences>
