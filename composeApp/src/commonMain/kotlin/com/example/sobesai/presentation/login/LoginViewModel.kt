@@ -52,6 +52,7 @@ class LoginViewModel(
         result.onSuccess { token ->
             viewModelScope.launch {
                 settingsRepository.saveToken(token)
+                settingsRepository.saveDisplayName(currentUsername)
                 _events.emit(LoginUiEvent.LoginSuccessEvent)
             }
         }

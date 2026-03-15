@@ -22,6 +22,8 @@ class IosAuthManager(
 ) : AuthManager {
     private var authSession: ASWebAuthenticationSession? = null
 
+    override suspend fun handleOAuthCallback(callbackUrl: String?): Boolean = false
+
     @OptIn(ExperimentalForeignApi::class)
     override fun startOAuthFlow(provider: String) {
         val supabaseUrl = "https://rrhykitzjowtpbikkjkz.supabase.co"
@@ -47,6 +49,9 @@ class IosAuthManager(
                     if (accessToken != null) {
                         runBlocking {
                             settingsRepository.saveToken(accessToken)
+                            extractDisplayNameFromJwt(accessToken)?.let { displayName ->
+                                settingsRepository.saveDisplayName(displayName)
+                            }
                         }
                         Napier.d(tag = "AUTH") { "Токен успешно сохранен!" }
                     }

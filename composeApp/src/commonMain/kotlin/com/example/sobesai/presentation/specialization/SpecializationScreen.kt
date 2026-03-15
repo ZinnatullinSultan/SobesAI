@@ -1,4 +1,4 @@
-package com.example.sobesai.presentation.Specialization
+package com.example.sobesai.presentation.specialization
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -11,36 +11,29 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.sobesai.domain.model.Specialization
 import com.example.sobesai.presentation.components.AppButton
-import com.example.sobesai.presentation.specialization.DifficultyLevel
-import com.example.sobesai.presentation.specialization.SpecializationUiState
-import com.example.sobesai.presentation.specialization.SpecializationViewModel
+import com.example.sobesai.presentation.components.AppTopBar
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
 import com.example.sobesai.presentation.theme.Border
@@ -48,7 +41,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import sobesai.composeapp.generated.resources.Res
-import sobesai.composeapp.generated.resources.app_title
 import sobesai.composeapp.generated.resources.specialization_description
 import sobesai.composeapp.generated.resources.specialization_difficulty_junior
 import sobesai.composeapp.generated.resources.specialization_difficulty_middle
@@ -59,14 +51,18 @@ import sobesai.composeapp.generated.resources.specialization_start_interview
 fun SpecializationScreen(
     id: Long,
     onBackClick: () -> Unit,
+    onProfileClick: () -> Unit,
     onStartInterview: (Long, DifficultyLevel) -> Unit,
     viewModel: SpecializationViewModel = koinViewModel(parameters = { parametersOf(id) })
 ) {
     val state by viewModel.state.collectAsState()
+    val scrollState = rememberScrollState()
 
     SpecializationContent(
         state = state,
         onBackClick = onBackClick,
+        onProfileClick = onProfileClick,
+        modifier = Modifier.verticalScroll(scrollState),
         onLevelSelected = { viewModel.onLevelSelected(it) },
         onStartInterview = onStartInterview
     )
@@ -77,18 +73,24 @@ fun SpecializationScreen(
 fun SpecializationContent(
     state: SpecializationUiState,
     onBackClick: () -> Unit,
+    onProfileClick: () -> Unit,
     onLevelSelected: (DifficultyLevel) -> Unit,
-    onStartInterview: (Long, DifficultyLevel) -> Unit
+    onStartInterview: (Long, DifficultyLevel) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val specialization = state.specialization ?: return
 
+
     Scaffold(
         topBar = {
-            SpecializationTopBar(onBackClick = onBackClick)
+            AppTopBar(
+                onBackClick = onBackClick,
+                onProfileClick = onProfileClick
+            )
         },
     ) { padding ->
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
                 .padding(horizontal = AppDimens.Padding.Large),
@@ -137,9 +139,12 @@ fun SpecializationContent(
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Small))
             AppButton(
                 text = stringResource(Res.string.specialization_start_interview),
                 onClick = { onStartInterview(specialization.id, state.selectedLevel) },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+
             )
             Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.ExtraLarge))
         }
@@ -225,45 +230,6 @@ fun DifficultyCard(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SpecializationTopBar(onBackClick: () -> Unit) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                stringResource(Res.string.app_title),
-                style = AppTypography.headlineLarge,
-
-                )
-        },
-        navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = null,
-                )
-            }
-        },
-        actions = {
-            Icon(
-                Icons.Default.Person,
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(AppDimens.Padding.Normal)
-                    .size(AppDimens.IconSize.Large)
-                    .clip(CircleShape)
-            )
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-            scrolledContainerColor = Color.Unspecified,
-            navigationIconContentColor = Color.Unspecified,
-            titleContentColor = Color.Unspecified,
-            actionIconContentColor = Color.Unspecified
-        )
-    )
-}
-
 @Preview
 @Composable
 fun PreviewSpecializationScreen() {
@@ -274,6 +240,7 @@ fun PreviewSpecializationScreen() {
         ),
         onBackClick = {},
         onLevelSelected = {},
+        onProfileClick = {},
         onStartInterview = { _, _ -> }
     )
 }

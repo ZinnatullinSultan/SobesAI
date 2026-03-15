@@ -10,6 +10,7 @@ import com.example.sobesai.presentation.MainViewModel
 import com.example.sobesai.presentation.specialization.SpecializationViewModel
 import com.example.sobesai.presentation.login.LoginViewModel
 import com.example.sobesai.presentation.main.MainScreenViewModel
+import com.example.sobesai.presentation.profile.ProfileViewModel
 import com.example.sobesai.presentation.welcome.WelcomeViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
@@ -29,6 +30,7 @@ val appModule = module {
 
     viewModelOf(::MainViewModel)
     viewModelOf(::MainScreenViewModel)
+    viewModelOf(::ProfileViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::WelcomeViewModel)
 

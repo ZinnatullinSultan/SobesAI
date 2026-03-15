@@ -10,12 +10,14 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.sobesai.navigation.LoginRoute
 import com.example.sobesai.navigation.MainRoute
+import com.example.sobesai.navigation.ProfileRoute
 import com.example.sobesai.navigation.SpecializationRoute
 import com.example.sobesai.navigation.WelcomeRoute
 import com.example.sobesai.presentation.MainViewModel
-import com.example.sobesai.presentation.Specialization.SpecializationScreen
 import com.example.sobesai.presentation.login.LoginScreen
 import com.example.sobesai.presentation.main.MainScreen
+import com.example.sobesai.presentation.profile.ProfileScreen
+import com.example.sobesai.presentation.specialization.SpecializationScreen
 import com.example.sobesai.presentation.theme.AppTheme
 import com.example.sobesai.presentation.welcome.WelcomeScreen
 import io.github.aakira.napier.Napier
@@ -30,32 +32,41 @@ fun App(
 
     LaunchedEffect(state) {
         Napier.d(tag = "APP_NAVIGATION") { "LaunchedEffect triggered, state=$state" }
+        val currentRoute = navController.currentDestination?.route
+
         when (state) {
             is MainViewModel.AppState.Login -> {
                 Napier.d(tag = "APP_NAVIGATION") { "Navigating to Login" }
-                if (navController.currentDestination?.route != LoginRoute::class.qualifiedName) {
+                if (currentRoute != LoginRoute::class.qualifiedName) {
                     navController.navigate(LoginRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 }
             }
+
             is MainViewModel.AppState.Main -> {
-                Napier.d(tag = "APP_NAVIGATION") { "Navigating to Main" }
-                if (navController.currentDestination?.route != MainRoute::class.qualifiedName) {
+                val shouldResetToMain = currentRoute == null ||
+                        currentRoute == LoginRoute::class.qualifiedName ||
+                        currentRoute == WelcomeRoute::class.qualifiedName
+
+                if (shouldResetToMain) {
+                    Napier.d(tag = "APP_NAVIGATION") { "Navigating to Main" }
                     navController.navigate(MainRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 }
             }
+
             is MainViewModel.AppState.OnBoarding -> {
                 Napier.d(tag = "APP_NAVIGATION") { "Navigating to Welcome" }
-                if (navController.currentDestination?.route != WelcomeRoute::class.qualifiedName) {
+                if (currentRoute != WelcomeRoute::class.qualifiedName) {
                     navController.navigate(WelcomeRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 }
             }
-            else -> { }
+
+            else -> {}
         }
     }
 
@@ -84,7 +95,15 @@ fun App(
                 MainScreen(
                     onSpecializationClick = { id ->
                         navController.navigate(SpecializationRoute(id))
+                    },
+                    onProfileClick = {
+                        navController.navigate(ProfileRoute)
                     }
+                )
+            }
+            composable<ProfileRoute> {
+                ProfileScreen(
+                    onBackClick = { navController.popBackStack() }
                 )
             }
             composable<SpecializationRoute> { backStackEntry ->
@@ -93,6 +112,9 @@ fun App(
                 SpecializationScreen(
                     id = route.id,
                     onBackClick = { navController.popBackStack() },
+                    onProfileClick = {
+                        navController.navigate(ProfileRoute)
+                    },
                     onStartInterview = { id, level ->
                         // В будущем здесь будет навигация в чат
                     }

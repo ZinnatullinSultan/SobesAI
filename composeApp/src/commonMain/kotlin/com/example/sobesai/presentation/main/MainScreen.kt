@@ -49,6 +49,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sobesai.domain.model.Specialization
+import com.example.sobesai.presentation.components.ProfileIcon
 import com.example.sobesai.presentation.components.PullRefreshWrapper
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
@@ -61,7 +62,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import sobesai.composeapp.generated.resources.Res
 import sobesai.composeapp.generated.resources.empty_list
 import sobesai.composeapp.generated.resources.main_empty_state_text
-import sobesai.composeapp.generated.resources.main_icon_description
+import sobesai.composeapp.generated.resources.main_pin_icon_description
 import sobesai.composeapp.generated.resources.main_refresh_button
 import sobesai.composeapp.generated.resources.main_search_placeholder
 
@@ -69,7 +70,8 @@ import sobesai.composeapp.generated.resources.main_search_placeholder
 @Composable
 fun MainScreen(
     viewModel: MainScreenViewModel = koinViewModel(),
-    onSpecializationClick: (Long) -> Unit
+    onSpecializationClick: (Long) -> Unit,
+    onProfileClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
@@ -79,7 +81,8 @@ fun MainScreen(
         topBar = {
             SearchTopBar(
                 query = searchQuery,
-                onQueryChange = { viewModel.onSearchQueryChanged(it) }
+                onQueryChange = { viewModel.onSearchQueryChanged(it) },
+                onProfileClick = onProfileClick
             )
         }
     ) { innerPadding ->
@@ -186,45 +189,54 @@ fun SpecializationList(
 fun SearchTopBar(
     query: String,
     onQueryChange: (String) -> Unit,
+    onProfileClick: () -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
-    TextField(
-        value = query,
-        onValueChange = onQueryChange,
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(AppDimens.Padding.Normal),
-        placeholder = { Text(stringResource(Res.string.main_search_placeholder)) },
-        leadingIcon = {
-            Icon(
-                Icons.Default.Search,
-                contentDescription = null
+            .padding(
+                start = AppDimens.Padding.Normal,
+                end = AppDimens.Padding.Normal,
+                top = AppDimens.Padding.Normal
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        TextField(
+            value = query,
+            onValueChange = onQueryChange,
+            modifier = Modifier.weight(1f),
+            placeholder = { Text(stringResource(Res.string.main_search_placeholder)) },
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = null
+                )
+            },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                }
+            ),
+            shape = MaterialTheme.shapes.medium,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                cursorColor = MaterialTheme.colorScheme.primary
             )
-        },
-        singleLine = true,
-
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Search
-        ),
-
-        keyboardActions = KeyboardActions(
-            onSearch = {
-                keyboardController?.hide()
-                focusManager.clearFocus()
-            }
-        ),
-        shape = MaterialTheme.shapes.medium,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surface,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = MaterialTheme.colorScheme.primary
         )
-    )
+        ProfileIcon(onProfileClick)
+    }
 }
 
 @Composable
@@ -320,7 +332,7 @@ fun SpecializationCard(
                 IconButton(onClick = { onPinClick() }) {
                     Icon(
                         imageVector = Icons.Default.Star,
-                        contentDescription = stringResource(Res.string.main_icon_description),
+                        contentDescription = stringResource(Res.string.main_pin_icon_description),
                         tint = if (specialization.isPinned) PinIconActive else PinIconDefault
                     )
                 }
@@ -338,5 +350,5 @@ fun SpecializationCard(
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewMainScreen() {
-    MainScreen(onSpecializationClick = {})
+    MainScreen(onSpecializationClick = {}, onProfileClick = {})
 }
