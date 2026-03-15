@@ -42,13 +42,20 @@ val AppTypography: Typography
             lineHeight = 44.sp,
             brush = Brush.linearGradient(colors = TitleGradient)
         ),
+        headlineMedium = TextStyle(
+            fontFamily = DancingScriptFontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 32.sp,
+            lineHeight = 36.sp,
+            brush = Brush.linearGradient(colors = TitleGradient)
+        ),
         titleLarge = TextStyle(
             fontSize = 32.sp
         ),
         titleMedium = TextStyle(
             fontSize = 24.sp,
 
-        ),
+            ),
         titleSmall = TextStyle(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,

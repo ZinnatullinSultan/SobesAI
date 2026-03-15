@@ -10,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import com.example.sobesai.presentation.theme.AppTypography
 import org.jetbrains.compose.resources.stringResource
 import sobesai.composeapp.generated.resources.Res
@@ -46,10 +45,7 @@ fun AppTopBar(
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background.copy(0.9F),
-            scrolledContainerColor = Color.Unspecified,
-            navigationIconContentColor = Color.Unspecified,
-            titleContentColor = Color.Unspecified,
+            containerColor = MaterialTheme.colorScheme.background.copy(0.9F)
         )
     )
 }
