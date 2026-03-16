@@ -34,7 +34,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.appauth)
             implementation(libs.koin.android)
-        }
+}
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)

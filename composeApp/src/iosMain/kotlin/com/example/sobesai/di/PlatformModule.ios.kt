@@ -9,11 +9,13 @@ import com.example.sobesai.data.local.LocalDataSourceImpl
 import com.example.sobesai.data.local.PlatformContext
 import com.example.sobesai.data.local.getDatabaseBuilder
 import com.example.sobesai.data.local.provideDataStore
+import com.example.sobesai.data.local.provideSecureTokenStorage
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 actual fun platformModule(): Module = module {
     single<DataStore<Preferences>> { provideDataStore(DataStoreContext()) }
+    single { provideSecureTokenStorage(DataStoreContext()) }
 
     single<AppDatabase> { getDatabaseBuilder(PlatformContext()).build() }
 

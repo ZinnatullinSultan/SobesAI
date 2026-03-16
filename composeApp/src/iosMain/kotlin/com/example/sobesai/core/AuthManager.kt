@@ -46,16 +46,21 @@ class IosAuthManager(
                     }
 
                     val accessToken = params["access_token"]
+                    val refreshToken = params["refresh_token"]
                     if (accessToken != null) {
                         runBlocking {
-                            settingsRepository.saveToken(accessToken)
+                            if (!refreshToken.isNullOrBlank()) {
+                                settingsRepository.saveTokens(accessToken, refreshToken)
+                            } else {
+                                settingsRepository.saveToken(accessToken)
+                            }
                             extractDisplayNameFromJwt(accessToken)?.let { displayName ->
                                 settingsRepository.saveDisplayName(displayName)
                             }
                         }
-                        Napier.d(tag = "AUTH") { "Токен успешно сохранен!" }
+                        Napier.d(tag = "AUTH") { "Токены успешно сохранены" }
                     }
-                }
+}
             }
         }
 

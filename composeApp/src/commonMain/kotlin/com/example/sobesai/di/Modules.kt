@@ -22,8 +22,8 @@ expect fun platformModule(): Module
 val appModule = module {
     includes(platformModule())
 
-    single<SettingsRepository> { SettingsRepositoryImpl(get()) }
-    single { createHttpClient(get()) }
+    single<SettingsRepository> { SettingsRepositoryImpl(get(), get()) }
+single { createHttpClient(get()) }
     single { LoginRepository() }
 
     single { SpecializationsRepository(get(), get<LocalDataSource>()) }

@@ -44,10 +44,17 @@ class AndroidAuthManager(
         }.toMap()
 
         val accessToken = params["access_token"] ?: return false
-        settingsRepository.saveToken(accessToken)
+        val refreshToken = params["refresh_token"]
+
+        if (!refreshToken.isNullOrBlank()) {
+            settingsRepository.saveTokens(accessToken, refreshToken)
+        } else {
+            settingsRepository.saveToken(accessToken)
+        }
+
         extractDisplayNameFromJwt(accessToken)?.let { displayName ->
             settingsRepository.saveDisplayName(displayName)
         }
         return true
-    }
+}
 }
