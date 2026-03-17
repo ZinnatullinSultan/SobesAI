@@ -7,6 +7,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.sobesai.presentation.theme.AppDimens
 import org.jetbrains.compose.resources.stringResource
 import sobesai.composeapp.generated.resources.Res
@@ -27,4 +28,12 @@ fun ProfileIcon(
             modifier = modifier.size(AppDimens.IconSize.ExtraLarge)
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewProfileIcon() {
+    ProfileIcon(
+        onProfileClick = {}
+    )
 }

@@ -24,7 +24,13 @@ class MainViewModel(
         settingsRepository.isFirstLaunch,
         settingsRepository.authToken
     ) { isFirstLaunch, token ->
-        Napier.d(tag = "MAIN_VIEW_MODEL") { "combine: isFirstLaunch=$isFirstLaunch, token=${token?.take(20)}..." }
+        Napier.d(tag = "MAIN_VIEW_MODEL") {
+            "combine: isFirstLaunch=$isFirstLaunch, token=${
+                token?.take(
+                    20
+                )
+            }..."
+        }
         when {
             isFirstLaunch -> AppState.OnBoarding
             token == null -> AppState.Login

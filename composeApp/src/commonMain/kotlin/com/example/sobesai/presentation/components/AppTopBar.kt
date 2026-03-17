@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.sobesai.presentation.theme.AppTypography
 import org.jetbrains.compose.resources.stringResource
 import sobesai.composeapp.generated.resources.Res
@@ -47,5 +48,14 @@ fun AppTopBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background.copy(0.9F)
         )
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewAppTopBar() {
+    AppTopBar(
+        onProfileClick = {},
+        onBackClick = {}
     )
 }

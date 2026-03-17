@@ -31,6 +31,15 @@ import sobesai.composeapp.generated.resources.welcome_image_desc
 fun WelcomeScreen(
     viewModel: WelcomeViewModel = koinViewModel()
 ) {
+    WelcomeScreenContent(
+        onStartClick = { viewModel.onStartClicked() }
+    )
+}
+
+@Composable
+private fun WelcomeScreenContent(
+    onStartClick: () -> Unit
+) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val isLandscape = maxWidth > maxHeight
         val imageSize = if (isLandscape) AppDimens.Components.WelcomeImageSizeSmall
@@ -65,17 +74,15 @@ fun WelcomeScreen(
                 )
                 AppButton(
                     text = stringResource(Res.string.start_button),
-                    onClick = {
-                        viewModel.onStartClicked()
-                    },
+                    onClick = onStartClick,
                 )
             }
         }
     }
 }
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
 fun PreviewWelcome() {
-    WelcomeScreen()
+    WelcomeScreenContent({})
 }

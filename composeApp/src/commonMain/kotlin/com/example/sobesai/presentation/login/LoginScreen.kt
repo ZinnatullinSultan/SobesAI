@@ -19,6 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.sobesai.core.rememberAuthManager
 import com.example.sobesai.presentation.login.components.LoginActions
 import com.example.sobesai.presentation.login.components.LoginFormFields
@@ -30,7 +31,6 @@ import org.koin.compose.viewmodel.koinViewModel
 fun LoginScreen(
     viewModel: LoginViewModel = koinViewModel()
 ) {
-    val scrollState = rememberScrollState()
     val state by viewModel.state.collectAsState()
     val authManager = rememberAuthManager()
 
@@ -45,6 +45,25 @@ fun LoginScreen(
             }
         }
     }
+
+    LoginScreenContent(
+        state = state,
+        onUsernameChanged = { viewModel.onUsernameChanged(it) },
+        onPasswordChanged = { viewModel.onPasswordChanged(it) },
+        onLoginClicked = { viewModel.onLoginClicked() },
+        onGitHubLoginClicked = { viewModel.onGitHubLoginClicked() }
+    )
+}
+
+@Composable
+private fun LoginScreenContent(
+    state: LoginUiState,
+    onUsernameChanged: (String) -> Unit,
+    onPasswordChanged: (String) -> Unit,
+    onLoginClicked: () -> Unit,
+    onGitHubLoginClicked: () -> Unit
+) {
+    val scrollState = rememberScrollState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -74,9 +93,9 @@ fun LoginScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             LoginFormFields(
-                                onUsernameChanged = { viewModel.onUsernameChanged(it) },
-                                onPasswordChanged = { viewModel.onPasswordChanged(it) },
-                                onLoginClicked = { viewModel.onLoginClicked() },
+                                onUsernameChanged = onUsernameChanged,
+                                onPasswordChanged = onPasswordChanged,
+                                onLoginClicked = onLoginClicked,
                                 state = state
                             )
 
@@ -88,8 +107,8 @@ fun LoginScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             LoginActions(
-                                onLoginClicked = { viewModel.onLoginClicked() },
-                                onGitHubLoginClicked = { viewModel.onGitHubLoginClicked() },
+                                onLoginClicked = onLoginClicked,
+                                onGitHubLoginClicked = onGitHubLoginClicked,
                                 state = state
                             )
                         }
@@ -109,21 +128,37 @@ fun LoginScreen(
                 ) {
                     LoginHeader()
                     LoginFormFields(
-                        onUsernameChanged = { viewModel.onUsernameChanged(it) },
-                        onPasswordChanged = { viewModel.onPasswordChanged(it) },
-                        onLoginClicked = { viewModel.onLoginClicked() },
+                        onUsernameChanged = onUsernameChanged,
+                        onPasswordChanged = onPasswordChanged,
+                        onLoginClicked = onLoginClicked,
                         state = state
                     )
 
                     Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Normal))
 
                     LoginActions(
-                        onLoginClicked = { viewModel.onLoginClicked() },
-                        onGitHubLoginClicked = { viewModel.onGitHubLoginClicked() },
+                        onLoginClicked = onLoginClicked,
+                        onGitHubLoginClicked = onGitHubLoginClicked,
                         state = state
                     )
                 }
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun PreviewLoginScreen() {
+    LoginScreenContent(
+        state = LoginUiState(
+            username = "test_user",
+            password = "password123",
+            isLoginButtonActive = true
+        ),
+        onUsernameChanged = {},
+        onPasswordChanged = {},
+        onLoginClicked = {},
+        onGitHubLoginClicked = {}
+    )
 }

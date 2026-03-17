@@ -75,7 +75,7 @@ fun SpecializationScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SpecializationContent(
+private fun SpecializationContent(
     state: SpecializationUiState,
     onBackClick: () -> Unit,
     onProfileClick: () -> Unit,

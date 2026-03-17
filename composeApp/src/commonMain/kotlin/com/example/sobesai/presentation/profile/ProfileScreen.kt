@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sobesai.presentation.components.AppButton
 import com.example.sobesai.presentation.components.AppTopBar
@@ -38,6 +39,20 @@ fun ProfileScreen(
     onBackClick: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    ProfileScreenContent(
+        state = state,
+        onBackClick = onBackClick,
+        logout = { viewModel.logout() }
+    )
+}
+
+@Composable
+private fun ProfileScreenContent(
+    state: ProfileUiState,
+    onBackClick: () -> Unit,
+    logout: () -> Unit
+) {
     val defaultUserName = stringResource(Res.string.profile_user_name_default)
     val scrollState = rememberScrollState()
 
@@ -86,9 +101,18 @@ fun ProfileScreen(
 
             AppButton(
                 text = stringResource(Res.string.profile_quit_button),
-                onClick = { viewModel.logout() }
+                onClick = logout
             )
         }
     }
+}
 
+@Preview(showSystemUi = true)
+@Composable
+fun PreviewProfileScreen() {
+    ProfileScreenContent(
+        state = ProfileUiState(displayName = "Иван Иванов"),
+        onBackClick = {},
+        logout = {}
+    )
 }
