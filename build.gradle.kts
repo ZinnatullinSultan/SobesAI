@@ -18,7 +18,6 @@ tasks.register<Copy>("installGitHooks") {
     }
 }
 
-// Авто-установка хуков при сборке
 tasks.named("prepareKotlinBuildScriptModel") {
     dependsOn("installGitHooks")
 }

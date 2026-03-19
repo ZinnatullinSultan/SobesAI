@@ -122,4 +122,6 @@ detekt {
     toolVersion = libs.versions.detekt.get()
     config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
     buildUponDefaultConfig = true
+    source.setFrom(files("src"))
+    baseline = file("$rootDir/config/detekt/detekt-baseline.xml")
 }

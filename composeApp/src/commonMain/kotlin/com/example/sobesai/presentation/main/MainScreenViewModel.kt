@@ -184,35 +184,6 @@ class MainScreenViewModel(
         }
     }
 
-    fun refresh2(
-        a: String,
-        b: Int,
-        a1: String,
-        b1: Int,
-        a2: String,
-        b2: Int,
-        a3: String,
-        b3: Int,
-        a4: String,
-        b4: Int,
-        a5: String,
-        b5: Int,
-        a6: String,
-        b6: Int,
-        a7: String,
-        b7: Int,
-        a8: String,
-        b8: Int,
-        a9: String,
-        b9: Int
-    ) {
-        viewModelScope.launch {
-            _isRefreshing.value = true
-            refreshTrigger.tryEmit(Unit)
-            _isRefreshing.value = false
-        }
-    }
-
     fun onSearchQueryChanged(query: String) {
         _searchQuery.value = query
     }
