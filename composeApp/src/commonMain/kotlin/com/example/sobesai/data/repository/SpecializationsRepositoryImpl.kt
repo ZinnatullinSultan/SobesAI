@@ -1,8 +1,10 @@
 package com.example.sobesai.data.repository
 
 import com.example.sobesai.data.local.LocalDataSource
+import com.example.sobesai.data.mapper.toDomain
 import com.example.sobesai.data.remote.SpecializationDto
 import com.example.sobesai.domain.model.Specialization
+import com.example.sobesai.domain.repository.SpecializationsRepository
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -22,22 +24,17 @@ data class UpdatePinRequest(
     @SerialName("pin_order") val pinOrder: Int?
 )
 
-class SpecializationsRepository(
+class SpecializationsRepositoryImpl(
     private val client: HttpClient,
     private val localDataSource: LocalDataSource
-) {
+) : SpecializationsRepository {
 
-    /**
-     * Получает специализации с сервера и кэширует их в БД.
-     * При ошибке сети возвращает данные из кэша.
-     */
-    suspend fun getSpecializations(
+    override suspend fun getSpecializations(
         query: String,
         offset: Int,
         limit: Int
     ): Result<List<Specialization>> {
         return try {
-            // Сначала пробуем загрузить с сервера
             val response: List<SpecializationDto> =
                 client
                     .get("specializations") {
@@ -51,25 +48,18 @@ class SpecializationsRepository(
                     }
                     .body()
 
-            val specializations = response.map { dto ->
-                Specialization(
-                    id = dto.id,
-                    title = dto.title,
-                    description = dto.description ?: "",
-                    isPinned = dto.isPinned,
-                    pinOrder = dto.pinOrder
-                )
-            }
+            val specializations = response.map { it.toDomain() }
 
-            // Сохраняем в кэш
             localDataSource.saveSpecializations(specializations)
             Napier.d(tag = "REPOSITORY") { "Специализации сохранены в кэш: ${specializations.size} шт." }
 
             Result.success(specializations)
         } catch (error: Exception) {
-            Napier.e(tag = "REPOSITORY", throwable = error) { "Ошибка при загрузке специализаций с сервера, пробуем кэш" }
+            Napier.e(
+                tag = "REPOSITORY",
+                throwable = error
+            ) { "Ошибка при загрузке специализаций с сервера, пробуем кэш" }
 
-            // Fallback: возвращаем данные из кэша
             try {
                 val cachedData = if (query.isNotEmpty()) {
                     localDataSource.searchSpecializations(query)
@@ -90,11 +80,11 @@ class SpecializationsRepository(
         }
     }
 
-    fun observeSpecializations(): Flow<List<Specialization>> {
+    override fun observeSpecializations(): Flow<List<Specialization>> {
         return localDataSource.observeAllSpecializations()
     }
 
-    suspend fun updatePinStatus(
+    override suspend fun updatePinStatus(
         id: Long,
         isPinned: Boolean,
         pinOrder: Int?
@@ -109,7 +99,6 @@ class SpecializationsRepository(
         }.onFailure { error ->
             Napier.e(tag = "REPO", throwable = error) { "Не удалось сохранить закрепление" }
         }.onSuccess {
-            // Обновляем кэш после успешного обновления на сервере
             try {
                 val updated = getSpecializationById(id).getOrNull()
                 updated?.let {
@@ -118,12 +107,12 @@ class SpecializationsRepository(
                     )
                 }
             } catch (e: Exception) {
-                Napier.w(tag = "REPO") { "Не удалось обновить кэш после изменения закрепления" }
+                Napier.w(tag = "REPO") { "Не удалось обновить кэш после изменения закрепления: $e" }
             }
         }
     }
 
-    suspend fun getSpecializationById(id: Long): Result<Specialization> {
+    override suspend fun getSpecializationById(id: Long): Result<Specialization> {
         return try {
             val response: List<SpecializationDto> = client
                 .get("specializations") {
@@ -132,55 +121,21 @@ class SpecializationsRepository(
                 }
                 .body()
 
-            val dto = response.first()
-            val specialization = Specialization(
-                id = dto.id,
-                title = dto.title,
-                description = dto.description ?: "",
-                isPinned = dto.isPinned,
-                pinOrder = dto.pinOrder
-            )
+            val specialization = response.first().toDomain()
 
             localDataSource.saveSpecialization(specialization)
 
             Result.success(specialization)
         } catch (error: Exception) {
-            Napier.e(tag = "REPOSITORY", throwable = error) { "Ошибка при загрузке специализации $id с сервера, пробуем кэш" }
+            Napier.e(
+                tag = "REPOSITORY",
+                throwable = error
+            ) { "Ошибка при загрузке специализации $id с сервера, пробуем кэш" }
 
             localDataSource.getSpecializationById(id)?.let {
                 Napier.d(tag = "REPOSITORY") { "Возвращаем специализацию $id из кэша" }
                 Result.success(it)
             } ?: Result.failure(error)
-        }
-    }
-
-    suspend fun refreshCache(): Result<Unit> {
-        return try {
-            val response: List<SpecializationDto> = client
-                .get("specializations") {
-                    parameter("select", "*")
-                    parameter("order", "is_pinned.desc,pin_order.desc,id.asc")
-                }
-                .body()
-
-            val specializations = response.map { dto ->
-                Specialization(
-                    id = dto.id,
-                    title = dto.title,
-                    description = dto.description ?: "",
-                    isPinned = dto.isPinned,
-                    pinOrder = dto.pinOrder
-                )
-            }
-
-            localDataSource.clearAllSpecializations()
-            localDataSource.saveSpecializations(specializations)
-            Napier.d(tag = "REPOSITORY") { "Кэш обновлён: ${specializations.size} специализаций" }
-
-            Result.success(Unit)
-        } catch (error: Exception) {
-            Napier.e(tag = "REPOSITORY", throwable = error) { "Не удалось обновить кэш" }
-            Result.failure(error)
         }
     }
 }

@@ -2,8 +2,8 @@ package com.example.sobesai.presentation.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sobesai.data.local.LocalDataSource
-import com.example.sobesai.domain.repository.SettingsRepository
+import com.example.sobesai.domain.usecase.auth.GetProfileUseCase
+import com.example.sobesai.domain.usecase.auth.LogoutUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -15,15 +15,13 @@ data class ProfileUiState(
 )
 
 class ProfileViewModel(
-    private val settingsRepository: SettingsRepository,
-    private val localDataSource: LocalDataSource
+    private val logoutUseCase: LogoutUseCase,
+    getProfileUseCase: GetProfileUseCase
 ) : ViewModel() {
 
-    val uiState: StateFlow<ProfileUiState> = settingsRepository.displayName
+    val uiState: StateFlow<ProfileUiState> = getProfileUseCase()
         .map { displayName ->
-            ProfileUiState(
-                displayName = displayName?.takeIf { it.isNotBlank() }
-            )
+            ProfileUiState(displayName = displayName)
         }
         .stateIn(
             scope = viewModelScope,
@@ -33,8 +31,7 @@ class ProfileViewModel(
 
     fun logout() {
         viewModelScope.launch {
-            runCatching { localDataSource.clearAllSpecializations() }
-            settingsRepository.clearData()
+            logoutUseCase()
         }
     }
 }

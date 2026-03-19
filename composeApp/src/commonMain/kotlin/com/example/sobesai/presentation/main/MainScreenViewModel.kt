@@ -2,8 +2,10 @@ package com.example.sobesai.presentation.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sobesai.data.repository.SpecializationsRepository
 import com.example.sobesai.domain.model.Specialization
+import com.example.sobesai.domain.usecase.specialization.GetSpecializationsUseCase
+import com.example.sobesai.domain.usecase.specialization.SortSpecializationsUseCase
+import com.example.sobesai.domain.usecase.specialization.TogglePinUseCase
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -36,7 +38,9 @@ sealed interface SpecializationsUiState {
 }
 
 class MainScreenViewModel(
-    private val repository: SpecializationsRepository
+    private val getSpecializationsUseCase: GetSpecializationsUseCase,
+    private val togglePinUseCase: TogglePinUseCase,
+    private val sortSpecializationsUseCase: SortSpecializationsUseCase
 ) : ViewModel() {
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
@@ -45,7 +49,6 @@ class MainScreenViewModel(
     val isRefreshing = _isRefreshing.asStateFlow()
 
     private val refreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
-
     private val allLoadedItems = mutableListOf<Specialization>()
 
     private var currentPage = 0
@@ -74,7 +77,7 @@ class MainScreenViewModel(
 
                     flow {
                         emit(SpecializationsUiState.Loading)
-                        val result = repository.getSpecializations(query, 0, pageSize)
+                        val result = getSpecializationsUseCase(query, 0, pageSize)
                         emit(processFirstPage(result))
                     }
                 }
@@ -88,60 +91,64 @@ class MainScreenViewModel(
     }
 
     fun onPinClicked(id: Long) {
-        val itemIndex = allLoadedItems.indexOfFirst { it.id == id }
-        if (itemIndex == -1) return
-
-        val currentItem = allLoadedItems[itemIndex]
-        val nextPinnedState = !currentItem.isPinned
-        val nextPinOrder = if (nextPinnedState) ++pinOrderCounter else null
+        val item = allLoadedItems.find { it.id == id } ?: return
 
         viewModelScope.launch {
-            val result = repository.updatePinStatus(id, nextPinnedState, nextPinOrder)
-
-            result.onSuccess {
-                allLoadedItems[itemIndex] = currentItem.copy(
-                    isPinned = nextPinnedState,
-                    pinOrder = nextPinOrder
-                )
-                updateUiWithSorting()
-                Napier.d(tag = "PIN_DEBUG") { "Элемент ${currentItem.title} успешно обновлен" }
-            }.onFailure { error ->
-                Napier.e(
-                    tag = "PIN_DEBUG",
-                    throwable = error
-                ) { "Ошибка при обновлении Pin статуса" }
-            }
+            togglePinUseCase(item, pinOrderCounter)
+                .onSuccess { updatedItem ->
+                    val index = allLoadedItems.indexOfFirst { it.id == id }
+                    if (index != -1) {
+                        allLoadedItems[index] = updatedItem
+                        // Если статус изменился на "закреплено", обновляем локальный счетчик
+                        if (updatedItem.isPinned) {
+                            pinOrderCounter = maxOf(pinOrderCounter, updatedItem.pinOrder ?: 0)
+                        }
+                        updateUiWithSorting()
+                    }
+                }
+                .onFailure { error ->
+                    Napier.e(tag = "PIN_DEBUG", throwable = error) { "Ошибка Pin" }
+                }
         }
     }
+
+
+    fun loadNextPage() {
+        if (isLastPage || _uiState.value is SpecializationsUiState.Loading || isNextPageLoading()) return
+
+        viewModelScope.launch {
+            _uiState.value = (uiState.value as? SpecializationsUiState.Success)
+                ?.copy(isNextPageLoading = true) ?: uiState.value
+
+            currentPage++
+            getSpecializationsUseCase(_searchQuery.value, currentPage, pageSize)
+                .onSuccess { newItems ->
+                    handleNewItems(newItems)
+                    updateUiWithSorting()
+                }
+                .onFailure { updateUiWithSorting() }
+        }
+    }
+
+    private fun isNextPageLoading() =
+        (uiState.value as? SpecializationsUiState.Success)?.isNextPageLoading == true
 
     private fun updateUiWithSorting() {
         updateCounter++
         _uiState.value = SpecializationsUiState.Success(
-            items = getSortedList(),
+            items = sortSpecializationsUseCase(allLoadedItems),
             isNextPageLoading = false,
             updateCount = updateCounter
-        )
-    }
-
-    private fun getSortedList(): List<Specialization> {
-        return allLoadedItems.toList().sortedWith(
-            compareByDescending<Specialization> { it.isPinned }
-                .thenByDescending { it.pinOrder ?: 0 }
-                .thenBy { it.id }
         )
     }
 
     private fun processFirstPage(result: Result<List<Specialization>>): SpecializationsUiState {
         return result.fold(
             onSuccess = { items ->
-                allLoadedItems.clear()
-                if (items.isEmpty()) {
-                    SpecializationsUiState.Empty
-                } else {
-                    updatePinOrderCounter(items)
-                    allLoadedItems.addAll(items)
-                    if (items.size < pageSize) isLastPage = true
-                    SpecializationsUiState.Success(getSortedList())
+                if (items.isEmpty()) SpecializationsUiState.Empty
+                else {
+                    handleNewItems(items)
+                    SpecializationsUiState.Success(sortSpecializationsUseCase(allLoadedItems))
                 }
             },
             onFailure = {
@@ -150,37 +157,19 @@ class MainScreenViewModel(
         )
     }
 
-    private fun updatePinOrderCounter(items: List<Specialization>) {
-        val maxOrder = items.mapNotNull { it.pinOrder }.maxOrNull() ?: 0
-        if (maxOrder > pinOrderCounter) {
-            pinOrderCounter = maxOrder
+    private fun handleNewItems(newItems: List<Specialization>) {
+        if (newItems.isEmpty()) {
+            isLastPage = true
+        } else {
+            updatePinOrderCounter(newItems)
+            allLoadedItems.addAll(newItems)
+            if (newItems.size < pageSize) isLastPage = true
         }
     }
 
-    fun loadNextPage() {
-        if (isLastPage || _uiState.value is SpecializationsUiState.Loading ||
-            (_uiState.value as? SpecializationsUiState.Success)?.isNextPageLoading == true
-        ) return
-        viewModelScope.launch {
-            val currentItems = getSortedList()
-            _uiState.value = SpecializationsUiState.Success(currentItems, isNextPageLoading = true)
-
-            currentPage++
-            val offset = currentPage * pageSize
-            val result = repository.getSpecializations(_searchQuery.value, offset, pageSize)
-            result.onSuccess { newItems ->
-                if (newItems.isEmpty()) {
-                    isLastPage = true
-                } else {
-                    updatePinOrderCounter(newItems)
-                    allLoadedItems.addAll(newItems)
-                    if (newItems.size < pageSize) isLastPage = true
-                }
-                updateUiWithSorting()
-            }.onFailure {
-                updateUiWithSorting()
-            }
-        }
+    private fun updatePinOrderCounter(items: List<Specialization>) {
+        val maxOrder = items.mapNotNull { it.pinOrder }.maxOrNull() ?: 0
+        pinOrderCounter = maxOf(pinOrderCounter, maxOrder)
     }
 
     fun retry() {

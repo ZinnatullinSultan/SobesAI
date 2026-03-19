@@ -2,16 +2,15 @@ package com.example.sobesai.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sobesai.domain.repository.SettingsRepository
+import com.example.sobesai.domain.usecase.onboarding.GetInitialAppStateUseCase
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 
 class MainViewModel(
-    private val settingsRepository: SettingsRepository
+    getInitialAppStateUseCase: GetInitialAppStateUseCase
 ) : ViewModel() {
     sealed interface AppState {
         object Loading : AppState
@@ -20,23 +19,7 @@ class MainViewModel(
         object Main : AppState
     }
 
-    val appState: StateFlow<AppState> = combine(
-        settingsRepository.isFirstLaunch,
-        settingsRepository.authToken
-    ) { isFirstLaunch, token ->
-        Napier.d(tag = "MAIN_VIEW_MODEL") {
-            "combine: isFirstLaunch=$isFirstLaunch, token=${
-                token?.take(
-                    20
-                )
-            }..."
-        }
-        when {
-            isFirstLaunch -> AppState.OnBoarding
-            token == null -> AppState.Login
-            else -> AppState.Main
-        }
-    }
+    val appState: StateFlow<AppState> = getInitialAppStateUseCase()
         .onEach { state ->
             Napier.d(tag = "MAIN_VIEW_MODEL") { "appState changed to: $state" }
         }

@@ -36,7 +36,6 @@ import org.jetbrains.compose.resources.stringResource
 import sobesai.composeapp.generated.resources.Res
 import sobesai.composeapp.generated.resources.email_label
 import sobesai.composeapp.generated.resources.email_placeholder
-import sobesai.composeapp.generated.resources.login_error_text
 import sobesai.composeapp.generated.resources.login_password_hide
 import sobesai.composeapp.generated.resources.login_password_show
 import sobesai.composeapp.generated.resources.password_label
@@ -116,8 +115,7 @@ fun LoginFormFields(
     )
     if (state.error != null) {
         Text(
-            text = state.error
-                ?: stringResource(Res.string.login_error_text),
+            text = state.error,
             textAlign = TextAlign.Center,
             color = TextError,
             modifier = Modifier

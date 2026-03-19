@@ -2,8 +2,7 @@ package com.example.sobesai.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sobesai.data.repository.LoginRepository
-import com.example.sobesai.domain.repository.SettingsRepository
+import com.example.sobesai.domain.usecase.auth.LoginUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -14,8 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val repository: LoginRepository = LoginRepository(),
-    private val settingsRepository: SettingsRepository
+    private val loginUseCase: LoginUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginUiState())
     val state: StateFlow<LoginUiState> = _state.asStateFlow()
@@ -47,18 +45,17 @@ class LoginViewModel(
     fun onLoginClicked() {
         val currentUsername = _state.value.username
         val currentPassword = _state.value.password
-        val result = repository.login(currentUsername, currentPassword)
 
-        result.onSuccess { token ->
-            viewModelScope.launch {
-                settingsRepository.saveToken(token)
-                settingsRepository.saveDisplayName(currentUsername)
+        viewModelScope.launch {
+            val result = loginUseCase(currentUsername, currentPassword)
+
+            result.onSuccess {
                 _events.emit(LoginUiEvent.LoginSuccessEvent)
             }
-        }
-        result.onFailure { exception ->
-            _state.update {
-                it.copy(error = exception.message)
+            result.onFailure { exception ->
+                _state.update {
+                    it.copy(error = exception.message)
+                }
             }
         }
     }

@@ -2,8 +2,8 @@ package com.example.sobesai.presentation.specialization
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sobesai.data.repository.SpecializationsRepository
 import com.example.sobesai.domain.model.Specialization
+import com.example.sobesai.domain.usecase.specialization.GetSpecializationUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -19,7 +19,7 @@ data class SpecializationUiState(
 )
 
 class SpecializationViewModel(
-    private val repository: SpecializationsRepository,
+    private val getSpecializationUseCase: GetSpecializationUseCase,
     private val id: Long
 ) : ViewModel() {
     private val _state = MutableStateFlow(SpecializationUiState())
@@ -32,7 +32,7 @@ class SpecializationViewModel(
     private fun loadSpecialization() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            repository.getSpecializationById(id)
+            getSpecializationUseCase(id)
                 .onSuccess { item ->
                     _state.update { it.copy(specialization = item, isLoading = false) }
                 }
