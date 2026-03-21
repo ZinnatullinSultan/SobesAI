@@ -8,12 +8,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.sobesai.navigation.InterviewRoute
 import com.example.sobesai.navigation.LoginRoute
 import com.example.sobesai.navigation.MainRoute
 import com.example.sobesai.navigation.ProfileRoute
 import com.example.sobesai.navigation.SpecializationRoute
 import com.example.sobesai.navigation.WelcomeRoute
 import com.example.sobesai.presentation.MainViewModel
+import com.example.sobesai.presentation.interview.InterviewScreen
 import com.example.sobesai.presentation.login.LoginScreen
 import com.example.sobesai.presentation.main.MainScreen
 import com.example.sobesai.presentation.profile.ProfileScreen
@@ -116,13 +118,18 @@ fun App(
                         navController.navigate(ProfileRoute)
                     },
                     onStartInterview = { id, level ->
-                        // В будущем здесь будет навигация в чат
+                        navController.navigate(InterviewRoute(id, level.name))
                     }
+                )
+            }
+            composable<InterviewRoute> { backStackEntry ->
+                val route: InterviewRoute = backStackEntry.toRoute()
+                InterviewScreen(
+                    specId = route.specId,
+                    difficulty = route.difficulty,
+                    onBackClick = { navController.popBackStack() },
                 )
             }
         }
     }
 }
-
-
-

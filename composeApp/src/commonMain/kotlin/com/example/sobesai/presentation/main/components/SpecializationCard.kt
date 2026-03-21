@@ -41,7 +41,7 @@ fun SpecializationCard(
             .fillMaxWidth()
             .padding(vertical = AppDimens.Padding.Small)
             .clickable { onItemClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = AppDimens.Components.CardElevation),
+        elevation = CardDefaults.cardElevation(defaultElevation = AppDimens.Elevation.Small),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface

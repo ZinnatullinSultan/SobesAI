@@ -26,6 +26,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
+object NetworkConstants {
+    const val SUPABASE_REST_URL = "https://rrhykitzjowtpbikkjkz.supabase.co/rest/v1/"
+    const val SUPABASE_AUTH_URL = "https://rrhykitzjowtpbikkjkz.supabase.co/auth/v1/"
+}
+
 @Serializable
 private data class RefreshTokenRequest(
     @SerialName("refresh_token") val refreshToken: String
@@ -38,15 +43,15 @@ private data class RefreshTokenResponse(
 )
 
 fun createHttpClient(settingsRepository: SettingsRepository): HttpClient {
-    val restBaseUrl = "https://rrhykitzjowtpbikkjkz.supabase.co/rest/v1/"
-    val authBaseUrl = "https://rrhykitzjowtpbikkjkz.supabase.co/auth/v1/"
     val anonKey =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyaHlraXR6am93dHBiaWtramt6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3ODc0NTgsImV4cCI6MjA4ODM2MzQ1OH0.RMGHGL4QKsHtmOkLOZxzj_wFhBs-B0bLeUS3rhDiKTU"
 
     return HttpClient {
-        defaultRequest {
-            url(restBaseUrl)
-            header("apikey", anonKey)
+        install(ContentNegotiation) {
+            json(Json {
+                ignoreUnknownKeys = true
+                prettyPrint = true
+            })
         }
 
         install(Auth) {
@@ -73,48 +78,34 @@ fun createHttpClient(settingsRepository: SettingsRepository): HttpClient {
                 refreshTokens {
                     val storedRefreshToken = settingsRepository.refreshToken.first()
                     if (storedRefreshToken.isNullOrBlank()) {
-                        Napier.e(tag = "AUTH_REFRESH") { "Refresh token отсутствует, выполняем logout" }
                         settingsRepository.clearData()
                         return@refreshTokens null
                     }
 
                     runCatching {
-                        val refreshResponse: RefreshTokenResponse = client.post("${authBaseUrl}token?grant_type=refresh_token") {
-                            markAsRefreshTokenRequest()
-                            contentType(ContentType.Application.Json)
-                            header("apikey", anonKey)
-                            setBody(RefreshTokenRequest(storedRefreshToken))
-                        }.body()
+                        val refreshResponse: RefreshTokenResponse =
+                            client.post("${NetworkConstants.SUPABASE_AUTH_URL}token?grant_type=refresh_token") {
+                                markAsRefreshTokenRequest()
+                                contentType(ContentType.Application.Json)
+                                header("apikey", anonKey)
+                                setBody(RefreshTokenRequest(storedRefreshToken))
+                            }.body()
 
                         settingsRepository.saveTokens(
                             accessToken = refreshResponse.accessToken,
                             refreshToken = refreshResponse.refreshToken
                         )
 
-                        Napier.d(tag = "AUTH_REFRESH") { "Токены успешно обновлены в фоне" }
-
                         BearerTokens(
                             accessToken = refreshResponse.accessToken,
                             refreshToken = refreshResponse.refreshToken
                         )
-                    }.getOrElse { error ->
-                        Napier.e(tag = "AUTH_REFRESH", throwable = error) {
-                            "Не удалось обновить токен, выполняем принудительный logout"
-                        }
+                    }.getOrElse {
                         settingsRepository.clearData()
                         null
                     }
                 }
-
-                sendWithoutRequest { true }
             }
-        }
-
-        install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-                prettyPrint = true
-            })
         }
 
         install(Logging) {
@@ -130,10 +121,14 @@ fun createHttpClient(settingsRepository: SettingsRepository): HttpClient {
             requestTimeoutMillis = 15000
         }
 
+        defaultRequest {
+            url(NetworkConstants.SUPABASE_REST_URL)
+            header("apikey", anonKey)
+        }
+
         HttpResponseValidator {
             validateResponse { response ->
                 if (response.status == HttpStatusCode.Unauthorized) {
-                    Napier.e(tag = "AUTH_ERROR") { "Сессия истекла (401), выполняем logout" }
                     settingsRepository.clearData()
                 }
             }

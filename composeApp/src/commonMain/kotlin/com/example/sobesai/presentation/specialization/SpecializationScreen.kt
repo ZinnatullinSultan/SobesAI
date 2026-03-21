@@ -89,7 +89,8 @@ private fun SpecializationContent(
         topBar = {
             AppTopBar(
                 onBackClick = onBackClick,
-                onProfileClick = onProfileClick
+                onProfileClick = onProfileClick,
+                onClearClick = null
             )
         },
     ) { padding ->

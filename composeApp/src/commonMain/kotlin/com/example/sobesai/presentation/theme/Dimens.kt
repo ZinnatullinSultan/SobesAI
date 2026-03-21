@@ -27,23 +27,33 @@ object AppDimens {
 
         val ButtonMaxWidth = 400.dp
         val TextFieldMaxWidth = 500.dp
+        val MessageCardMaxWidth = 280.dp
 
-        val CardElevation = 4.dp
         val ProgressIndicatorSize = 24.dp
         val ArrangementSpaceSmall = 12.dp
         val DifficultyCardHeight = 160.dp
         val BorderStroke = 2.dp
-        val CornerShape = 16.dp
+    }
+
+    object Elevation {
+        val None = 0.dp
+        val Tiny = 2.dp
+        val Small = 4.dp
+        val Normal = 8.dp
+        val Large = 16.dp
     }
 
     object CornerShape {
+        val None = 0.dp
         val Small = 16.dp
         val Normal = 24.dp
     }
 
     object IconSize {
         val Small = 16.dp
+        val Normal = 24.dp
         val Large = 32.dp
         val ExtraLarge = 40.dp
+        val Huge = 48.dp
     }
 }

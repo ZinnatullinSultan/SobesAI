@@ -36,4 +36,10 @@
     <string name="profile_screen_title">Профиль</string>
     <string name="profile_login_label">Логин: </string>
     <string name="profile_quit_button">Выйти из аккаунта</string>
+
+    <string name="interview_clear_icon_description">Очистить чат</string>
+    <string name="interview_title">Позиция: </string>
+    <string name="interview_difficult">Уровень: </string>
+    <string name="interview_input_placeholder">Введите ответ...</string>
+    <string name="interview_ai_typing">Интервьюер печатает...</string>
 </resources>

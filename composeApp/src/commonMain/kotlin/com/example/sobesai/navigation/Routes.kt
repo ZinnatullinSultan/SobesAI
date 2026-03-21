@@ -16,3 +16,6 @@ data class SpecializationRoute(val id: Long)
 
 @Serializable
 object ProfileRoute
+
+@Serializable
+data class InterviewRoute(val specId: Long, val difficulty: String)

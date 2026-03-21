@@ -2,6 +2,7 @@ package com.example.sobesai.presentation.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -15,12 +16,14 @@ import com.example.sobesai.presentation.theme.AppTypography
 import org.jetbrains.compose.resources.stringResource
 import sobesai.composeapp.generated.resources.Res
 import sobesai.composeapp.generated.resources.app_title
+import sobesai.composeapp.generated.resources.interview_clear_icon_description
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
     onBackClick: () -> Unit,
-    onProfileClick: (() -> Unit)?
+    onProfileClick: (() -> Unit)?,
+    onClearClick: (() -> Unit)?,
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -44,6 +47,15 @@ fun AppTopBar(
                     onProfileClick = onProfileClick,
                 )
             }
+            if (onClearClick != null) {
+                IconButton(onClick = onClearClick) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = stringResource(Res.string.interview_clear_icon_description),
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background.copy(0.9F)
@@ -56,6 +68,7 @@ fun AppTopBar(
 fun PreviewAppTopBar() {
     AppTopBar(
         onProfileClick = {},
-        onBackClick = {}
+        onBackClick = {},
+        onClearClick = {}
     )
 }

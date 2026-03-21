@@ -60,7 +60,8 @@ private fun ProfileScreenContent(
         topBar = {
             AppTopBar(
                 onBackClick = onBackClick,
-                onProfileClick = null
+                onProfileClick = null,
+                onClearClick = null
             )
         }
     ) { paddingValues ->

@@ -2,7 +2,7 @@ package com.example.sobesai.data.repository
 
 import com.example.sobesai.data.local.LocalDataSource
 import com.example.sobesai.data.mapper.toDomain
-import com.example.sobesai.data.remote.SpecializationDto
+import com.example.sobesai.data.remote.dto.SpecializationDto
 import com.example.sobesai.domain.model.Specialization
 import com.example.sobesai.domain.repository.SpecializationsRepository
 import io.github.aakira.napier.Napier
