@@ -10,26 +10,28 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-fun createOpenRouterClient(): HttpClient {
+const val REQUESTTIMEOUT = 60000L
+const val CONNECTTIMEOUT = 15000L
+const val SOCKETTIMEOUT = 60000L
+fun createGeminiClient(): HttpClient {
     return HttpClient {
         install(ContentNegotiation) {
-            json(Json { ignoreUnknownKeys = true })
+            json(Json {
+                ignoreUnknownKeys = true
+                encodeDefaults = false
+            })
         }
 
         install(DefaultRequest) {
-            url("https://openrouter.ai/api/v1/chat/completions")
-            header(HttpHeaders.ContentType, ContentType.Application.Json)
-            header(
-                "Authorization",
-                "Bearer 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"
-            )
-            header("HTTP-Referer", "https://github.com/ZinnatullinSultan/SobesAI")
-            header("X-Title", "SobesAI Interviewer")
+            url("https://api.sobes-api.ru/")
 
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
         }
 
         install(HttpTimeout) {
-            requestTimeoutMillis = 60000
+            requestTimeoutMillis = REQUESTTIMEOUT
+            connectTimeoutMillis = CONNECTTIMEOUT
+            socketTimeoutMillis = SOCKETTIMEOUT
         }
     }
 }

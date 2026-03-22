@@ -2,12 +2,13 @@ package com.example.sobesai.di
 
 import com.example.sobesai.data.local.AppDatabase
 import com.example.sobesai.data.local.LocalDataSource
+import com.example.sobesai.data.remote.createGeminiClient
 import com.example.sobesai.data.remote.createHttpClient
-import com.example.sobesai.data.remote.createOpenRouterClient
 import com.example.sobesai.data.repository.InterviewRepositoryImpl
 import com.example.sobesai.data.repository.LoginRepositoryImpl
 import com.example.sobesai.data.repository.SettingsRepositoryImpl
 import com.example.sobesai.data.repository.SpecializationsRepositoryImpl
+import com.example.sobesai.domain.provider.InterviewPromptProvider
 import com.example.sobesai.domain.repository.InterviewRepository
 import com.example.sobesai.domain.repository.LoginRepository
 import com.example.sobesai.domain.repository.SettingsRepository
@@ -48,7 +49,7 @@ val appModule = module {
     single<LoginRepository> { LoginRepositoryImpl() }
 
     single(named("supabase")) { createHttpClient(get()) }
-    single(named("openRouter")) { createOpenRouterClient() }
+    single(named("gemini")) { createGeminiClient() }
 
     single<SpecializationsRepository> {
         SpecializationsRepositoryImpl(
@@ -58,7 +59,11 @@ val appModule = module {
     }
 
     single<InterviewRepository> {
-        InterviewRepositoryImpl(get(named("openRouter")), get())
+        InterviewRepositoryImpl(
+            client = get(named("gemini")),
+            interviewDao = get(),
+            promptProvider = get()
+        )
     }
 
     factoryOf(::GetProfileUseCase)
@@ -72,6 +77,7 @@ val appModule = module {
     factoryOf(::SortSpecializationsUseCase)
     factoryOf(::StartInterviewUseCase)
     factoryOf(::SendChatMessageUseCase)
+    factory { InterviewPromptProvider() }
 
     viewModelOf(::MainViewModel)
     viewModelOf(::MainScreenViewModel)

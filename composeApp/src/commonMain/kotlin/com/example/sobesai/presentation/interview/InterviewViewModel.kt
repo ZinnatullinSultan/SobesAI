@@ -87,6 +87,7 @@ class InterviewViewModel(
 
             sendChatMessageUseCase(
                 specId = specId,
+                specializationTitle = _state.value.specializationTitle,
                 difficulty = _state.value.difficultyLevel,
                 history = _state.value.messages.dropLast(1),
                 text = text

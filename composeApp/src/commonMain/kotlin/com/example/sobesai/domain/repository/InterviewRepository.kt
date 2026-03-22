@@ -8,6 +8,7 @@ interface InterviewRepository {
 
     suspend fun sendMessage(
         specId: Long,
+        specializationTitle: String,
         difficulty: String,
         history: List<ChatMessage>,
         userMessage: String
