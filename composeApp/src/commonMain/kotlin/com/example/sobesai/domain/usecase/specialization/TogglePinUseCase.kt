@@ -3,7 +3,6 @@ package com.example.sobesai.domain.usecase.specialization
 import com.example.sobesai.domain.model.Specialization
 import com.example.sobesai.domain.repository.SpecializationsRepository
 
-
 class TogglePinUseCase(
     private val repository: SpecializationsRepository
 ) {

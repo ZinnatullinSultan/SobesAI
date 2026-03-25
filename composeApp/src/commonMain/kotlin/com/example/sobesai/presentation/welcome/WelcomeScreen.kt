@@ -27,6 +27,8 @@ import sobesai.composeapp.generated.resources.start_button
 import sobesai.composeapp.generated.resources.welcome_image
 import sobesai.composeapp.generated.resources.welcome_image_desc
 
+private const val WELCOME_IMAGE_URL = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+
 @Composable
 fun WelcomeScreen(
     viewModel: WelcomeViewModel = koinViewModel()
@@ -58,15 +60,13 @@ private fun WelcomeScreenContent(
                     text = stringResource(Res.string.app_title).uppercase(),
                     style = AppTypography.displayLarge
                 )
-
                 AsyncImage(
-                    model = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+                    model = WELCOME_IMAGE_URL,
                     contentDescription = stringResource(Res.string.welcome_image_desc),
                     placeholder = painterResource(Res.drawable.welcome_image),
                     error = painterResource(Res.drawable.welcome_image),
                     modifier = Modifier.size(imageSize)
                 )
-
                 Text(
                     text = stringResource(Res.string.app_description),
                     style = AppTypography.bodyLarge,

@@ -25,6 +25,8 @@ import com.example.sobesai.presentation.welcome.WelcomeScreen
 import io.github.aakira.napier.Napier
 import org.koin.compose.viewmodel.koinViewModel
 
+private const val LOG_TAG_NAVIGATION = "APP_NAVIGATION"
+
 @Composable
 fun App(
     viewModel: MainViewModel = koinViewModel()
@@ -33,12 +35,11 @@ fun App(
     val navController = rememberNavController()
 
     LaunchedEffect(state) {
-        Napier.d(tag = "APP_NAVIGATION") { "LaunchedEffect triggered, state=$state" }
+        Napier.d(tag = LOG_TAG_NAVIGATION) { "LaunchedEffect triggered, state=$state" }
         val currentRoute = navController.currentDestination?.route
-
         when (state) {
             is MainViewModel.AppState.Login -> {
-                Napier.d(tag = "APP_NAVIGATION") { "Navigating to Login" }
+                Napier.d(tag = LOG_TAG_NAVIGATION) { "Navigating to Login" }
                 if (currentRoute != LoginRoute::class.qualifiedName) {
                     navController.navigate(LoginRoute) {
                         popUpTo(0) { inclusive = true }
@@ -52,7 +53,7 @@ fun App(
                         currentRoute == WelcomeRoute::class.qualifiedName
 
                 if (shouldResetToMain) {
-                    Napier.d(tag = "APP_NAVIGATION") { "Navigating to Main" }
+                    Napier.d(tag = LOG_TAG_NAVIGATION) { "Navigating to Main" }
                     navController.navigate(MainRoute) {
                         popUpTo(0) { inclusive = true }
                     }
@@ -60,7 +61,7 @@ fun App(
             }
 
             is MainViewModel.AppState.OnBoarding -> {
-                Napier.d(tag = "APP_NAVIGATION") { "Navigating to Welcome" }
+                Napier.d(tag = LOG_TAG_NAVIGATION) { "Navigating to Welcome" }
                 if (currentRoute != WelcomeRoute::class.qualifiedName) {
                     navController.navigate(WelcomeRoute) {
                         popUpTo(0) { inclusive = true }
@@ -76,7 +77,6 @@ fun App(
         if (state is MainViewModel.AppState.Loading) {
             return@AppTheme
         }
-
         val startDestination = when (state) {
             is MainViewModel.AppState.OnBoarding -> WelcomeRoute
             is MainViewModel.AppState.Login -> LoginRoute
@@ -110,7 +110,6 @@ fun App(
             }
             composable<SpecializationRoute> { backStackEntry ->
                 val route: SpecializationRoute = backStackEntry.toRoute()
-
                 SpecializationScreen(
                     id = route.id,
                     onBackClick = { navController.popBackStack() },

@@ -51,6 +51,7 @@ fun LoginFormFields(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
+
     OutlinedTextField(
         value = state.username,
         onValueChange = onUsernameChanged,
@@ -74,7 +75,6 @@ fun LoginFormFields(
         )
     )
     Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Tiny))
-
     OutlinedTextField(
         value = state.password,
         onValueChange = onPasswordChanged,

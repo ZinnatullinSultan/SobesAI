@@ -11,7 +11,6 @@ interface SpecializationsRepository {
     ): Result<List<Specialization>>
 
     fun observeSpecializations(): Flow<List<Specialization>>
-
     suspend fun updatePinStatus(
         id: Long,
         isPinned: Boolean,
@@ -20,5 +19,3 @@ interface SpecializationsRepository {
 
     suspend fun getSpecializationById(id: Long): Result<Specialization>
 }
-
-

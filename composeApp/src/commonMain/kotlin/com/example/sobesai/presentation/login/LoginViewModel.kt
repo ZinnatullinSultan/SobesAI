@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+private const val PROVIDER_GITHUB = "github"
+
 class LoginViewModel(
     private val loginUseCase: LoginUseCase
 ) : ViewModel() {
@@ -48,7 +50,6 @@ class LoginViewModel(
 
         viewModelScope.launch {
             val result = loginUseCase(currentUsername, currentPassword)
-
             result.onSuccess {
                 _events.emit(LoginUiEvent.LoginSuccessEvent)
             }
@@ -62,7 +63,7 @@ class LoginViewModel(
 
     fun onGitHubLoginClicked() {
         viewModelScope.launch {
-            _events.emit(LoginUiEvent.StartOAuthEvent("github"))
+            _events.emit(LoginUiEvent.StartOAuthEvent(PROVIDER_GITHUB))
         }
     }
 }

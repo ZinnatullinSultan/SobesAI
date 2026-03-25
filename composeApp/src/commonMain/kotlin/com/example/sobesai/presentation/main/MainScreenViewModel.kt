@@ -25,6 +25,11 @@ import org.jetbrains.compose.resources.StringResource
 import sobesai.composeapp.generated.resources.Res
 import sobesai.composeapp.generated.resources.main_query_error
 
+private const val LOG_TAG_SEARCH = "SEARCH_DEBUG"
+private const val LOG_TAG_PIN = "PIN_DEBUG"
+private const val SEARCH_DEBOUNCE_MS = 500L
+private const val DEFAULT_PAGE_SIZE = 10
+
 sealed interface SpecializationsUiState {
     object Loading : SpecializationsUiState
     object Empty : SpecializationsUiState
@@ -52,7 +57,7 @@ class MainScreenViewModel(
     private val allLoadedItems = mutableListOf<Specialization>()
 
     private var currentPage = 0
-    private val pageSize = 10
+    private val pageSize = DEFAULT_PAGE_SIZE
     private var isLastPage = false
     private var pinOrderCounter = 0
     private var updateCounter = 0
@@ -67,7 +72,7 @@ class MainScreenViewModel(
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     private fun observeSearch() {
         _searchQuery
-            .debounce(500)
+            .debounce(SEARCH_DEBOUNCE_MS)
             .distinctUntilChanged()
             .flatMapLatest { query ->
                 refreshTrigger.onStart { emit(Unit) }.flatMapLatest {
@@ -83,7 +88,7 @@ class MainScreenViewModel(
                 }
             }
             .catch { e ->
-                Napier.e(throwable = e) { "Ошибка запроса" }
+                Napier.e(tag = LOG_TAG_SEARCH, throwable = e) { "Ошибка запроса" }
                 emit(SpecializationsUiState.Error(Res.string.main_query_error))
             }
             .onEach { _uiState.value = it }
@@ -99,7 +104,6 @@ class MainScreenViewModel(
                     val index = allLoadedItems.indexOfFirst { it.id == id }
                     if (index != -1) {
                         allLoadedItems[index] = updatedItem
-                        // Если статус изменился на "закреплено", обновляем локальный счетчик
                         if (updatedItem.isPinned) {
                             pinOrderCounter = maxOf(pinOrderCounter, updatedItem.pinOrder ?: 0)
                         }
@@ -107,11 +111,10 @@ class MainScreenViewModel(
                     }
                 }
                 .onFailure { error ->
-                    Napier.e(tag = "PIN_DEBUG", throwable = error) { "Ошибка Pin" }
+                    Napier.e(tag = LOG_TAG_PIN, throwable = error) { "Ошибка Pin" }
                 }
         }
     }
-
 
     fun loadNextPage() {
         if (isLastPage || _uiState.value is SpecializationsUiState.Loading || isNextPageLoading()) return

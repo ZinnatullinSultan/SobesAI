@@ -19,7 +19,6 @@ actual fun platformModule(): Module = module {
     single { provideSecureTokenStorage(DataStoreContext(androidContext())) }
 
     single<AppDatabase> { getDatabaseBuilder(PlatformContext(androidContext())).build() }
-
     single { get<AppDatabase>().specializationDao() }
 
     single<LocalDataSource> { LocalDataSourceImpl(get()) }

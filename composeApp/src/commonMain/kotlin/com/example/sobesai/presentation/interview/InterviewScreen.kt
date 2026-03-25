@@ -53,7 +53,6 @@ fun InterviewScreen(
     LaunchedEffect(Unit) {
         viewModel.handleIntent(InterviewIntent.Init(specId, difficulty))
     }
-
     LaunchedEffect(state.messages.size, state.isTyping) {
         if (state.messages.isNotEmpty()) {
             val targetIndex = if (state.isTyping) state.messages.size else state.messages.size - 1
@@ -100,7 +99,8 @@ private fun InterviewContent(
     ) { padding ->
         Box(
             modifier = Modifier
-                .fillMaxSize().padding(padding)
+                .fillMaxSize()
+                .padding(padding)
         ) {
             if (state.isLoading && state.messages.isEmpty()) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))

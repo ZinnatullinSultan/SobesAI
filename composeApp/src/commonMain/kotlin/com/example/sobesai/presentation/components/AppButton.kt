@@ -14,6 +14,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
 
+private const val DISABLED_ALPHA = 0.3f
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AppButton(
@@ -28,16 +30,14 @@ fun AppButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
-            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = DISABLED_ALPHA),
+            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_ALPHA)
         ),
         modifier = modifier
-
             .height(AppDimens.Components.ButtonHeight)
             .widthIn(max = AppDimens.Components.ButtonMaxWidth)
             .fillMaxWidth()
-    )
-    {
+    ) {
         Text(
             text = text,
             style = AppTypography.labelLarge

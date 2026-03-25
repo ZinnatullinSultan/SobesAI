@@ -7,7 +7,7 @@ import com.example.sobesai.domain.model.MessageRole
 
 fun ChatMessage.toGeminiContent(): GeminiContent {
     return GeminiContent(
-        role = if (role == MessageRole.USER) "user" else "model",
+        role = if (role == MessageRole.USER) GeminiContent.ROLE_USER else GeminiContent.ROLE_MODEL,
         parts = listOf(GeminiPart(text = text))
     )
 }

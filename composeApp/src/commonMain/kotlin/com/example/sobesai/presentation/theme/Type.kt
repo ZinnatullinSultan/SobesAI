@@ -77,7 +77,6 @@ val AppTypography: Typography
             lineHeight = 20.sp,
             color = MaterialTheme.colorScheme.onBackground
         ),
-
         // Кнопки
         labelLarge = TextStyle(
             fontFamily = FontFamily.Default,

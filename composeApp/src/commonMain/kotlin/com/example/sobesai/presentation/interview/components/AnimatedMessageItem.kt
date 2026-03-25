@@ -26,7 +26,6 @@ fun AnimatedMessageItem(message: ChatMessage) {
             hasAnimated = true
         }
     }
-
     AnimatedVisibility(
         visible = visible,
         enter = fadeIn(animationSpec = tween(ANIMATION_DURATION)) +

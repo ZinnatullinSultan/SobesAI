@@ -8,7 +8,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.sobesai.presentation.components.AppButton
 import com.example.sobesai.presentation.login.LoginUiState
 import com.example.sobesai.presentation.theme.AppDimens
@@ -28,9 +27,7 @@ fun LoginActions(
         enabled = state.isLoginButtonActive,
         text = stringResource(Res.string.login_button)
     )
-
     Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Tiny))
-
     OutlinedButton(
         onClick = onGitHubLoginClicked,
         modifier = Modifier

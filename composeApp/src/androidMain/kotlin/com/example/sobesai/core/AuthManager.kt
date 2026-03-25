@@ -22,20 +22,17 @@ class AndroidAuthManager(
     private val context: Context,
     private val settingsRepository: SettingsRepository
 ) : AuthManager {
-    private val supabaseUrl = "https://rrhykitzjowtpbikkjkz.supabase.co"
-
     override fun startOAuthFlow(provider: String) {
-        val authUrl = "${supabaseUrl}/auth/v1/authorize?" +
+        val authUrl = "$SUPABASE_URL/auth/v1/authorize?" +
                 "provider=${provider}&" +
-                "redirect_to=com.example.sobesai://login-callback"
-
+                "redirect_to=$REDIRECT_URL"
         val intent = CustomTabsIntent.Builder().build()
         intent.launchUrl(context, authUrl.toUri())
     }
 
     override suspend fun handleOAuthCallback(callbackUrl: String?): Boolean {
         val uri = callbackUrl?.toUri() ?: return false
-        if (uri.scheme != "com.example.sobesai" || uri.host != "login-callback") return false
+        if (uri.scheme != AUTH_SCHEME || uri.host != AUTH_HOST) return false
 
         val fragment = uri.fragment ?: return false
         val params = fragment.split("&").mapNotNull {
@@ -43,8 +40,8 @@ class AndroidAuthManager(
             if (pair.size == 2) pair[0] to pair[1] else null
         }.toMap()
 
-        val accessToken = params["access_token"] ?: return false
-        val refreshToken = params["refresh_token"]
+        val accessToken = params[KEY_ACCESS_TOKEN] ?: return false
+        val refreshToken = params[KEY_REFRESH_TOKEN]
 
         if (!refreshToken.isNullOrBlank()) {
             settingsRepository.saveTokens(accessToken, refreshToken)
@@ -56,5 +53,5 @@ class AndroidAuthManager(
             settingsRepository.saveDisplayName(displayName)
         }
         return true
-}
+    }
 }

@@ -21,7 +21,6 @@ class InterviewViewModel(
     private val getSpecializationUseCase: GetSpecializationUseCase,
     private val interviewRepository: InterviewRepository
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(InterviewState())
     val state = _state.asStateFlow()
 
@@ -79,12 +78,10 @@ class InterviewViewModel(
 
         val userMessage = ChatMessage(MessageRole.USER, text)
         _state.update { it.copy(messages = it.messages + userMessage, isTyping = true) }
-
         lastUserMessage = text
 
         viewModelScope.launch {
             _effects.send(InterviewEffect.ScrollToBottom)
-
             sendChatMessageUseCase(
                 specId = specId,
                 specializationTitle = _state.value.specializationTitle,
@@ -116,7 +113,6 @@ class InterviewViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, messages = emptyList()) }
             interviewRepository.clearInterviewHistory(specId, difficulty)
-
             startInterviewUseCase(specId, title, difficulty)
                 .onSuccess { messages ->
                     _state.update {
@@ -134,13 +130,15 @@ class InterviewViewModel(
     }
 
     private fun retryLastAction() {
+        val currentLastUserMessage = lastUserMessage
+        val currentInitParams = lastInitParams
         when {
-            lastUserMessage != null -> {
-                sendMessage(lastUserMessage!!)
+            currentLastUserMessage != null -> {
+                sendMessage(currentLastUserMessage)
             }
 
-            lastInitParams != null -> {
-                initInterview(lastInitParams!!.first, lastInitParams!!.second)
+            currentInitParams != null -> {
+                initInterview(currentInitParams.first, currentInitParams.second)
             }
         }
     }

@@ -12,10 +12,12 @@ import org.jetbrains.compose.resources.stringResource
 import sobesai.composeapp.generated.resources.Res
 import sobesai.composeapp.generated.resources.interview_ai_typing
 
+private const val BACKGROUND_ALPHA = 0.5f
+
 @Composable
 fun TypingIndicator() {
     Surface(
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.5f),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = BACKGROUND_ALPHA),
         shape = RoundedCornerShape(
             topStart = AppDimens.CornerShape.Small,
             topEnd = AppDimens.CornerShape.Small,

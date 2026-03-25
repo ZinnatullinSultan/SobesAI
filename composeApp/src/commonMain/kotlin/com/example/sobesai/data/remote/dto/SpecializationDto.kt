@@ -5,8 +5,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SpecializationDto(
+    @SerialName("id")
     val id: Long,
+    @SerialName("title")
     val title: String,
+    @SerialName("description")
     val description: String?,
     @SerialName("is_pinned")
     val isPinned: Boolean = false,

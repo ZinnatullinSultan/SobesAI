@@ -38,29 +38,30 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+private const val QUALIFIER_SUPABASE = "supabase"
+private const val QUALIFIER_GEMINI = "gemini"
+
 expect fun platformModule(): Module
 
 val appModule = module {
     includes(platformModule())
 
     single { get<AppDatabase>().interviewDao() }
-
     single<SettingsRepository> { SettingsRepositoryImpl(get(), get()) }
     single<LoginRepository> { LoginRepositoryImpl() }
 
-    single(named("supabase")) { createHttpClient(get()) }
-    single(named("gemini")) { createGeminiClient() }
+    single(named(QUALIFIER_SUPABASE)) { createHttpClient(get()) }
+    single(named(QUALIFIER_GEMINI)) { createGeminiClient() }
 
     single<SpecializationsRepository> {
         SpecializationsRepositoryImpl(
-            get(named("supabase")),
+            get(named(QUALIFIER_SUPABASE)),
             get<LocalDataSource>()
         )
     }
-
     single<InterviewRepository> {
         InterviewRepositoryImpl(
-            client = get(named("gemini")),
+            client = get(named(QUALIFIER_GEMINI)),
             interviewDao = get(),
             promptProvider = get()
         )

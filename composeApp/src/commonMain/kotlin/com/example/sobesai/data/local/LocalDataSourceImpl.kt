@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.map
 class LocalDataSourceImpl(
     private val specializationDao: SpecializationDao
 ) : LocalDataSource {
-
     override suspend fun saveSpecializations(specializations: List<Specialization>) {
         val entities = specializations.map { it.toEntity() }
         specializationDao.insertSpecializations(entities)
@@ -44,5 +43,4 @@ class LocalDataSourceImpl(
     override suspend fun clearAllSpecializations() {
         specializationDao.deleteAllSpecializations()
     }
-
 }

@@ -5,6 +5,8 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import androidx.core.content.edit
+import com.example.sobesai.core.KEY_ACCESS_TOKEN
+import com.example.sobesai.core.KEY_REFRESH_TOKEN
 import java.nio.charset.StandardCharsets
 import java.security.KeyStore
 import javax.crypto.Cipher
@@ -16,22 +18,18 @@ private const val SECURE_PREFS_NAME = "secure_tokens"
 private const val KEYSTORE_PROVIDER = "AndroidKeyStore"
 private const val KEY_ALIAS = "sobesai_token_key"
 private const val TRANSFORMATION = "AES/GCM/NoPadding"
-private const val KEY_ACCESS_TOKEN = "access_token"
-private const val KEY_REFRESH_TOKEN = "refresh_token"
 private const val GCM_TAG_LENGTH_BITS = 128
+private const val GCM_IV_LENGTH = 12
 
 actual class SecureTokenStorage(context: Context) {
     private val prefs = context.getSharedPreferences(SECURE_PREFS_NAME, Context.MODE_PRIVATE)
-
     private val secretKey: SecretKey by lazy {
         val keyStore = KeyStore.getInstance(KEYSTORE_PROVIDER).apply { load(null) }
         (keyStore.getKey(KEY_ALIAS, null) as? SecretKey) ?: createSecretKey()
     }
 
     actual fun getAccessToken(): String? = decrypt(prefs.getString(KEY_ACCESS_TOKEN, null))
-
     actual fun getRefreshToken(): String? = decrypt(prefs.getString(KEY_REFRESH_TOKEN, null))
-
     actual fun saveAccessToken(token: String) {
         prefs.edit { putString(KEY_ACCESS_TOKEN, encrypt(token)) }
     }
@@ -58,7 +56,6 @@ actual class SecureTokenStorage(context: Context) {
             .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
             .setRandomizedEncryptionRequired(true)
             .build()
-
         keyGenerator.init(keySpec)
         return keyGenerator.generateKey()
     }
@@ -79,11 +76,10 @@ actual class SecureTokenStorage(context: Context) {
 
     private fun decrypt(encoded: String?): String? {
         if (encoded.isNullOrBlank()) return null
-
         return runCatching {
             val payload = Base64.decode(encoded, Base64.NO_WRAP)
-            val iv = payload.copyOfRange(0, 12)
-            val encrypted = payload.copyOfRange(12, payload.size)
+            val iv = payload.copyOfRange(0, GCM_IV_LENGTH)
+            val encrypted = payload.copyOfRange(GCM_IV_LENGTH, payload.size)
 
             val cipher = Cipher.getInstance(TRANSFORMATION)
             val spec = GCMParameterSpec(GCM_TAG_LENGTH_BITS, iv)

@@ -25,8 +25,8 @@
     <string name="main_query_error">Ошибка запроса</string>
     <string name="main_profile_icon_description">Ошибка запроса</string>
 
-
-    <string name="specialization_description">Тренажер для подготовки к собеседованию на позицию %1$s. Выберите уровень для начала.</string>
+    <string name="specialization_description">Тренажер для подготовки к собеседованию
+        на позицию %1$s. Выберите уровень для начала.</string>
     <string name="specialization_start_interview">Начать интервью</string>
     <string name="specialization_difficulty_junior">Начать с основ</string>
     <string name="specialization_difficulty_middle">Углубить знания</string>

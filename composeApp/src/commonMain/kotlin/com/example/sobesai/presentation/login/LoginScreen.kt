@@ -45,7 +45,6 @@ fun LoginScreen(
             }
         }
     }
-
     LoginScreenContent(
         state = state,
         onUsernameChanged = { viewModel.onUsernameChanged(it) },
@@ -74,7 +73,6 @@ private fun LoginScreenContent(
                 .padding(innerPadding)
         ) {
             val isLandscape = maxWidth > maxHeight
-
             if (isLandscape) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     LoginHeader()
@@ -98,9 +96,7 @@ private fun LoginScreenContent(
                                 onLoginClicked = onLoginClicked,
                                 state = state
                             )
-
                         }
-
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.Center,
@@ -114,7 +110,6 @@ private fun LoginScreenContent(
                         }
                     }
                 }
-
             } else {
                 Column(
                     modifier = Modifier
@@ -133,9 +128,7 @@ private fun LoginScreenContent(
                         onLoginClicked = onLoginClicked,
                         state = state
                     )
-
                     Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Normal))
-
                     LoginActions(
                         onLoginClicked = onLoginClicked,
                         onGitHubLoginClicked = onGitHubLoginClicked,

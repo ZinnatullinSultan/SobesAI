@@ -9,7 +9,7 @@ fun SpecializationDto.toDomain(): Specialization {
     return Specialization(
         id = id,
         title = title,
-        description = description ?: "",
+        description = description.orEmpty(),
         isPinned = isPinned,
         pinOrder = pinOrder
     )

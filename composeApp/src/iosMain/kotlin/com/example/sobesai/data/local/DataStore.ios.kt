@@ -19,7 +19,6 @@ actual fun provideDataStore(context: DataStoreContext): DataStore<Preferences> {
             create = false,
             error = null
         )
-
         requireNotNull(documentDirectory).path + "/$SETTINGS_PREFERENCES"
     }
 }

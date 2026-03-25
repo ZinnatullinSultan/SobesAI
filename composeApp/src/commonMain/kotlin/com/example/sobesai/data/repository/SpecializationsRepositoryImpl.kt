@@ -3,6 +3,7 @@ package com.example.sobesai.data.repository
 import com.example.sobesai.data.local.LocalDataSource
 import com.example.sobesai.data.mapper.toDomain
 import com.example.sobesai.data.remote.dto.SpecializationDto
+import com.example.sobesai.data.remote.dto.UpdatePinDto
 import com.example.sobesai.domain.model.Specialization
 import com.example.sobesai.domain.repository.SpecializationsRepository
 import io.github.aakira.napier.Napier
@@ -15,20 +16,22 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.coroutines.flow.Flow
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-@Serializable
-data class UpdatePinRequest(
-    @SerialName("is_pinned") val isPinned: Boolean,
-    @SerialName("pin_order") val pinOrder: Int?
-)
+private const val LOG_TAG_SPECIALIZATIONS = "SPECIALIZATIONS_REPO"
+private const val ENDPOINT_SPECIALIZATIONS = "specializations"
+private const val PARAM_SELECT = "select"
+private const val PARAM_TITLE = "title"
+private const val PARAM_LIMIT = "limit"
+private const val PARAM_OFFSET = "offset"
+private const val PARAM_ORDER = "order"
+private const val PARAM_ID = "id"
+private const val VALUE_ALL_FIELDS = "*"
+private const val DEFAULT_ORDER = "is_pinned.desc,pin_order.desc,id.asc"
 
 class SpecializationsRepositoryImpl(
     private val client: HttpClient,
     private val localDataSource: LocalDataSource
 ) : SpecializationsRepository {
-
     override suspend fun getSpecializations(
         query: String,
         offset: Int,
@@ -37,44 +40,42 @@ class SpecializationsRepositoryImpl(
         return try {
             val response: List<SpecializationDto> =
                 client
-                    .get("specializations") {
-                        parameter("select", "*")
+                    .get(ENDPOINT_SPECIALIZATIONS) {
+                        parameter(PARAM_SELECT, VALUE_ALL_FIELDS)
                         if (query.isNotEmpty()) {
-                            parameter("title", "ilike.%$query%")
+                            parameter(PARAM_TITLE, "ilike.%$query%")
                         }
-                        parameter("limit", limit)
-                        parameter("offset", offset)
-                        parameter("order", "is_pinned.desc,pin_order.desc,id.asc")
+                        parameter(PARAM_LIMIT, limit)
+                        parameter(PARAM_OFFSET, offset)
+                        parameter(PARAM_ORDER, DEFAULT_ORDER)
                     }
                     .body()
-
             val specializations = response.map { it.toDomain() }
-
             localDataSource.saveSpecializations(specializations)
-            Napier.d(tag = "REPOSITORY") { "Специализации сохранены в кэш: ${specializations.size} шт." }
-
+            Napier.d(tag = LOG_TAG_SPECIALIZATIONS) { "Специализации сохранены в кэш: ${specializations.size} шт." }
             Result.success(specializations)
         } catch (error: Exception) {
             Napier.e(
-                tag = "REPOSITORY",
+                tag = LOG_TAG_SPECIALIZATIONS,
                 throwable = error
             ) { "Ошибка при загрузке специализаций с сервера, пробуем кэш" }
-
             try {
                 val cachedData = if (query.isNotEmpty()) {
                     localDataSource.searchSpecializations(query)
                 } else {
                     localDataSource.getSpecializationsPaginated(offset, limit)
                 }
-
                 if (cachedData.isNotEmpty()) {
-                    Napier.d(tag = "REPOSITORY") { "Возвращаем ${cachedData.size} специализаций из кэша" }
+                    Napier.d(tag = LOG_TAG_SPECIALIZATIONS) { "Возвращаем ${cachedData.size} специализаций из кэша" }
                     Result.success(cachedData)
                 } else {
                     Result.failure(error)
                 }
             } catch (cacheError: Exception) {
-                Napier.e(tag = "REPOSITORY", throwable = cacheError) { "Кэш также недоступен" }
+                Napier.e(
+                    tag = LOG_TAG_SPECIALIZATIONS,
+                    throwable = cacheError
+                ) { "Кэш также недоступен" }
                 Result.failure(error)
             }
         }
@@ -90,14 +91,17 @@ class SpecializationsRepositoryImpl(
         pinOrder: Int?
     ): Result<Unit> {
         return runCatching {
-            client.patch("specializations") {
-                parameter("id", "eq.$id")
+            client.patch(ENDPOINT_SPECIALIZATIONS) {
+                parameter(PARAM_ID, "eq.$id")
                 contentType(ContentType.Application.Json)
-                setBody(UpdatePinRequest(isPinned, pinOrder))
+                setBody(UpdatePinDto(isPinned, pinOrder))
             }
             Unit
         }.onFailure { error ->
-            Napier.e(tag = "REPO", throwable = error) { "Не удалось сохранить закрепление" }
+            Napier.e(
+                tag = LOG_TAG_SPECIALIZATIONS,
+                throwable = error
+            ) { "Не удалось сохранить закрепление" }
         }.onSuccess {
             try {
                 val updated = getSpecializationById(id).getOrNull()
@@ -107,7 +111,7 @@ class SpecializationsRepositoryImpl(
                     )
                 }
             } catch (e: Exception) {
-                Napier.w(tag = "REPO") { "Не удалось обновить кэш после изменения закрепления: $e" }
+                Napier.w(tag = LOG_TAG_SPECIALIZATIONS) { "Не удалось обновить кэш после изменения закрепления: $e" }
             }
         }
     }
@@ -115,25 +119,23 @@ class SpecializationsRepositoryImpl(
     override suspend fun getSpecializationById(id: Long): Result<Specialization> {
         return try {
             val response: List<SpecializationDto> = client
-                .get("specializations") {
-                    parameter("select", "*")
-                    parameter("id", "eq.$id")
+                .get(ENDPOINT_SPECIALIZATIONS) {
+                    parameter(PARAM_SELECT, VALUE_ALL_FIELDS)
+                    parameter(PARAM_ID, "eq.$id")
                 }
                 .body()
 
             val specialization = response.first().toDomain()
-
             localDataSource.saveSpecialization(specialization)
-
             Result.success(specialization)
         } catch (error: Exception) {
             Napier.e(
-                tag = "REPOSITORY",
+                tag = LOG_TAG_SPECIALIZATIONS,
                 throwable = error
             ) { "Ошибка при загрузке специализации $id с сервера, пробуем кэш" }
 
             localDataSource.getSpecializationById(id)?.let {
-                Napier.d(tag = "REPOSITORY") { "Возвращаем специализацию $id из кэша" }
+                Napier.d(tag = LOG_TAG_SPECIALIZATIONS) { "Возвращаем специализацию $id из кэша" }
                 Result.success(it)
             } ?: Result.failure(error)
         }

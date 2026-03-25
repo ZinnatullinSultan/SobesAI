@@ -37,7 +37,7 @@ fun ChatBubble(message: ChatMessage) {
             bottomStart = AppDimens.CornerShape.None
         )
     }
-
+    
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = alignment

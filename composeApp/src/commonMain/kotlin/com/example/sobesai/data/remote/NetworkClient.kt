@@ -1,5 +1,7 @@
 package com.example.sobesai.data.remote
 
+import com.example.sobesai.data.remote.dto.RefreshTokenRequest
+import com.example.sobesai.data.remote.dto.RefreshTokenResponse
 import com.example.sobesai.domain.repository.SettingsRepository
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
@@ -22,30 +24,21 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.first
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-object NetworkConstants {
-    const val SUPABASE_REST_URL = "https://rrhykitzjowtpbikkjkz.supabase.co/rest/v1/"
-    const val SUPABASE_AUTH_URL = "https://rrhykitzjowtpbikkjkz.supabase.co/auth/v1/"
-}
-
-@Serializable
-private data class RefreshTokenRequest(
-    @SerialName("refresh_token") val refreshToken: String
-)
-
-@Serializable
-private data class RefreshTokenResponse(
-    @SerialName("access_token") val accessToken: String,
-    @SerialName("refresh_token") val refreshToken: String
-)
+private const val SUPABASE_BASE_URL = "https://rrhykitzjowtpbikkjkz.supabase.co"
+private const val SUPABASE_REST_URL = "$SUPABASE_BASE_URL/rest/v1/"
+private const val SUPABASE_AUTH_URL = "$SUPABASE_BASE_URL/auth/v1/"
+private const val ANON_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6In" +
+            "JyaHlraXR6am93dHBiaWtramt6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3ODc0NTgsImV4cCI6Mj" +
+            "A4ODM2MzQ1OH0.RMGHGL4QKsHtmOkLOZxzj_wFhBs-B0bLeUS3rhDiKTU"
+private const val HEADER_API_KEY = "apikey"
+private const val REFRESH_TOKEN_PATH = "token?grant_type=refresh_token"
+private const val TIMEOUT_MILLIS = 15000L
+private const val LOG_TAG_HTTP = "HTTP_CLIENT"
 
 fun createHttpClient(settingsRepository: SettingsRepository): HttpClient {
-    val anonKey =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyaHlraXR6am93dHBiaWtramt6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3ODc0NTgsImV4cCI6MjA4ODM2MzQ1OH0.RMGHGL4QKsHtmOkLOZxzj_wFhBs-B0bLeUS3rhDiKTU"
-
     return HttpClient {
         install(ContentNegotiation) {
             json(Json {
@@ -53,13 +46,11 @@ fun createHttpClient(settingsRepository: SettingsRepository): HttpClient {
                 prettyPrint = true
             })
         }
-
         install(Auth) {
             bearer {
                 loadTokens {
                     val accessToken = settingsRepository.authToken.first()
                     val refreshToken = settingsRepository.refreshToken.first()
-
                     when {
                         !accessToken.isNullOrBlank() && !refreshToken.isNullOrBlank() -> {
                             BearerTokens(accessToken, refreshToken)
@@ -70,32 +61,28 @@ fun createHttpClient(settingsRepository: SettingsRepository): HttpClient {
                         }
 
                         else -> {
-                            BearerTokens(anonKey, "")
+                            BearerTokens(ANON_KEY, "")
                         }
                     }
                 }
-
                 refreshTokens {
                     val storedRefreshToken = settingsRepository.refreshToken.first()
                     if (storedRefreshToken.isNullOrBlank()) {
                         settingsRepository.clearData()
                         return@refreshTokens null
                     }
-
                     runCatching {
                         val refreshResponse: RefreshTokenResponse =
-                            client.post("${NetworkConstants.SUPABASE_AUTH_URL}token?grant_type=refresh_token") {
+                            client.post("${SUPABASE_AUTH_URL}${REFRESH_TOKEN_PATH}") {
                                 markAsRefreshTokenRequest()
                                 contentType(ContentType.Application.Json)
-                                header("apikey", anonKey)
+                                header(HEADER_API_KEY, ANON_KEY)
                                 setBody(RefreshTokenRequest(storedRefreshToken))
                             }.body()
-
                         settingsRepository.saveTokens(
                             accessToken = refreshResponse.accessToken,
                             refreshToken = refreshResponse.refreshToken
                         )
-
                         BearerTokens(
                             accessToken = refreshResponse.accessToken,
                             refreshToken = refreshResponse.refreshToken
@@ -107,25 +94,21 @@ fun createHttpClient(settingsRepository: SettingsRepository): HttpClient {
                 }
             }
         }
-
         install(Logging) {
             level = LogLevel.ALL
             logger = object : Logger {
                 override fun log(message: String) {
-                    Napier.v(tag = "HTTP_CLIENT", message = message)
+                    Napier.v(tag = LOG_TAG_HTTP, message = message)
                 }
             }
         }
-
         install(HttpTimeout) {
-            requestTimeoutMillis = 15000
+            requestTimeoutMillis = TIMEOUT_MILLIS
         }
-
         defaultRequest {
-            url(NetworkConstants.SUPABASE_REST_URL)
-            header("apikey", anonKey)
+            url(SUPABASE_REST_URL)
+            header(HEADER_API_KEY, ANON_KEY)
         }
-
         HttpResponseValidator {
             validateResponse { response ->
                 if (response.status == HttpStatusCode.Unauthorized) {

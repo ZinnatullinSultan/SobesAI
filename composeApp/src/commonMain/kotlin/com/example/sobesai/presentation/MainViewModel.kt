@@ -9,6 +9,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 
+private const val LOG_TAG_MAIN_VM = "MAIN_VIEW_MODEL"
+private const val STOP_TIMEOUT_MS = 5000L
+
 class MainViewModel(
     getInitialAppStateUseCase: GetInitialAppStateUseCase
 ) : ViewModel() {
@@ -21,11 +24,11 @@ class MainViewModel(
 
     val appState: StateFlow<AppState> = getInitialAppStateUseCase()
         .onEach { state ->
-            Napier.d(tag = "MAIN_VIEW_MODEL") { "appState changed to: $state" }
+            Napier.d(tag = LOG_TAG_MAIN_VM) { "appState changed to: $state" }
         }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS),
             initialValue = AppState.Loading
         )
 }

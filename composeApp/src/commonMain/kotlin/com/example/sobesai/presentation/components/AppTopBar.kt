@@ -18,6 +18,8 @@ import sobesai.composeapp.generated.resources.Res
 import sobesai.composeapp.generated.resources.app_title
 import sobesai.composeapp.generated.resources.interview_clear_icon_description
 
+private const val BACKGROUND_ALPHA = 0.9f
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
@@ -30,8 +32,7 @@ fun AppTopBar(
             Text(
                 stringResource(Res.string.app_title),
                 style = AppTypography.headlineLarge,
-
-                )
+            )
         },
         navigationIcon = {
             IconButton(onClick = onBackClick) {
@@ -58,7 +59,7 @@ fun AppTopBar(
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background.copy(0.9F)
+            containerColor = MaterialTheme.colorScheme.background.copy(BACKGROUND_ALPHA)
         )
     )
 }

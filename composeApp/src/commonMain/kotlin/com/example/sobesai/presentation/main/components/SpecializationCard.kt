@@ -46,8 +46,7 @@ fun SpecializationCard(
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface
         ),
-
-        ) {
+    ) {
         Column(
             modifier = Modifier.padding(
                 top = AppDimens.Padding.Tiny,
@@ -74,7 +73,6 @@ fun SpecializationCard(
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.ExtraTiny))
             Text(
                 text = specialization.description,

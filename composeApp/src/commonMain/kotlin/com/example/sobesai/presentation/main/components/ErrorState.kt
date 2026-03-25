@@ -53,5 +53,6 @@ fun ErrorState(message: StringResource, onRetry: () -> Unit) {
 fun PreviewErrorState() {
     ErrorState(
         message = Res.string.main_query_error,
-        onRetry = {})
+        onRetry = {}
+    )
 }

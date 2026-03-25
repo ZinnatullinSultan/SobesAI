@@ -33,6 +33,8 @@ import org.jetbrains.compose.resources.stringResource
 import sobesai.composeapp.generated.resources.Res
 import sobesai.composeapp.generated.resources.interview_input_placeholder
 
+private const val DISABLED_ALPHA = 0.1f
+
 @Composable
 fun MessageInput(
     onSendMessage: (String) -> Unit,
@@ -40,7 +42,6 @@ fun MessageInput(
     isLoading: Boolean
 ) {
     var text by remember { mutableStateOf("") }
-
     val handleSend = {
         if (text.isNotBlank() && !isSending) {
             onSendMessage(text)
@@ -83,7 +84,7 @@ fun MessageInput(
                 colors = IconButtonDefaults.filledIconButtonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = SurfaceLight,
-                    disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                    disabledContainerColor = MaterialTheme.colorScheme.primary.copy(DISABLED_ALPHA),
                     disabledContentColor = Color.Gray
                 )
             ) {

@@ -16,7 +16,6 @@
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter android:label="OAuth Login">
@@ -26,10 +25,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="login-callback"
-                    android:scheme="com.example.sobesai" />
+                    android:host="${authHost}"
+                    android:scheme="${authScheme}" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

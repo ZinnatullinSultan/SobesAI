@@ -78,9 +78,7 @@ private fun ProfileScreenContent(
                 text = stringResource(Res.string.profile_screen_title),
                 style = AppTypography.displaySmall
             )
-
             Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.ExtraLarge))
-
             Card(
                 modifier = Modifier
                     .widthIn(max = AppDimens.Components.TextFieldMaxWidth)
@@ -97,9 +95,7 @@ private fun ProfileScreenContent(
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Normal))
-
             AppButton(
                 text = stringResource(Res.string.profile_quit_button),
                 onClick = logout

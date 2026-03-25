@@ -88,6 +88,12 @@ android {
         versionCode = 1
         versionName = "1.0"
         manifestPlaceholders["appAuthRedirectScheme"] = "com.example.sobesai"
+        addManifestPlaceholders(
+            mapOf(
+                "authScheme" to "com.example.sobesai",
+                "authHost" to "login-callback"
+            )
+        )
     }
     packaging {
         resources {

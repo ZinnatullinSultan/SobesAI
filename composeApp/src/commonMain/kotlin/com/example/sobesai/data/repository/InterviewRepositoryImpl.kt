@@ -21,16 +21,18 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+
+private const val LOG_TAG_INTERVIEW = "INTERVIEW_REPO"
+private const val MODEL_ID = "gemini-3.1-flash-lite-preview"
+private const val GENERATE_CONTENT_ENDPOINT = "v1beta/models/$MODEL_ID:generateContent"
 
 class InterviewRepositoryImpl(
     private val client: HttpClient,
     private val interviewDao: InterviewDao,
     private val promptProvider: InterviewPromptProvider
 ) : InterviewRepository {
-
-    private val modelId = "gemini-3.1-flash-lite-preview"
-
     override suspend fun getInterviewHistory(specId: Long, difficulty: String): List<ChatMessage> {
         return interviewDao.getMessages(specId, difficulty).map { it.toDomain() }
     }
@@ -53,7 +55,7 @@ class InterviewRepositoryImpl(
             performAiRequest(specId, specializationTitle, difficulty, history, userMessage)
         } catch (e: Exception) {
             Napier.e(
-                tag = "INTERVIEW_REPO",
+                tag = LOG_TAG_INTERVIEW,
                 throwable = e
             ) { "Ошибка при сохранении сообщения пользователя" }
             Result.failure(e)
@@ -70,7 +72,6 @@ class InterviewRepositoryImpl(
         return try {
             val contents = history.toGeminiContentList() +
                     ChatMessage(text = lastText, role = MessageRole.USER).toGeminiContent()
-
             val systemInstruction = GeminiSystemInstruction(
                 parts = listOf(
                     GeminiPart(
@@ -81,26 +82,20 @@ class InterviewRepositoryImpl(
                     )
                 )
             )
-
             val request = GeminiRequest(
                 contents = contents,
                 systemInstruction = systemInstruction
             )
-
-            val endpoint = "v1beta/models/$modelId:generateContent"
-
-            val httpResponse = client.post(endpoint) {
+            val httpResponse = client.post(GENERATE_CONTENT_ENDPOINT) {
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
-
             val rawBody = httpResponse.bodyAsText()
-            Napier.d(tag = "INTERVIEW_REPO") { "RAW RESPONSE: $rawBody" }
+            Napier.d(tag = LOG_TAG_INTERVIEW) { "RAW RESPONSE: $rawBody" }
 
-            if (httpResponse.status.value != 200) {
+            if (httpResponse.status != HttpStatusCode.OK) {
                 return Result.failure(Exception("Google API Error: ${httpResponse.status.value}"))
             }
-
             val response: GeminiResponse = httpResponse.body()
 
             val aiText = response.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.text
@@ -108,10 +103,9 @@ class InterviewRepositoryImpl(
 
             val aiMsg = ChatMessage(MessageRole.MODEL, aiText)
             interviewDao.insertMessage(aiMsg.toEntity(specId, difficulty))
-
             Result.success(aiMsg)
         } catch (e: Exception) {
-            Napier.e(tag = "INTERVIEW_REPO", throwable = e) { "Сбой при запросе к ИИ" }
+            Napier.e(tag = LOG_TAG_INTERVIEW, throwable = e) { "Сбой при запросе к ИИ" }
             Result.failure(e)
         }
     }
@@ -126,7 +120,6 @@ class InterviewRepositoryImpl(
             if (history.isNotEmpty()) {
                 return Result.success(history)
             }
-
             val initialPrompt = promptProvider.getInitialUserPrompt(specializationTitle, difficulty)
             performAiRequest(
                 specId,

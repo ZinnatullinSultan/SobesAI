@@ -38,11 +38,13 @@ fun SpecializationList(
             lastVisibleItemIndex >= totalItemsCount - 2 && totalItemsCount > 0
         }
     }
+
     LaunchedEffect(shouldLoadNextPage.value) {
         if (shouldLoadNextPage.value) {
             onLoadNextPage()
         }
     }
+    
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
@@ -50,7 +52,6 @@ fun SpecializationList(
         item(key = "scroll_anchor") {
             Spacer(modifier = Modifier.height(AppDimens.Padding.Tiny))
         }
-
         items(
             items = items,
             key = { it.id }
@@ -70,7 +71,9 @@ fun SpecializationList(
                         .padding(AppDimens.Padding.Normal),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(modifier = Modifier.size(AppDimens.Components.ProgressIndicatorSize))
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(AppDimens.Components.ProgressIndicatorSize)
+                    )
                 }
             }
         }

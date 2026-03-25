@@ -10,9 +10,10 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-const val REQUESTTIMEOUT = 60000L
-const val CONNECTTIMEOUT = 15000L
-const val SOCKETTIMEOUT = 60000L
+private const val BASE_URL = "https://api.sobes-api.ru/"
+private const val REQUEST_TIMEOUT_MILLIS = 60000L
+private const val CONNECT_TIMEOUT_MILLIS = 15000L
+private const val SOCKET_TIMEOUT_MILLIS = 60000L
 fun createGeminiClient(): HttpClient {
     return HttpClient {
         install(ContentNegotiation) {
@@ -21,17 +22,14 @@ fun createGeminiClient(): HttpClient {
                 encodeDefaults = false
             })
         }
-
         install(DefaultRequest) {
-            url("https://api.sobes-api.ru/")
-
+            url(BASE_URL)
             header(HttpHeaders.ContentType, ContentType.Application.Json)
         }
-
         install(HttpTimeout) {
-            requestTimeoutMillis = REQUESTTIMEOUT
-            connectTimeoutMillis = CONNECTTIMEOUT
-            socketTimeoutMillis = SOCKETTIMEOUT
+            requestTimeoutMillis = REQUEST_TIMEOUT_MILLIS
+            connectTimeoutMillis = CONNECT_TIMEOUT_MILLIS
+            socketTimeoutMillis = SOCKET_TIMEOUT_MILLIS
         }
     }
 }
