@@ -10,7 +10,7 @@ class LoginRepositoryImpl : LoginRepository {
         return if (username == "admin" && password == "123") {
             Result.success(anonKey)
         } else {
-            Result.failure(Exception("Неверный логин или пароль"))
+            Result.failure(IllegalArgumentException("Неверный логин или пароль"))
         }
     }
 }

@@ -146,8 +146,7 @@ fun PreviewLoginScreen() {
     LoginScreenContent(
         state = LoginUiState(
             username = "test_user",
-            password = "password123",
-            isLoginButtonActive = true
+            password = "password123"
         ),
         onUsernameChanged = {},
         onPasswordChanged = {},

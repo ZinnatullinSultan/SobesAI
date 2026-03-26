@@ -35,8 +35,8 @@ import sobesai.composeapp.generated.resources.profile_user_name_default
 
 @Composable
 fun ProfileScreen(
+    onBackClick: () -> Unit,
     viewModel: ProfileViewModel = koinViewModel(),
-    onBackClick: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 

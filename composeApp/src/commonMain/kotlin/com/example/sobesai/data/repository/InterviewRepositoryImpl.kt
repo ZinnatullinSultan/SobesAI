@@ -5,6 +5,7 @@ import com.example.sobesai.data.mapper.toDomain
 import com.example.sobesai.data.mapper.toEntity
 import com.example.sobesai.data.mapper.toGeminiContent
 import com.example.sobesai.data.mapper.toGeminiContentList
+import com.example.sobesai.data.remote.api.InterviewApi
 import com.example.sobesai.data.remote.dto.GeminiPart
 import com.example.sobesai.data.remote.dto.GeminiRequest
 import com.example.sobesai.data.remote.dto.GeminiResponse
@@ -15,21 +16,14 @@ import com.example.sobesai.domain.model.MessageRole
 import com.example.sobesai.domain.provider.InterviewPromptProvider
 import com.example.sobesai.domain.repository.InterviewRepository
 import io.github.aakira.napier.Napier
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.contentType
 
 private const val LOG_TAG_INTERVIEW = "INTERVIEW_REPO"
-private const val MODEL_ID = "gemini-3.1-flash-lite-preview"
-private const val GENERATE_CONTENT_ENDPOINT = "v1beta/models/$MODEL_ID:generateContent"
 
 class InterviewRepositoryImpl(
-    private val client: HttpClient,
+    private val api: InterviewApi,
     private val interviewDao: InterviewDao,
     private val promptProvider: InterviewPromptProvider
 ) : InterviewRepository {
@@ -86,16 +80,15 @@ class InterviewRepositoryImpl(
                 contents = contents,
                 systemInstruction = systemInstruction
             )
-            val httpResponse = client.post(GENERATE_CONTENT_ENDPOINT) {
-                contentType(ContentType.Application.Json)
-                setBody(request)
-            }
+
+            val httpResponse = api.generateContent(request)
             val rawBody = httpResponse.bodyAsText()
             Napier.d(tag = LOG_TAG_INTERVIEW) { "RAW RESPONSE: $rawBody" }
 
             if (httpResponse.status != HttpStatusCode.OK) {
-                return Result.failure(Exception("Google API Error: ${httpResponse.status.value}"))
+                return Result.failure(IllegalStateException("Google API Error: ${httpResponse.status.value}"))
             }
+
             val response: GeminiResponse = httpResponse.body()
 
             val aiText = response.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.text

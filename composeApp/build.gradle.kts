@@ -67,6 +67,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
+            implementation(libs.kvault)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -108,10 +109,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-    }
-    sourceSets["main"].apply {
-        manifest.srcFile("src/androidMain/AndroidManifest.xml")
-        res.srcDirs("src/androidMain/res")
     }
 }
 

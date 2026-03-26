@@ -51,9 +51,9 @@ fun SpecializationScreen(
         state = state,
         onBackClick = onBackClick,
         onProfileClick = onProfileClick,
-        modifier = Modifier.verticalScroll(scrollState),
         onLevelSelected = { viewModel.onLevelSelected(it) },
-        onStartInterview = onStartInterview
+        onStartInterview = onStartInterview,
+        modifier = Modifier.verticalScroll(scrollState)
     )
 }
 
@@ -159,8 +159,8 @@ fun PreviewSpecializationScreen() {
             selectedLevel = DifficultyLevel.Middle
         ),
         onBackClick = {},
-        onLevelSelected = {},
         onProfileClick = {},
+        onLevelSelected = {},
         onStartInterview = { _, _ -> }
     )
 }

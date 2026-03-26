@@ -23,9 +23,9 @@ fun LoginActions(
     state: LoginUiState
 ) {
     AppButton(
+        text = stringResource(Res.string.login_button),
         onClick = onLoginClicked,
         enabled = state.isLoginButtonActive,
-        text = stringResource(Res.string.login_button)
     )
     Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Tiny))
     OutlinedButton(

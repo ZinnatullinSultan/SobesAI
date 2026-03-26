@@ -2,13 +2,13 @@ package com.example.sobesai.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sobesai.core.toNormalMessage
 import com.example.sobesai.domain.usecase.auth.LoginUseCase
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -20,27 +20,18 @@ class LoginViewModel(
     private val _state = MutableStateFlow(LoginUiState())
     val state: StateFlow<LoginUiState> = _state.asStateFlow()
 
-    private val _events = MutableSharedFlow<LoginUiEvent>()
-    val events: SharedFlow<LoginUiEvent> = _events.asSharedFlow()
+    private val _events = Channel<LoginUiEvent>(Channel.BUFFERED)
+    val events = _events.receiveAsFlow()
 
     fun onUsernameChanged(newValue: String) {
         _state.update {
             it.copy(username = newValue, error = null)
         }
-        checkButtonActive()
     }
 
     fun onPasswordChanged(newValue: String) {
         _state.update {
             it.copy(password = newValue, error = null)
-        }
-        checkButtonActive()
-    }
-
-    private fun checkButtonActive() {
-        val isActive = _state.value.username.isNotBlank() && _state.value.password.isNotBlank()
-        _state.update {
-            it.copy(isLoginButtonActive = isActive)
         }
     }
 
@@ -51,11 +42,11 @@ class LoginViewModel(
         viewModelScope.launch {
             val result = loginUseCase(currentUsername, currentPassword)
             result.onSuccess {
-                _events.emit(LoginUiEvent.LoginSuccessEvent)
+                _events.send(LoginUiEvent.LoginSuccessEvent)
             }
             result.onFailure { exception ->
                 _state.update {
-                    it.copy(error = exception.message)
+                    it.copy(error = exception.toNormalMessage())
                 }
             }
         }
@@ -63,7 +54,7 @@ class LoginViewModel(
 
     fun onGitHubLoginClicked() {
         viewModelScope.launch {
-            _events.emit(LoginUiEvent.StartOAuthEvent(PROVIDER_GITHUB))
+            _events.send(LoginUiEvent.StartOAuthEvent(PROVIDER_GITHUB))
         }
     }
 }

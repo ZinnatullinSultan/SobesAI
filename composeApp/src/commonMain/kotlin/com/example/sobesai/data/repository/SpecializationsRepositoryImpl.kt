@@ -2,34 +2,16 @@ package com.example.sobesai.data.repository
 
 import com.example.sobesai.data.local.LocalDataSource
 import com.example.sobesai.data.mapper.toDomain
-import com.example.sobesai.data.remote.dto.SpecializationDto
-import com.example.sobesai.data.remote.dto.UpdatePinDto
+import com.example.sobesai.data.remote.api.SpecializationsApi
 import com.example.sobesai.domain.model.Specialization
 import com.example.sobesai.domain.repository.SpecializationsRepository
 import io.github.aakira.napier.Napier
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.client.request.parameter
-import io.ktor.client.request.patch
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import kotlinx.coroutines.flow.Flow
 
 private const val LOG_TAG_SPECIALIZATIONS = "SPECIALIZATIONS_REPO"
-private const val ENDPOINT_SPECIALIZATIONS = "specializations"
-private const val PARAM_SELECT = "select"
-private const val PARAM_TITLE = "title"
-private const val PARAM_LIMIT = "limit"
-private const val PARAM_OFFSET = "offset"
-private const val PARAM_ORDER = "order"
-private const val PARAM_ID = "id"
-private const val VALUE_ALL_FIELDS = "*"
-private const val DEFAULT_ORDER = "is_pinned.desc,pin_order.desc,id.asc"
 
 class SpecializationsRepositoryImpl(
-    private val client: HttpClient,
+    private val api: SpecializationsApi,
     private val localDataSource: LocalDataSource
 ) : SpecializationsRepository {
     override suspend fun getSpecializations(
@@ -38,18 +20,7 @@ class SpecializationsRepositoryImpl(
         limit: Int
     ): Result<List<Specialization>> {
         return try {
-            val response: List<SpecializationDto> =
-                client
-                    .get(ENDPOINT_SPECIALIZATIONS) {
-                        parameter(PARAM_SELECT, VALUE_ALL_FIELDS)
-                        if (query.isNotEmpty()) {
-                            parameter(PARAM_TITLE, "ilike.%$query%")
-                        }
-                        parameter(PARAM_LIMIT, limit)
-                        parameter(PARAM_OFFSET, offset)
-                        parameter(PARAM_ORDER, DEFAULT_ORDER)
-                    }
-                    .body()
+            val response = api.getSpecializations(query, offset, limit)
             val specializations = response.map { it.toDomain() }
             localDataSource.saveSpecializations(specializations)
             Napier.d(tag = LOG_TAG_SPECIALIZATIONS) { "Специализации сохранены в кэш: ${specializations.size} шт." }
@@ -91,12 +62,7 @@ class SpecializationsRepositoryImpl(
         pinOrder: Int?
     ): Result<Unit> {
         return runCatching {
-            client.patch(ENDPOINT_SPECIALIZATIONS) {
-                parameter(PARAM_ID, "eq.$id")
-                contentType(ContentType.Application.Json)
-                setBody(UpdatePinDto(isPinned, pinOrder))
-            }
-            Unit
+            api.updatePinStatus(id, isPinned, pinOrder)
         }.onFailure { error ->
             Napier.e(
                 tag = LOG_TAG_SPECIALIZATIONS,
@@ -118,14 +84,8 @@ class SpecializationsRepositoryImpl(
 
     override suspend fun getSpecializationById(id: Long): Result<Specialization> {
         return try {
-            val response: List<SpecializationDto> = client
-                .get(ENDPOINT_SPECIALIZATIONS) {
-                    parameter(PARAM_SELECT, VALUE_ALL_FIELDS)
-                    parameter(PARAM_ID, "eq.$id")
-                }
-                .body()
-
-            val specialization = response.first().toDomain()
+            val response = api.getSpecializationById(id)
+            val specialization = response.toDomain()
             localDataSource.saveSpecialization(specialization)
             Result.success(specialization)
         } catch (error: Exception) {

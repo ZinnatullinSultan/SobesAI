@@ -3,6 +3,8 @@ package com.example.sobesai.presentation.login
 data class LoginUiState(
     val username: String = "",
     val password: String = "",
-    val isLoginButtonActive: Boolean = false,
     val error: String? = null
-)
+) {
+    val isLoginButtonActive: Boolean
+        get() = username.isNotBlank() && password.isNotBlank()
+}

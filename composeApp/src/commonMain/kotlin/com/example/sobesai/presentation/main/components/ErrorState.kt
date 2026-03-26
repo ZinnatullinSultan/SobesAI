@@ -24,7 +24,10 @@ import sobesai.composeapp.generated.resources.main_query_error
 import sobesai.composeapp.generated.resources.main_refresh_button
 
 @Composable
-fun ErrorState(message: StringResource, onRetry: () -> Unit) {
+fun ErrorState(
+    message: StringResource,
+    onRetry: () -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

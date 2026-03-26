@@ -1,4 +1,4 @@
-package com.example.sobesai.data.remote
+package com.example.sobesai.data.remote.clients
 
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.DefaultRequest

@@ -1,9 +1,10 @@
 package com.example.sobesai.di
 
 import com.example.sobesai.data.local.AppDatabase
-import com.example.sobesai.data.local.LocalDataSource
-import com.example.sobesai.data.remote.createGeminiClient
-import com.example.sobesai.data.remote.createHttpClient
+import com.example.sobesai.data.remote.api.InterviewApi
+import com.example.sobesai.data.remote.api.SpecializationsApi
+import com.example.sobesai.data.remote.clients.createGeminiClient
+import com.example.sobesai.data.remote.clients.createHttpClient
 import com.example.sobesai.data.repository.InterviewRepositoryImpl
 import com.example.sobesai.data.repository.LoginRepositoryImpl
 import com.example.sobesai.data.repository.SettingsRepositoryImpl
@@ -53,15 +54,18 @@ val appModule = module {
     single(named(QUALIFIER_SUPABASE)) { createHttpClient(get()) }
     single(named(QUALIFIER_GEMINI)) { createGeminiClient() }
 
+    single { SpecializationsApi(get(named(QUALIFIER_SUPABASE))) }
+    single { InterviewApi(get(named(QUALIFIER_GEMINI))) }
+
     single<SpecializationsRepository> {
         SpecializationsRepositoryImpl(
-            get(named(QUALIFIER_SUPABASE)),
-            get<LocalDataSource>()
+            api = get(),
+            localDataSource = get()
         )
     }
     single<InterviewRepository> {
         InterviewRepositoryImpl(
-            client = get(named(QUALIFIER_GEMINI)),
+            api = get(),
             interviewDao = get(),
             promptProvider = get()
         )

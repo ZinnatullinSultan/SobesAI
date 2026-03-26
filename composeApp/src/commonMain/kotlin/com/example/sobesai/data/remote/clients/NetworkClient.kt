@@ -1,4 +1,4 @@
-package com.example.sobesai.data.remote
+package com.example.sobesai.data.remote.clients
 
 import com.example.sobesai.data.remote.dto.RefreshTokenRequest
 import com.example.sobesai.data.remote.dto.RefreshTokenResponse
@@ -6,7 +6,6 @@ import com.example.sobesai.domain.repository.SettingsRepository
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
@@ -20,7 +19,6 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.first
@@ -108,13 +106,6 @@ fun createHttpClient(settingsRepository: SettingsRepository): HttpClient {
         defaultRequest {
             url(SUPABASE_REST_URL)
             header(HEADER_API_KEY, ANON_KEY)
-        }
-        HttpResponseValidator {
-            validateResponse { response ->
-                if (response.status == HttpStatusCode.Unauthorized) {
-                    settingsRepository.clearData()
-                }
-            }
         }
     }
 }
