@@ -1,5 +1,6 @@
 package com.example.sobesai.data.remote.api
 
+import com.example.sobesai.core.PATH_REST
 import com.example.sobesai.data.remote.dto.SpecializationDto
 import com.example.sobesai.data.remote.dto.UpdatePinDto
 import io.ktor.client.HttpClient
@@ -22,12 +23,13 @@ private const val VALUE_ALL_FIELDS = "*"
 private const val DEFAULT_ORDER = "is_pinned.desc,pin_order.desc,id.asc"
 
 class SpecializationsApi(private val client: HttpClient) {
+    private val fullPath = "${PATH_REST}$ENDPOINT_SPECIALIZATIONS"
     suspend fun getSpecializations(
         query: String,
         offset: Int,
         limit: Int
     ): List<SpecializationDto> {
-        return client.get(ENDPOINT_SPECIALIZATIONS) {
+        return client.get(fullPath) {
             parameter(PARAM_SELECT, VALUE_ALL_FIELDS)
             if (query.isNotEmpty()) {
                 parameter(PARAM_TITLE, "ilike.%$query%")
@@ -39,7 +41,7 @@ class SpecializationsApi(private val client: HttpClient) {
     }
 
     suspend fun getSpecializationById(id: Long): SpecializationDto {
-        val response: List<SpecializationDto> = client.get(ENDPOINT_SPECIALIZATIONS) {
+        val response: List<SpecializationDto> = client.get(fullPath) {
             parameter(PARAM_SELECT, VALUE_ALL_FIELDS)
             parameter(PARAM_ID, "eq.$id")
         }.body()
@@ -47,7 +49,7 @@ class SpecializationsApi(private val client: HttpClient) {
     }
 
     suspend fun updatePinStatus(id: Long, isPinned: Boolean, pinOrder: Int?) {
-        client.patch(ENDPOINT_SPECIALIZATIONS) {
+        client.patch(fullPath) {
             parameter(PARAM_ID, "eq.$id")
             contentType(ContentType.Application.Json)
             setBody(UpdatePinDto(isPinned, pinOrder))

@@ -1,5 +1,7 @@
 package com.example.sobesai.data.remote.clients
 
+import com.example.sobesai.core.PATH_AUTH
+import com.example.sobesai.core.SUPABASE_URL
 import com.example.sobesai.data.remote.dto.RefreshTokenRequest
 import com.example.sobesai.data.remote.dto.RefreshTokenResponse
 import com.example.sobesai.domain.repository.SettingsRepository
@@ -24,15 +26,13 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.json.Json
 
-private const val SUPABASE_BASE_URL = "https://rrhykitzjowtpbikkjkz.supabase.co"
-private const val SUPABASE_REST_URL = "$SUPABASE_BASE_URL/rest/v1/"
-private const val SUPABASE_AUTH_URL = "$SUPABASE_BASE_URL/auth/v1/"
+private const val HEADER_API_KEY = "apikey"
+private const val REFRESH_TOKEN_PATH = "token?grant_type=refresh_token"
 private const val ANON_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6In" +
             "JyaHlraXR6am93dHBiaWtramt6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3ODc0NTgsImV4cCI6Mj" +
             "A4ODM2MzQ1OH0.RMGHGL4QKsHtmOkLOZxzj_wFhBs-B0bLeUS3rhDiKTU"
-private const val HEADER_API_KEY = "apikey"
-private const val REFRESH_TOKEN_PATH = "token?grant_type=refresh_token"
+
 private const val TIMEOUT_MILLIS = 15000L
 private const val LOG_TAG_HTTP = "HTTP_CLIENT"
 
@@ -71,7 +71,7 @@ fun createHttpClient(settingsRepository: SettingsRepository): HttpClient {
                     }
                     runCatching {
                         val refreshResponse: RefreshTokenResponse =
-                            client.post("${SUPABASE_AUTH_URL}${REFRESH_TOKEN_PATH}") {
+                            client.post("${PATH_AUTH}${REFRESH_TOKEN_PATH}") {
                                 markAsRefreshTokenRequest()
                                 contentType(ContentType.Application.Json)
                                 header(HEADER_API_KEY, ANON_KEY)
@@ -104,7 +104,8 @@ fun createHttpClient(settingsRepository: SettingsRepository): HttpClient {
             requestTimeoutMillis = TIMEOUT_MILLIS
         }
         defaultRequest {
-            url(SUPABASE_REST_URL)
+            url(SUPABASE_URL)
+            if (!url.pathSegments.contains("")) url.pathSegments
             header(HEADER_API_KEY, ANON_KEY)
         }
     }

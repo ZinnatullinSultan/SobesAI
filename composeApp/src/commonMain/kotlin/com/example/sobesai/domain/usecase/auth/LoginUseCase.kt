@@ -11,7 +11,6 @@ class LoginUseCase(
         return loginRepository.login(username, password)
             .map { token ->
                 settingsRepository.saveToken(token)
-                settingsRepository.saveDisplayName(username)
             }
     }
 }

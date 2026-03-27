@@ -1,15 +1,20 @@
 package com.example.sobesai.presentation.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
@@ -22,11 +27,12 @@ fun AppButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    isLoading: Boolean = false
 ) {
     Button(
         onClick = onClick,
-        enabled = enabled,
+        enabled = enabled && !isLoading,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -38,10 +44,21 @@ fun AppButton(
             .widthIn(max = AppDimens.Components.ButtonMaxWidth)
             .fillMaxWidth()
     ) {
-        Text(
-            text = text,
-            style = AppTypography.labelLarge
-        )
+        Box(contentAlignment = Alignment.Center) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(AppDimens.Components.ProgressIndicatorSize),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    strokeWidth = AppDimens.Components.BorderStroke,
+                    strokeCap = StrokeCap.Round
+                )
+            } else {
+                Text(
+                    text = text,
+                    style = AppTypography.labelLarge
+                )
+            }
+        }
     }
 }
 

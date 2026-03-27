@@ -1,9 +1,7 @@
 package com.example.sobesai.presentation.login
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -50,7 +48,9 @@ fun LoginScreen(
         onUsernameChanged = { viewModel.onUsernameChanged(it) },
         onPasswordChanged = { viewModel.onPasswordChanged(it) },
         onLoginClicked = { viewModel.onLoginClicked() },
-        onGitHubLoginClicked = { viewModel.onGitHubLoginClicked() }
+        onGitHubLoginClicked = { viewModel.onGitHubLoginClicked() },
+        onToggleMode = { viewModel.toggleMode() },
+        onDisplayNameChanged = { viewModel.onDisplayNameChanged(it) }
     )
 }
 
@@ -60,82 +60,41 @@ private fun LoginScreenContent(
     onUsernameChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
     onLoginClicked: () -> Unit,
-    onGitHubLoginClicked: () -> Unit
+    onGitHubLoginClicked: () -> Unit,
+    onToggleMode: () -> Unit,
+    onDisplayNameChanged: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
-        BoxWithConstraints(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(horizontal = AppDimens.Padding.Large)
+                .verticalScroll(scrollState)
+                .imePadding()
+                .navigationBarsPadding(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val isLandscape = maxWidth > maxHeight
-            if (isLandscape) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    LoginHeader()
-                    Row(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = AppDimens.Padding.Large)
-                            .verticalScroll(scrollState)
-                            .imePadding()
-                            .navigationBarsPadding(),
-                        horizontalArrangement = Arrangement.spacedBy(AppDimens.Padding.Large),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            LoginFormFields(
-                                onUsernameChanged = onUsernameChanged,
-                                onPasswordChanged = onPasswordChanged,
-                                onLoginClicked = onLoginClicked,
-                                state = state
-                            )
-                        }
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            LoginActions(
-                                onLoginClicked = onLoginClicked,
-                                onGitHubLoginClicked = onGitHubLoginClicked,
-                                state = state
-                            )
-                        }
-                    }
-                }
-            } else {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = AppDimens.Padding.Large)
-                        .verticalScroll(scrollState)
-                        .imePadding()
-                        .navigationBarsPadding(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    LoginHeader()
-                    LoginFormFields(
-                        onUsernameChanged = onUsernameChanged,
-                        onPasswordChanged = onPasswordChanged,
-                        onLoginClicked = onLoginClicked,
-                        state = state
-                    )
-                    Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Normal))
-                    LoginActions(
-                        onLoginClicked = onLoginClicked,
-                        onGitHubLoginClicked = onGitHubLoginClicked,
-                        state = state
-                    )
-                }
-            }
+            LoginHeader()
+            LoginFormFields(
+                state = state,
+                onUsernameChanged = onUsernameChanged,
+                onPasswordChanged = onPasswordChanged,
+                onLoginClicked = onLoginClicked,
+                onDisplayNameChanged = onDisplayNameChanged
+            )
+            Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Normal))
+            LoginActions(
+                state = state,
+                onLoginClicked = onLoginClicked,
+                onGitHubLoginClicked = onGitHubLoginClicked,
+                onToggleMode = onToggleMode
+            )
         }
     }
 }
@@ -151,6 +110,8 @@ fun PreviewLoginScreen() {
         onUsernameChanged = {},
         onPasswordChanged = {},
         onLoginClicked = {},
-        onGitHubLoginClicked = {}
+        onGitHubLoginClicked = {},
+        onDisplayNameChanged = {},
+        onToggleMode = {}
     )
 }

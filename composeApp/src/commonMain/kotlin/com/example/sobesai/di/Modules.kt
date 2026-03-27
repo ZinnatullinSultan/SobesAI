@@ -1,6 +1,7 @@
 package com.example.sobesai.di
 
 import com.example.sobesai.data.local.AppDatabase
+import com.example.sobesai.data.remote.api.AuthApi
 import com.example.sobesai.data.remote.api.InterviewApi
 import com.example.sobesai.data.remote.api.SpecializationsApi
 import com.example.sobesai.data.remote.clients.createGeminiClient
@@ -17,6 +18,7 @@ import com.example.sobesai.domain.repository.SpecializationsRepository
 import com.example.sobesai.domain.usecase.auth.GetProfileUseCase
 import com.example.sobesai.domain.usecase.auth.LoginUseCase
 import com.example.sobesai.domain.usecase.auth.LogoutUseCase
+import com.example.sobesai.domain.usecase.auth.RegisterUseCase
 import com.example.sobesai.domain.usecase.interview.SendChatMessageUseCase
 import com.example.sobesai.domain.usecase.interview.StartInterviewUseCase
 import com.example.sobesai.domain.usecase.onboarding.CompleteOnboardingUseCase
@@ -49,14 +51,15 @@ val appModule = module {
 
     single { get<AppDatabase>().interviewDao() }
     single<SettingsRepository> { SettingsRepositoryImpl(get(), get()) }
-    single<LoginRepository> { LoginRepositoryImpl() }
 
     single(named(QUALIFIER_SUPABASE)) { createHttpClient(get()) }
     single(named(QUALIFIER_GEMINI)) { createGeminiClient() }
 
+    single { AuthApi(get(named(QUALIFIER_SUPABASE))) }
     single { SpecializationsApi(get(named(QUALIFIER_SUPABASE))) }
     single { InterviewApi(get(named(QUALIFIER_GEMINI))) }
 
+    single<LoginRepository> { LoginRepositoryImpl(get(), get()) }
     single<SpecializationsRepository> {
         SpecializationsRepositoryImpl(
             api = get(),
@@ -73,6 +76,7 @@ val appModule = module {
 
     factoryOf(::GetProfileUseCase)
     factoryOf(::LoginUseCase)
+    factoryOf(::RegisterUseCase)
     factoryOf(::LogoutUseCase)
     factoryOf(::CompleteOnboardingUseCase)
     factoryOf(::GetInitialAppStateUseCase)
