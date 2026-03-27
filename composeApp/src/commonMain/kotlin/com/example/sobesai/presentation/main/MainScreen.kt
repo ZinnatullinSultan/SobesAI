@@ -12,12 +12,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sobesai.domain.model.Specialization
 import com.example.sobesai.presentation.components.PullRefreshWrapper
-import com.example.sobesai.presentation.main.components.EmptyState
-import com.example.sobesai.presentation.main.components.ErrorState
-import com.example.sobesai.presentation.main.components.LoadingState
 import com.example.sobesai.presentation.main.components.SearchTopBar
 import com.example.sobesai.presentation.main.components.SpecializationList
+import com.example.sobesai.presentation.main.components.state.EmptyState
+import com.example.sobesai.presentation.main.components.state.ErrorState
+import com.example.sobesai.presentation.main.components.state.LoadingState
 import com.example.sobesai.presentation.theme.AppDimens
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,8 +37,8 @@ fun MainScreen(
         searchQuery = searchQuery,
         isRefreshing = isRefreshing,
         onSearchQueryChange = { viewModel.onSearchQueryChanged(it) },
-        onRefresh = { viewModel.refresh() },
-        onRetry = { viewModel.retry() },
+        onRefresh = { viewModel.load(isRefresh = true) },
+        onRetry = { viewModel.load(isRefresh = false) },
         onItemClick = onSpecializationClick,
         onPinClick = { viewModel.onPinClicked(it) },
         onLoadNextPage = { viewModel.loadNextPage() },
@@ -68,33 +69,35 @@ private fun MainScreenContent(
             )
         }
     ) { innerPadding ->
-        Box(
+        PullRefreshWrapper(
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(AppDimens.Padding.Normal)
         ) {
-            when (uiState) {
-                is SpecializationsUiState.Loading -> {
-                    LoadingState()
-                }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(AppDimens.Padding.Normal)
+            ) {
+                when (uiState) {
+                    is SpecializationsUiState.Loading -> {
+                        LoadingState()
+                    }
 
-                is SpecializationsUiState.Error -> {
-                    ErrorState(
-                        message = uiState.message,
-                        onRetry = onRetry
-                    )
-                }
+                    is SpecializationsUiState.Error -> {
+                        ErrorState(
+                            message = stringResource(uiState.message),
+                            onRetry = onRetry
+                        )
+                    }
 
-                is SpecializationsUiState.Empty -> {
-                    EmptyState()
-                }
+                    is SpecializationsUiState.Empty -> {
+                        EmptyState()
+                    }
 
-                is SpecializationsUiState.Success -> {
-                    PullRefreshWrapper(
-                        isRefreshing = isRefreshing,
-                        onRefresh = onRefresh
-                    ) {
+                    is SpecializationsUiState.Success -> {
                         SpecializationList(
                             items = uiState.items,
                             isNextPageLoading = uiState.isNextPageLoading,

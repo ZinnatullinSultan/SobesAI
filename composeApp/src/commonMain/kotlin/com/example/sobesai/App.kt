@@ -8,12 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.sobesai.navigation.InterviewRoute
-import com.example.sobesai.navigation.LoginRoute
-import com.example.sobesai.navigation.MainRoute
-import com.example.sobesai.navigation.ProfileRoute
-import com.example.sobesai.navigation.SpecializationRoute
-import com.example.sobesai.navigation.WelcomeRoute
+import com.example.sobesai.navigation.AppRoutes
 import com.example.sobesai.presentation.MainViewModel
 import com.example.sobesai.presentation.interview.InterviewScreen
 import com.example.sobesai.presentation.login.LoginScreen
@@ -32,6 +27,7 @@ fun App(
     viewModel: MainViewModel = koinViewModel()
 ) {
     val state by viewModel.appState.collectAsState()
+    val startDestination by viewModel.startDestination.collectAsState()
     val navController = rememberNavController()
 
     LaunchedEffect(state) {
@@ -40,8 +36,8 @@ fun App(
         when (state) {
             is MainViewModel.AppState.Login -> {
                 Napier.d(tag = LOG_TAG_NAVIGATION) { "Navigating to Login" }
-                if (currentRoute != LoginRoute::class.qualifiedName) {
-                    navController.navigate(LoginRoute) {
+                if (currentRoute != AppRoutes.LoginRoute::class.qualifiedName) {
+                    navController.navigate(AppRoutes.LoginRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 }
@@ -49,12 +45,12 @@ fun App(
 
             is MainViewModel.AppState.Main -> {
                 val shouldResetToMain = currentRoute == null ||
-                        currentRoute == LoginRoute::class.qualifiedName ||
-                        currentRoute == WelcomeRoute::class.qualifiedName
+                        currentRoute == AppRoutes.LoginRoute::class.qualifiedName ||
+                        currentRoute == AppRoutes.WelcomeRoute::class.qualifiedName
 
                 if (shouldResetToMain) {
                     Napier.d(tag = LOG_TAG_NAVIGATION) { "Navigating to Main" }
-                    navController.navigate(MainRoute) {
+                    navController.navigate(AppRoutes.MainRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 }
@@ -62,8 +58,8 @@ fun App(
 
             is MainViewModel.AppState.OnBoarding -> {
                 Napier.d(tag = LOG_TAG_NAVIGATION) { "Navigating to Welcome" }
-                if (currentRoute != WelcomeRoute::class.qualifiedName) {
-                    navController.navigate(WelcomeRoute) {
+                if (currentRoute != AppRoutes.WelcomeRoute::class.qualifiedName) {
+                    navController.navigate(AppRoutes.WelcomeRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 }
@@ -74,55 +70,48 @@ fun App(
     }
 
     AppTheme {
-        if (state is MainViewModel.AppState.Loading) {
-            return@AppTheme
-        }
-        val startDestination = when (state) {
-            is MainViewModel.AppState.OnBoarding -> WelcomeRoute
-            is MainViewModel.AppState.Login -> LoginRoute
-            else -> MainRoute
-        }
+        val destination = startDestination ?: return@AppTheme
 
         NavHost(
             navController = navController,
-            startDestination = startDestination,
+            startDestination = destination,
         ) {
-            composable<WelcomeRoute> {
+            composable<AppRoutes.WelcomeRoute> {
                 WelcomeScreen()
             }
-            composable<LoginRoute> {
+            composable<AppRoutes.LoginRoute> {
                 LoginScreen()
             }
-            composable<MainRoute> {
+            composable<AppRoutes.MainRoute> {
                 MainScreen(
                     onSpecializationClick = { id ->
-                        navController.navigate(SpecializationRoute(id))
+                        navController.navigate(AppRoutes.SpecializationRoute(id))
                     },
                     onProfileClick = {
-                        navController.navigate(ProfileRoute)
+                        navController.navigate(AppRoutes.ProfileRoute)
                     }
                 )
             }
-            composable<ProfileRoute> {
+            composable<AppRoutes.ProfileRoute> {
                 ProfileScreen(
                     onBackClick = { navController.popBackStack() }
                 )
             }
-            composable<SpecializationRoute> { backStackEntry ->
-                val route: SpecializationRoute = backStackEntry.toRoute()
+            composable<AppRoutes.SpecializationRoute> { backStackEntry ->
+                val route: AppRoutes.SpecializationRoute = backStackEntry.toRoute()
                 SpecializationScreen(
                     id = route.id,
                     onBackClick = { navController.popBackStack() },
                     onProfileClick = {
-                        navController.navigate(ProfileRoute)
+                        navController.navigate(AppRoutes.ProfileRoute)
                     },
                     onStartInterview = { id, level ->
-                        navController.navigate(InterviewRoute(id, level.name))
+                        navController.navigate(AppRoutes.InterviewRoute(id, level.name))
                     }
                 )
             }
-            composable<InterviewRoute> { backStackEntry ->
-                val route: InterviewRoute = backStackEntry.toRoute()
+            composable<AppRoutes.InterviewRoute> { backStackEntry ->
+                val route: AppRoutes.InterviewRoute = backStackEntry.toRoute()
                 InterviewScreen(
                     specId = route.specId,
                     difficulty = route.difficulty,

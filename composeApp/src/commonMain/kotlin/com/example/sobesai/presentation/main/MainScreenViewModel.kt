@@ -7,19 +7,16 @@ import com.example.sobesai.domain.usecase.specialization.GetSpecializationsUseCa
 import com.example.sobesai.domain.usecase.specialization.SortSpecializationsUseCase
 import com.example.sobesai.domain.usecase.specialization.TogglePinUseCase
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 import sobesai.composeapp.generated.resources.Res
@@ -53,8 +50,8 @@ class MainScreenViewModel(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing = _isRefreshing.asStateFlow()
 
-    private val refreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     private val allLoadedItems = mutableListOf<Specialization>()
+    private var loadJob: Job? = null
 
     private var currentPage = 0
     private val pageSize = DEFAULT_PAGE_SIZE
@@ -67,32 +64,42 @@ class MainScreenViewModel(
 
     init {
         observeSearch()
+        load()
     }
 
-    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    @OptIn(FlowPreview::class)
     private fun observeSearch() {
         _searchQuery
+            .drop(1)
             .debounce(SEARCH_DEBOUNCE_MS)
             .distinctUntilChanged()
-            .flatMapLatest { query ->
-                refreshTrigger.onStart { emit(Unit) }.flatMapLatest {
-                    currentPage = 0
-                    isLastPage = false
-                    allLoadedItems.clear()
-
-                    flow {
-                        emit(SpecializationsUiState.Loading)
-                        val result = getSpecializationsUseCase(query, 0, pageSize)
-                        emit(processFirstPage(result))
-                    }
-                }
-            }
-            .catch { e ->
-                Napier.e(tag = LOG_TAG_SEARCH, throwable = e) { "Ошибка запроса" }
-                emit(SpecializationsUiState.Error(Res.string.main_query_error))
-            }
-            .onEach { _uiState.value = it }
+            .onEach { load() }
             .launchIn(viewModelScope)
+    }
+
+    fun load(isRefresh: Boolean = false) {
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch {
+            if (isRefresh) {
+                _isRefreshing.value = true
+            } else {
+                _uiState.value = SpecializationsUiState.Loading
+            }
+
+            currentPage = 0
+            isLastPage = false
+            allLoadedItems.clear()
+
+            getSpecializationsUseCase(_searchQuery.value, 0, pageSize)
+                .onSuccess { items ->
+                    _uiState.value = processFirstPage(Result.success(items))
+                }
+                .onFailure { e ->
+                    Napier.e(tag = LOG_TAG_SEARCH, throwable = e) { "Ошибка в блоке load" }
+                    _uiState.value = SpecializationsUiState.Error(Res.string.main_query_error)
+                }
+            _isRefreshing.value = false
+        }
     }
 
     fun onPinClicked(id: Long) {
@@ -155,6 +162,8 @@ class MainScreenViewModel(
                 }
             },
             onFailure = {
+                if (it is CancellationException) return@fold _uiState.value
+                Napier.e(tag = LOG_TAG_SEARCH, throwable = it) { "Ошибка загрузки страницы" }
                 SpecializationsUiState.Error(Res.string.main_query_error)
             }
         )
@@ -173,18 +182,6 @@ class MainScreenViewModel(
     private fun updatePinOrderCounter(items: List<Specialization>) {
         val maxOrder = items.mapNotNull { it.pinOrder }.maxOrNull() ?: 0
         pinOrderCounter = maxOf(pinOrderCounter, maxOrder)
-    }
-
-    fun retry() {
-        refreshTrigger.tryEmit(Unit)
-    }
-
-    fun refresh() {
-        viewModelScope.launch {
-            _isRefreshing.value = true
-            refreshTrigger.tryEmit(Unit)
-            _isRefreshing.value = false
-        }
     }
 
     fun onSearchQueryChanged(query: String) {

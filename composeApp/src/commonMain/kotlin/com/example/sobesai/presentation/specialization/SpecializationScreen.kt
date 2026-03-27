@@ -1,6 +1,7 @@
 package com.example.sobesai.presentation.specialization
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,10 +23,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.sobesai.domain.model.Specialization
 import com.example.sobesai.presentation.components.AppButton
 import com.example.sobesai.presentation.components.AppTopBar
+import com.example.sobesai.presentation.main.components.state.ErrorState
 import com.example.sobesai.presentation.specialization.components.DifficultyCard
 import com.example.sobesai.presentation.specialization.components.DifficultyLevel
 import com.example.sobesai.presentation.theme.AppDimens
@@ -45,7 +47,6 @@ fun SpecializationScreen(
     viewModel: SpecializationViewModel = koinViewModel(parameters = { parametersOf(id) })
 ) {
     val state by viewModel.state.collectAsState()
-    val scrollState = rememberScrollState()
 
     SpecializationContent(
         state = state,
@@ -53,7 +54,7 @@ fun SpecializationScreen(
         onProfileClick = onProfileClick,
         onLevelSelected = { viewModel.onLevelSelected(it) },
         onStartInterview = onStartInterview,
-        modifier = Modifier.verticalScroll(scrollState)
+        onRetry = { viewModel.retry() }
     )
 }
 
@@ -65,9 +66,9 @@ private fun SpecializationContent(
     onProfileClick: () -> Unit,
     onLevelSelected: (DifficultyLevel) -> Unit,
     onStartInterview: (Long, DifficultyLevel) -> Unit,
-    modifier: Modifier = Modifier
+    onRetry: () -> Unit
 ) {
-    val specialization = state.specialization ?: return
+    val scrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
@@ -78,73 +79,99 @@ private fun SpecializationContent(
             )
         },
     ) { padding ->
-        BoxWithConstraints(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(padding)
         ) {
-            val isLandscape = maxWidth > maxHeight
-            val horizontalPadding =
-                if (isLandscape) AppDimens.Padding.Normal else AppDimens.Padding.Large
-            val horizontalAlignment =
-                if (isLandscape) Alignment.CenterHorizontally else Alignment.Start
-            val topSpacerHeight =
-                if (isLandscape) AppDimens.SpacerHeight.Tiny else AppDimens.SpacerHeight.Normal
-            val bottomSpacerHeight =
-                if (isLandscape) AppDimens.SpacerHeight.Normal else AppDimens.SpacerHeight.ExtraLarge
-            val sectionSpacerHeight =
-                if (isLandscape) AppDimens.SpacerHeight.Small else AppDimens.SpacerHeight.ExtraLarge
-            val cardHeight = if (isLandscape) 80.dp else AppDimens.Components.DifficultyCardHeight
-            val textStyle =
-                if (isLandscape) AppTypography.headlineMedium else AppTypography.headlineLarge
+            when {
+                state.isLoading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
 
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(horizontal = horizontalPadding),
-                horizontalAlignment = horizontalAlignment
-            ) {
-                Spacer(modifier = Modifier.height(topSpacerHeight))
-                Text(
-                    text = specialization.title,
-                    style = textStyle
-                )
-                Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Tiny))
-                Text(
-                    text = stringResource(
-                        Res.string.specialization_description,
-                        specialization.title
-                    ),
-                    style = AppTypography.labelSmall
-                )
-                Spacer(modifier = Modifier.height(sectionSpacerHeight))
-                Row(
-                    modifier = Modifier
-                        .widthIn(max = AppDimens.Components.TextFieldMaxWidth)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(AppDimens.Components.ArrangementSpaceSmall)
-                ) {
-                    DifficultyLevel.entries.forEach { level ->
-                        DifficultyCard(
-                            level = level,
-                            isSelected = state.selectedLevel == level,
-                            onClick = { onLevelSelected(level) },
-                            cardHeight = cardHeight,
-                            modifier = Modifier.weight(1f)
-                        )
+                state.error != null -> {
+                    ErrorState(
+                        message = state.error,
+                        onRetry = onRetry,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+                state.specialization != null -> {
+                    val specialization = state.specialization
+                    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                        val isLandscape = maxWidth > maxHeight
+                        val horizontalPadding =
+                            if (isLandscape) AppDimens.Padding.Normal else AppDimens.Padding.Large
+                        val horizontalAlignment =
+                            if (isLandscape) Alignment.CenterHorizontally else Alignment.Start
+                        val topSpacerHeight =
+                            if (isLandscape) AppDimens.SpacerHeight.Tiny else AppDimens.SpacerHeight.Normal
+                        val bottomSpacerHeight =
+                            if (isLandscape) AppDimens.SpacerHeight.Normal else AppDimens.SpacerHeight.ExtraLarge
+                        val sectionSpacerHeight =
+                            if (isLandscape) AppDimens.SpacerHeight.Small else AppDimens.SpacerHeight.ExtraLarge
+                        val cardHeight =
+                            if (isLandscape) AppDimens.Components.DifficultyCardHeightSmall else AppDimens.Components.DifficultyCardHeight
+                        val textStyle =
+                            if (isLandscape) AppTypography.headlineMedium else AppTypography.headlineLarge
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(scrollState)
+                                .padding(horizontal = horizontalPadding),
+                            horizontalAlignment = horizontalAlignment
+                        ) {
+                            Spacer(modifier = Modifier.height(topSpacerHeight))
+                            Text(
+                                text = specialization.title,
+                                style = textStyle
+                            )
+                            Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Tiny))
+                            Text(
+                                text = stringResource(
+                                    Res.string.specialization_description,
+                                    specialization.title
+                                ),
+                                style = AppTypography.labelSmall
+                            )
+                            Spacer(modifier = Modifier.height(sectionSpacerHeight))
+                            Row(
+                                modifier = Modifier
+                                    .widthIn(max = AppDimens.Components.TextFieldMaxWidth)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(AppDimens.Components.ArrangementSpaceSmall)
+                            ) {
+                                DifficultyLevel.entries.forEach { level ->
+                                    DifficultyCard(
+                                        level = level,
+                                        isSelected = state.selectedLevel == level,
+                                        onClick = { onLevelSelected(level) },
+                                        cardHeight = cardHeight,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                }
+                            }
+                            if (!isLandscape) {
+                                Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Normal))
+                            } else {
+                                Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Small))
+                            }
+                            AppButton(
+                                text = stringResource(Res.string.specialization_start_interview),
+                                onClick = {
+                                    onStartInterview(
+                                        specialization.id,
+                                        state.selectedLevel
+                                    )
+                                },
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
+                            Spacer(modifier = Modifier.height(bottomSpacerHeight))
+                        }
                     }
                 }
-                if (!isLandscape) {
-                    Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Normal))
-                } else {
-                    Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Small))
-                }
-                AppButton(
-                    text = stringResource(Res.string.specialization_start_interview),
-                    onClick = { onStartInterview(specialization.id, state.selectedLevel) },
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-                Spacer(modifier = Modifier.height(bottomSpacerHeight))
             }
         }
     }
@@ -156,11 +183,13 @@ fun PreviewSpecializationScreen() {
     SpecializationContent(
         state = SpecializationUiState(
             specialization = Specialization(1, "Android Developer", "Description"),
-            selectedLevel = DifficultyLevel.Middle
+            selectedLevel = DifficultyLevel.Middle,
+            isLoading = false
         ),
         onBackClick = {},
-        onProfileClick = {},
         onLevelSelected = {},
-        onStartInterview = { _, _ -> }
+        onProfileClick = {},
+        onStartInterview = { _, _ -> },
+        onRetry = {}
     )
 }

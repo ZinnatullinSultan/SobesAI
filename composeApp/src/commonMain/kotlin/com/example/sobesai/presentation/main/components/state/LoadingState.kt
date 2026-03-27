@@ -1,4 +1,4 @@
-package com.example.sobesai.presentation.main.components
+package com.example.sobesai.presentation.main.components.state
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

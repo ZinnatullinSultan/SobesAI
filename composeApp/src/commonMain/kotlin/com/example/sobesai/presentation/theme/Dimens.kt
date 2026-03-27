@@ -31,6 +31,7 @@ object AppDimens {
         val ProgressIndicatorSize = 24.dp
         val ArrangementSpaceSmall = 12.dp
         val DifficultyCardHeight = 160.dp
+        val DifficultyCardHeightSmall = 80.dp
         val BorderStroke = 2.dp
     }
 

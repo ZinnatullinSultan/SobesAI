@@ -28,9 +28,13 @@ class SpecializationViewModel(
         loadSpecialization()
     }
 
+    fun retry() {
+        loadSpecialization()
+    }
+
     private fun loadSpecialization() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            _state.update { it.copy(isLoading = true, error = null) }
             getSpecializationUseCase(id)
                 .onSuccess { item ->
                     _state.update { it.copy(specialization = item, isLoading = false) }

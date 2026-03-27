@@ -1,4 +1,4 @@
-package com.example.sobesai.presentation.main.components
+package com.example.sobesai.presentation.main.components.state
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
@@ -17,24 +19,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
-import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import sobesai.composeapp.generated.resources.Res
-import sobesai.composeapp.generated.resources.main_query_error
 import sobesai.composeapp.generated.resources.main_refresh_button
 
 @Composable
 fun ErrorState(
-    message: StringResource,
-    onRetry: () -> Unit
+    message: String,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = stringResource(message),
+            text = message,
             style = AppTypography.titleSmall
         )
         Button(
@@ -55,7 +58,7 @@ fun ErrorState(
 @Composable
 fun PreviewErrorState() {
     ErrorState(
-        message = Res.string.main_query_error,
+        message = "error message",
         onRetry = {}
     )
 }

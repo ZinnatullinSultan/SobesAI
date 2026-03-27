@@ -3,9 +3,11 @@ package com.example.sobesai.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sobesai.domain.usecase.onboarding.GetInitialAppStateUseCase
+import com.example.sobesai.navigation.AppRoutes
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 
@@ -31,4 +33,17 @@ class MainViewModel(
             started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS),
             initialValue = AppState.Loading
         )
+
+    val startDestination: StateFlow<AppRoutes?> = appState.map { state ->
+        when (state) {
+            is AppState.OnBoarding -> AppRoutes.WelcomeRoute
+            is AppState.Login -> AppRoutes.LoginRoute
+            is AppState.Main -> AppRoutes.MainRoute
+            else -> null
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS),
+        initialValue = null
+    )
 }
