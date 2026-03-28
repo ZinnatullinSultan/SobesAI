@@ -9,6 +9,17 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.tracer)
+}
+
+tracer {
+    create("defaultConfig") {
+        pluginToken = "lolkN5aUiDzvuOsohBmGpJrPjvulLBunIopyvYlP0iV3"
+        appToken = "BvQLD6vZyKk9Ue5vcXkquDltTNsuVPvbLNTOSSJaz4Mc"
+        uploadMapping = true
+    }
+    create("debug") {
+    }
 }
 
 kotlin {
@@ -114,7 +125,10 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+    debugImplementation(libs.leakcanary.android)
     add("kspAndroid", libs.androidx.room.compiler)
+    implementation(platform(libs.tracer.platform))
+    implementation(libs.tracer.crash.report)
 }
 
 room {
