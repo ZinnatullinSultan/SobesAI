@@ -31,8 +31,7 @@
     <string name="main_query_error">Ошибка запроса</string>
     <string name="main_profile_icon_description">Ошибка запроса</string>
 
-    <string name="specialization_description">Тренажер для подготовки к собеседованию
-        на позицию %1$s. Выберите уровень для начала.</string>
+    <string name="specialization_description">Тренажер для подготовки к собеседованию на позицию %1$s. Выберите уровень для начала.</string>
     <string name="specialization_start_interview">Начать интервью</string>
     <string name="specialization_difficulty_junior">Начать с основ</string>
     <string name="specialization_difficulty_middle">Углубить знания</string>
@@ -48,4 +47,19 @@
     <string name="interview_difficult">Уровень: </string>
     <string name="interview_input_placeholder">Введите ответ...</string>
     <string name="interview_ai_typing">Интервьюер печатает...</string>
+
+    <!-- Subscription -->
+    <string name="subscription_free">Бесплатный</string>
+    <string name="subscription_premium">Премиум</string>
+    <string name="subscription_interviews_used">Собеседований использовано: %1$d из %2$d</string>
+    <string name="subscription_interviews_unlimited">Безлимитные собеседования</string>
+    <string name="subscription_upgrade_button">Улучшить до Премиум</string>
+    <string name="subscription_current_plan">Текущий план:</string>
+
+    <!-- Limit Dialog -->
+    <string name="limit_dialog_title">Лимит собеседований</string>
+    <string name="limit_dialog_message">Вы использовали все бесплатные собеседования (%1$d из %2$d).\n\nОбновитесь до Премиум для безлимитного доступа к тренировке собеседований!</string>
+    <string name="limit_dialog_upgrade">Улучшить</string>
+    <string name="limit_dialog_cancel">Отмена</string>
+    <string name="limit_dialog_purchase_success">Поздравляем! Теперь у вас Премиум доступ!</string>
 </resources>

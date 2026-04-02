@@ -21,6 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.sobesai.domain.model.SubscriptionStatus
+import com.example.sobesai.domain.model.UserPlan
 import com.example.sobesai.presentation.components.AppButton
 import com.example.sobesai.presentation.components.AppTopBar
 import com.example.sobesai.presentation.theme.AppDimens
@@ -43,7 +45,8 @@ fun ProfileScreen(
     ProfileScreenContent(
         state = state,
         onBackClick = onBackClick,
-        logout = { viewModel.logout() }
+        logout = { viewModel.logout() },
+        onPurchasePremium = { viewModel.purchasePremium() }
     )
 }
 
@@ -51,7 +54,8 @@ fun ProfileScreen(
 private fun ProfileScreenContent(
     state: ProfileUiState,
     onBackClick: () -> Unit,
-    logout: () -> Unit
+    logout: () -> Unit,
+    onPurchasePremium: () -> Unit
 ) {
     val defaultUserName = stringResource(Res.string.profile_user_name_default)
     val scrollState = rememberScrollState()
@@ -79,6 +83,8 @@ private fun ProfileScreenContent(
                 style = AppTypography.displaySmall
             )
             Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.ExtraLarge))
+
+            // User info card
             Card(
                 modifier = Modifier
                     .widthIn(max = AppDimens.Components.TextFieldMaxWidth)
@@ -95,7 +101,20 @@ private fun ProfileScreenContent(
                     )
                 }
             }
+
             Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Normal))
+
+            // Subscription info card
+            state.subscriptionStatus?.let { subscription ->
+                SubscriptionCard(
+                    subscriptionStatus = subscription,
+                    onPurchasePremium = onPurchasePremium,
+                    isUpgrading = state.isUpgrading
+                )
+            }
+
+            Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Normal))
+
             AppButton(
                 text = stringResource(Res.string.profile_quit_button),
                 onClick = logout
@@ -108,8 +127,34 @@ private fun ProfileScreenContent(
 @Composable
 fun PreviewProfileScreen() {
     ProfileScreenContent(
-        state = ProfileUiState(displayName = "Иван Иванов"),
+        state = ProfileUiState(
+            displayName = "Иван Иванов",
+            subscriptionStatus = SubscriptionStatus(
+                plan = UserPlan.FREE,
+                interviewsUsed = 1,
+                interviewsLimit = 3
+            )
+        ),
         onBackClick = {},
-        logout = {}
+        logout = {},
+        onPurchasePremium = {}
+    )
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun PreviewProfileScreenPremium() {
+    ProfileScreenContent(
+        state = ProfileUiState(
+            displayName = "Иван Иванов",
+            subscriptionStatus = SubscriptionStatus(
+                plan = UserPlan.PREMIUM,
+                interviewsUsed = 0,
+                interviewsLimit = 3
+            )
+        ),
+        onBackClick = {},
+        logout = {},
+        onPurchasePremium = {}
     )
 }

@@ -15,8 +15,8 @@ object AppDimens {
         val Tiny = 8.dp
         val Small = 16.dp
         val Normal = 24.dp
+        val Large = 32.dp
         val ExtraLarge = 40.dp
-
     }
 
     object Components {

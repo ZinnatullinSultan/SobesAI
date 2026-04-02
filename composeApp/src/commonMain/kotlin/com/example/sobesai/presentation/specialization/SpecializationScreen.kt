@@ -20,17 +20,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.sobesai.domain.model.Specialization
+import com.example.sobesai.domain.model.SubscriptionStatus
 import com.example.sobesai.presentation.components.AppButton
 import com.example.sobesai.presentation.components.AppTopBar
+import com.example.sobesai.presentation.components.InterviewLimitDialog
 import com.example.sobesai.presentation.main.components.state.ErrorState
 import com.example.sobesai.presentation.specialization.components.DifficultyCard
 import com.example.sobesai.presentation.specialization.components.DifficultyLevel
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -47,13 +51,34 @@ fun SpecializationScreen(
     viewModel: SpecializationViewModel = koinViewModel(parameters = { parametersOf(id) })
 ) {
     val state by viewModel.state.collectAsState()
+    val subscriptionStatus by viewModel.subscriptionStatus.collectAsState()
+    val scope = rememberCoroutineScope()
+
+    // Show limit dialog if needed
+    if (state.showLimitDialog && subscriptionStatus != null) {
+        InterviewLimitDialog(
+            interviewsUsed = subscriptionStatus!!.interviewsUsed,
+            interviewsLimit = subscriptionStatus!!.interviewsLimit,
+            onDismiss = { viewModel.dismissLimitDialog() },
+            onUpgrade = {
+                viewModel.dismissLimitDialog()
+                onProfileClick()
+            }
+        )
+    }
 
     SpecializationContent(
         state = state,
         onBackClick = onBackClick,
         onProfileClick = onProfileClick,
         onLevelSelected = { viewModel.onLevelSelected(it) },
-        onStartInterview = onStartInterview,
+        onStartInterview = { specId, level ->
+            scope.launch {
+                if (viewModel.checkAndPrepareInterview()) {
+                    onStartInterview(specId, level)
+                }
+            }
+        },
         onRetry = { viewModel.retry() }
     )
 }

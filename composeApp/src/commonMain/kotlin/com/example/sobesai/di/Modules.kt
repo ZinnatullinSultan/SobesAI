@@ -10,11 +10,13 @@ import com.example.sobesai.data.repository.InterviewRepositoryImpl
 import com.example.sobesai.data.repository.LoginRepositoryImpl
 import com.example.sobesai.data.repository.SettingsRepositoryImpl
 import com.example.sobesai.data.repository.SpecializationsRepositoryImpl
+import com.example.sobesai.data.repository.SubscriptionRepositoryImpl
 import com.example.sobesai.domain.provider.InterviewPromptProvider
 import com.example.sobesai.domain.repository.InterviewRepository
 import com.example.sobesai.domain.repository.LoginRepository
 import com.example.sobesai.domain.repository.SettingsRepository
 import com.example.sobesai.domain.repository.SpecializationsRepository
+import com.example.sobesai.domain.repository.SubscriptionRepository
 import com.example.sobesai.domain.usecase.auth.GetProfileUseCase
 import com.example.sobesai.domain.usecase.auth.LoginUseCase
 import com.example.sobesai.domain.usecase.auth.LogoutUseCase
@@ -27,6 +29,10 @@ import com.example.sobesai.domain.usecase.specialization.GetSpecializationUseCas
 import com.example.sobesai.domain.usecase.specialization.GetSpecializationsUseCase
 import com.example.sobesai.domain.usecase.specialization.SortSpecializationsUseCase
 import com.example.sobesai.domain.usecase.specialization.TogglePinUseCase
+import com.example.sobesai.domain.usecase.subscription.CheckInterviewLimitUseCase
+import com.example.sobesai.domain.usecase.subscription.GetSubscriptionStatusUseCase
+import com.example.sobesai.domain.usecase.subscription.IncrementInterviewCountUseCase
+import com.example.sobesai.domain.usecase.subscription.PurchasePremiumUseCase
 import com.example.sobesai.presentation.MainViewModel
 import com.example.sobesai.presentation.interview.InterviewViewModel
 import com.example.sobesai.presentation.login.LoginViewModel
@@ -73,6 +79,9 @@ val appModule = module {
             promptProvider = get()
         )
     }
+    single<SubscriptionRepository> {
+        SubscriptionRepositoryImpl(get())
+    }
 
     factoryOf(::GetProfileUseCase)
     factoryOf(::LoginUseCase)
@@ -87,6 +96,12 @@ val appModule = module {
     factoryOf(::StartInterviewUseCase)
     factoryOf(::SendChatMessageUseCase)
     factory { InterviewPromptProvider() }
+    
+    // Subscription UseCases
+    factoryOf(::GetSubscriptionStatusUseCase)
+    factoryOf(::CheckInterviewLimitUseCase)
+    factoryOf(::IncrementInterviewCountUseCase)
+    factoryOf(::PurchasePremiumUseCase)
 
     viewModelOf(::MainViewModel)
     viewModelOf(::MainScreenViewModel)
@@ -98,6 +113,9 @@ val appModule = module {
     viewModel { (id: Long) ->
         SpecializationViewModel(
             getSpecializationUseCase = get(),
+            checkInterviewLimitUseCase = get(),
+            incrementInterviewCountUseCase = get(),
+            getSubscriptionStatusUseCase = get(),
             id = id
         )
     }
