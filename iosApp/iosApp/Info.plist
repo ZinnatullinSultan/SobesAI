@@ -5,6 +5,11 @@
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Нужен доступ к микрофону для голосового ввода ответов</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Нужно распознавание речи для голосового ввода ответов</string>
+
 	<!-- URL Scheme для OAuth callback -->
 	<key>CFBundleURLTypes</key>
 	<array>

@@ -21,4 +21,7 @@ sealed interface AppRoutes {
     @Serializable
     data class InterviewRoute(val specId: Long, val difficulty: String) : AppRoutes
 
+    @Serializable
+    data class LiveInterviewRoute(val specId: Long, val difficulty: String) : AppRoutes
+
 }

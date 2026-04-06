@@ -29,6 +29,7 @@ import com.example.sobesai.domain.usecase.specialization.SortSpecializationsUseC
 import com.example.sobesai.domain.usecase.specialization.TogglePinUseCase
 import com.example.sobesai.presentation.MainViewModel
 import com.example.sobesai.presentation.interview.InterviewViewModel
+import com.example.sobesai.presentation.liveinterview.LiveInterviewViewModel
 import com.example.sobesai.presentation.login.LoginViewModel
 import com.example.sobesai.presentation.main.MainScreenViewModel
 import com.example.sobesai.presentation.profile.ProfileViewModel
@@ -101,4 +102,6 @@ val appModule = module {
             id = id
         )
     }
+
+    viewModel { LiveInterviewViewModel(get()) }
 }

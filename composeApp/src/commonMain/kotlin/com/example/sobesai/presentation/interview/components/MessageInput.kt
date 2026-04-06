@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -20,6 +22,8 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,12 +33,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import com.example.sobesai.core.speech.VoiceInputError
+import com.example.sobesai.core.speech.rememberVoiceInputController
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.Border
 import com.example.sobesai.presentation.theme.SurfaceLight
 import org.jetbrains.compose.resources.stringResource
 import sobesai.composeapp.generated.resources.Res
 import sobesai.composeapp.generated.resources.interview_input_placeholder
+import sobesai.composeapp.generated.resources.interview_voice_not_available
+import sobesai.composeapp.generated.resources.interview_voice_permission_required
+import sobesai.composeapp.generated.resources.interview_voice_unknown_error
 
 private const val DISABLED_ALPHA = 0.1f
 
@@ -44,16 +53,31 @@ fun MessageInput(
     isSending: Boolean,
     isLoading: Boolean
 ) {
+    val voiceNotAvailableText = stringResource(Res.string.interview_voice_not_available)
+    val voicePermissionRequiredText = stringResource(Res.string.interview_voice_permission_required)
+    val voiceUnknownErrorText = stringResource(Res.string.interview_voice_unknown_error)
+
     var text by remember { mutableStateOf("") }
+    var voiceErrorMessage by remember { mutableStateOf<String?>(null) }
+    val voiceInputController = rememberVoiceInputController()
+    val isListening by voiceInputController.isListening.collectAsState()
+
     val handleSend = {
         if (text.isNotBlank() && !isSending) {
             onSendMessage(text)
             text = ""
+            voiceErrorMessage = null
         }
     }
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(isSending) {
+        if (isSending && isListening) {
+            voiceInputController.stopListening()
+        }
+    }
 
     Surface(
         tonalElevation = AppDimens.Elevation.Normal,
@@ -69,7 +93,10 @@ fun MessageInput(
         ) {
             OutlinedTextField(
                 value = text,
-                onValueChange = { text = it },
+                onValueChange = {
+                    text = it
+                    voiceErrorMessage = null
+                },
                 modifier = Modifier.weight(1f),
                 placeholder = { Text(stringResource(Res.string.interview_input_placeholder)) },
                 enabled = !isLoading,
@@ -79,11 +106,56 @@ fun MessageInput(
                     unfocusedContainerColor = MaterialTheme.colorScheme.background,
                     focusedBorderColor = Border,
                     unfocusedBorderColor = Border,
-                    cursorColor = Color.White
+                    cursorColor = Color.White,
+                    errorBorderColor = MaterialTheme.colorScheme.error
                 ),
-                maxLines = 3
+                maxLines = 3,
+                isError = voiceErrorMessage != null,
+                supportingText = {
+                    if (voiceErrorMessage != null) {
+                        Text(text = voiceErrorMessage.orEmpty())
+                    }
+                }
             )
             Spacer(modifier = Modifier.size(AppDimens.SpacerHeight.Tiny))
+            FilledIconButton(
+                onClick = {
+                    voiceErrorMessage = null
+                    if (isListening) {
+                        voiceInputController.stopListening()
+                    } else {
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
+                        voiceInputController.startListening(
+                            onPartialResult = { partialText -> text = partialText },
+                            onFinalResult = { finalText -> text = finalText },
+                            onError = { error ->
+                                voiceErrorMessage = when (error) {
+                                    VoiceInputError.Unavailable -> voiceNotAvailableText
+                                    VoiceInputError.PermissionDenied -> voicePermissionRequiredText
+                                    VoiceInputError.Unknown -> voiceUnknownErrorText
+                                }
+                            }
+                        )
+                    }
+                },
+                modifier = Modifier.size(AppDimens.IconSize.Huge),
+                enabled = !isLoading && !isSending,
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = if (isListening) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                    contentColor = SurfaceLight,
+                    disabledContainerColor = MaterialTheme.colorScheme.primary.copy(DISABLED_ALPHA),
+                    disabledContentColor = Color.Gray
+                )
+            ) {
+                Icon(
+                    imageVector = if (isListening) Icons.Filled.Stop else Icons.Filled.Mic,
+                    contentDescription = null,
+                )
+            }
+
+            Spacer(modifier = Modifier.size(AppDimens.SpacerHeight.Tiny))
+
             FilledIconButton(
                 onClick = {
                     handleSend()

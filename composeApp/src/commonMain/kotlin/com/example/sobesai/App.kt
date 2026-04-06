@@ -11,6 +11,7 @@ import androidx.navigation.toRoute
 import com.example.sobesai.navigation.AppRoutes
 import com.example.sobesai.presentation.MainViewModel
 import com.example.sobesai.presentation.interview.InterviewScreen
+import com.example.sobesai.presentation.liveinterview.LiveInterviewScreen
 import com.example.sobesai.presentation.login.LoginScreen
 import com.example.sobesai.presentation.main.MainScreen
 import com.example.sobesai.presentation.profile.ProfileScreen
@@ -107,6 +108,9 @@ fun App(
                     },
                     onStartInterview = { id, level ->
                         navController.navigate(AppRoutes.InterviewRoute(id, level.name))
+                    },
+                    onStartLiveInterview = { id, level ->
+                        navController.navigate(AppRoutes.LiveInterviewRoute(id, level.name))
                     }
                 )
             }
@@ -115,6 +119,15 @@ fun App(
                 InterviewScreen(
                     specId = route.specId,
                     difficulty = route.difficulty,
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+            composable<AppRoutes.LiveInterviewRoute> { backStackEntry ->
+                val route: AppRoutes.LiveInterviewRoute = backStackEntry.toRoute()
+                LiveInterviewScreen(
+                    specId = route.specId,
+                    difficulty = route.difficulty,
+                    apiKey = "AIzaSyDoGr9uDCUFacWj1qR0R3Zch7KZyuHfrss", // TODO: Replace with actual API key
                     onBackClick = { navController.popBackStack() }
                 )
             }

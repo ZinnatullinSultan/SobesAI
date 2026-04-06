@@ -2,75 +2,67 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
+    <ID>EmptyKotlinFile:TranscribeAudioUseCase.kt:.TranscribeAudioUseCase.kt</ID>
+    <ID>ForbiddenComment:App.kt:// TODO: Replace with actual API key</ID>
     <ID>LongMethod:App.kt:@Composable fun App</ID>
     <ID>LongMethod:LoginFormFields.kt:@Composable fun LoginFormFields</ID>
-    <ID>LongMethod:LoginScreen.kt:@Composable private fun LoginScreenContent</ID>
-    <ID>LongMethod:NetworkClient.kt:fun createHttpClient: HttpClient</ID>
+    <ID>LongMethod:MessageInput.kt:@Composable fun MessageInput</ID>
     <ID>LongMethod:SpecializationScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable private fun SpecializationContent</ID>
-    <ID>MagicNumber:AppTopBar.kt:0.9F</ID>
-    <ID>MagicNumber:InterviewRepositoryImpl.kt:InterviewRepositoryImpl$200</ID>
-    <ID>MagicNumber:MainScreenViewModel.kt:MainScreenViewModel$500</ID>
-    <ID>MagicNumber:NetworkClient.kt:15000</ID>
-    <ID>MagicNumber:OpenRouterClient.kt:60000</ID>
-    <ID>MagicNumber:SecureTokenStorage.android.kt:SecureTokenStorage$12</ID>
-    <ID>MagicNumber:SpecializationScreen.kt:3</ID>
+    <ID>MagicNumber:Base64Encoder.kt:Base64Encoder$0x03</ID>
+    <ID>MagicNumber:Base64Encoder.kt:Base64Encoder$0x3F</ID>
+    <ID>MagicNumber:Base64Encoder.kt:Base64Encoder$0xFF</ID>
+    <ID>MagicNumber:Base64Encoder.kt:Base64Encoder$3</ID>
+    <ID>MagicNumber:Base64Encoder.kt:Base64Encoder$6</ID>
+    <ID>MagicNumber:GeminiLiveControllerImpl.kt:GeminiLiveControllerImpl$50</ID>
+    <ID>MagicNumber:GeminiLiveWebSocketClient.kt:GeminiLiveWebSocketClient$10000</ID>
+    <ID>MagicNumber:LiveInterviewScreen.kt:0xFF2196F3</ID>
+    <ID>MagicNumber:LiveInterviewScreen.kt:0xFF4CAF50</ID>
+    <ID>MagicNumber:LiveInterviewScreen.kt:0xFFF44336</ID>
+    <ID>MagicNumber:LiveInterviewScreen.kt:0xFFFFC107</ID>
+    <ID>MagicNumber:LiveInterviewScreen.kt:500</ID>
+    <ID>MagicNumber:PlatformAudioManager.android.kt:AndroidAudioManager$1024</ID>
+    <ID>MagicNumber:PlatformAudioManager.android.kt:AndroidAudioManager$4096</ID>
+    <ID>MagicNumber:PlatformAudioManager.ios.kt:IosAudioManager$0xFF</ID>
+    <ID>MagicNumber:PlatformAudioManager.ios.kt:IosAudioManager$1735550278L</ID>
+    <ID>MagicNumber:PlatformAudioManager.ios.kt:IosAudioManager$32767.0f</ID>
+    <ID>MagicNumber:PlatformAudioManager.ios.kt:IosAudioManager$32768.0f</ID>
     <ID>MatchingDeclarationName:DataStore.android.kt:DataStoreContext</ID>
     <ID>MatchingDeclarationName:DataStore.ios.kt:DataStoreContext</ID>
     <ID>MatchingDeclarationName:DatabaseBuilder.android.kt:PlatformContext</ID>
     <ID>MatchingDeclarationName:DatabaseBuilder.ios.kt:PlatformContext</ID>
     <ID>MatchingDeclarationName:DatabaseBuilder.kt:PlatformContext</ID>
     <ID>MatchingDeclarationName:Dimens.kt:AppDimens</ID>
-    <ID>MatchingDeclarationName:NetworkClient.kt:NetworkConstants</ID>
-    <ID>MaxLineLength:NetworkClient.kt:val</ID>
-    <ID>MaxLineLength:SpecializationDao.kt:SpecializationDao$@Query("SELECT * FROM specializations WHERE title LIKE '%' || :query || '%' ORDER BY isPinned DESC, pinOrder DESC, id ASC")</ID>
-    <ID>NewLineAtEndOfFile:AppButton.kt:com.example.sobesai.presentation.components.AppButton.kt</ID>
-    <ID>NewLineAtEndOfFile:AppTopBar.kt:com.example.sobesai.presentation.components.AppTopBar.kt</ID>
-    <ID>NewLineAtEndOfFile:AuthManager.kt:com.example.sobesai.core.AuthManager.kt</ID>
-    <ID>NewLineAtEndOfFile:Color.kt:com.example.sobesai.presentation.theme.Color.kt</ID>
-    <ID>NewLineAtEndOfFile:CompleteOnboardingUseCase.kt:com.example.sobesai.domain.usecase.onboarding.CompleteOnboardingUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:DataStore.kt:com.example.sobesai.data.local.DataStore.kt</ID>
-    <ID>NewLineAtEndOfFile:Dimens.kt:com.example.sobesai.presentation.theme.Dimens.kt</ID>
-    <ID>NewLineAtEndOfFile:EmptyState.kt:com.example.sobesai.presentation.main.components.EmptyState.kt</ID>
-    <ID>NewLineAtEndOfFile:ErrorState.kt:com.example.sobesai.presentation.main.components.ErrorState.kt</ID>
-    <ID>NewLineAtEndOfFile:GetInitialAppStateUseCase.kt:com.example.sobesai.domain.usecase.onboarding.GetInitialAppStateUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:GetSpecializationUseCase.kt:com.example.sobesai.domain.usecase.specialization.GetSpecializationUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:GetSpecializationsUseCase.kt:com.example.sobesai.domain.usecase.specialization.GetSpecializationsUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:LoadingState.kt:com.example.sobesai.presentation.main.components.LoadingState.kt</ID>
-    <ID>NewLineAtEndOfFile:LoginFormFields.kt:com.example.sobesai.presentation.login.components.LoginFormFields.kt</ID>
-    <ID>NewLineAtEndOfFile:LoginHeader.kt:com.example.sobesai.presentation.login.components.LoginHeader.kt</ID>
-    <ID>NewLineAtEndOfFile:LoginRepositoryImpl.kt:com.example.sobesai.data.repository.LoginRepositoryImpl.kt</ID>
-    <ID>NewLineAtEndOfFile:LoginScreen.kt:com.example.sobesai.presentation.login.LoginScreen.kt</ID>
-    <ID>NewLineAtEndOfFile:LoginUiEvent.kt:com.example.sobesai.presentation.login.LoginUiEvent.kt</ID>
-    <ID>NewLineAtEndOfFile:LoginUiState.kt:com.example.sobesai.presentation.login.LoginUiState.kt</ID>
-    <ID>NewLineAtEndOfFile:LoginUseCase.kt:com.example.sobesai.domain.usecase.auth.LoginUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:LogoutUseCase.kt:com.example.sobesai.domain.usecase.auth.LogoutUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:MainActivity.kt:com.example.sobesai.MainActivity.kt</ID>
-    <ID>NewLineAtEndOfFile:MainApplication.kt:com.example.sobesai.MainApplication.kt</ID>
-    <ID>NewLineAtEndOfFile:MainViewController.kt:com.example.sobesai.MainViewController.kt</ID>
-    <ID>NewLineAtEndOfFile:MainViewModel.kt:com.example.sobesai.presentation.MainViewModel.kt</ID>
-    <ID>NewLineAtEndOfFile:OpenRouterClient.kt:com.example.sobesai.data.remote.OpenRouterClient.kt</ID>
-    <ID>NewLineAtEndOfFile:OpenRouterDto.kt:com.example.sobesai.data.remote.dto.OpenRouterDto.kt</ID>
-    <ID>NewLineAtEndOfFile:ProfileIcon.kt:com.example.sobesai.presentation.components.ProfileIcon.kt</ID>
-    <ID>NewLineAtEndOfFile:ProfileScreen.kt:com.example.sobesai.presentation.profile.ProfileScreen.kt</ID>
-    <ID>NewLineAtEndOfFile:SearchTopBar.kt:com.example.sobesai.presentation.main.components.SearchTopBar.kt</ID>
-    <ID>NewLineAtEndOfFile:SendChatMessageUseCase.kt:com.example.sobesai.domain.usecase.interview.SendChatMessageUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:SettingsRepository.kt:com.example.sobesai.domain.repository.SettingsRepository.kt</ID>
-    <ID>NewLineAtEndOfFile:SettingsRepositoryImpl.kt:com.example.sobesai.data.repository.SettingsRepositoryImpl.kt</ID>
-    <ID>NewLineAtEndOfFile:SortSpecializationsUseCase.kt:com.example.sobesai.domain.usecase.specialization.SortSpecializationsUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:SpecializationCard.kt:com.example.sobesai.presentation.main.components.SpecializationCard.kt</ID>
-    <ID>NewLineAtEndOfFile:SpecializationDto.kt:com.example.sobesai.data.remote.dto.SpecializationDto.kt</ID>
-    <ID>NewLineAtEndOfFile:SpecializationList.kt:com.example.sobesai.presentation.main.components.SpecializationList.kt</ID>
-    <ID>NewLineAtEndOfFile:SpecializationViewModel.kt:com.example.sobesai.presentation.specialization.SpecializationViewModel.kt</ID>
-    <ID>NewLineAtEndOfFile:StartInterviewUseCase.kt:com.example.sobesai.domain.usecase.interview.StartInterviewUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:TogglePinUseCase.kt:com.example.sobesai.domain.usecase.specialization.TogglePinUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:Type.kt:com.example.sobesai.presentation.theme.Type.kt</ID>
+    <ID>MatchingDeclarationName:PlatformAudioManager.android.kt:AndroidAudioManager : PlatformAudioManager</ID>
+    <ID>MatchingDeclarationName:PlatformAudioManager.ios.kt:IosAudioManager : PlatformAudioManager</ID>
+    <ID>MaxLineLength:GeminiLiveWebSocketClient.kt:private const val GEMINI_LIVE_WS_URL = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent"</ID>
+    <ID>MayBeConstant:Base64Encoder.kt:Base64Encoder$private val BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"</ID>
+    <ID>MayBeConstant:Base64Encoder.kt:Base64Encoder$private val PADDING = '='</ID>
+    <ID>NestedBlockDepth:GeminiLiveWebSocketClient.kt:GeminiLiveWebSocketClient$private fun handleMessage</ID>
     <ID>NewLineAtEndOfFile:WelcomeScreen.kt:com.example.sobesai.presentation.welcome.WelcomeScreen.kt</ID>
-    <ID>NewLineAtEndOfFile:WelcomeViewModel.kt:com.example.sobesai.presentation.welcome.WelcomeViewModel.kt</ID>
+    <ID>PrintStackTrace:GeminiLiveWebSocketClient.kt:GeminiLiveWebSocketClient$e</ID>
     <ID>ReturnCount:AuthManager.kt:AndroidAuthManager$override suspend fun handleOAuthCallback: Boolean</ID>
+    <ID>ReturnCount:GeminiLiveControllerImpl.kt:GeminiLiveControllerImpl$override suspend fun startSession</ID>
+    <ID>ReturnCount:PlatformAudioManager.android.kt:AndroidAudioManager$override suspend fun startCapture: Boolean</ID>
+    <ID>ReturnCount:PlatformAudioManager.ios.kt:IosAudioManager$override fun writeAudio</ID>
+    <ID>ReturnCount:PlatformAudioManager.ios.kt:IosAudioManager$override suspend fun startCapture: Boolean</ID>
+    <ID>ReturnCount:PlatformAudioManager.ios.kt:IosAudioManager$override suspend fun startPlayback: Boolean</ID>
+    <ID>ReturnCount:PlatformAudioManager.ios.kt:IosAudioManager$private fun convertBufferToPCM16: ByteArray</ID>
+    <ID>SwallowedException:GeminiLiveWebSocketClient.kt:GeminiLiveWebSocketClient$e: Exception</ID>
+    <ID>SwallowedException:PlatformAudioManager.android.kt:AndroidAudioManager$e: Exception</ID>
+    <ID>SwallowedException:PlatformAudioManager.android.kt:AndroidAudioManager$e: SecurityException</ID>
+    <ID>SwallowedException:PlatformAudioManager.ios.kt:IosAudioManager$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:GeminiLiveWebSocketClient.kt:GeminiLiveWebSocketClient$e: Exception</ID>
     <ID>TooGenericExceptionCaught:InterviewRepositoryImpl.kt:InterviewRepositoryImpl$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:PlatformAudioManager.android.kt:AndroidAudioManager$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:PlatformAudioManager.ios.kt:IosAudioManager$e: Exception</ID>
     <ID>TooGenericExceptionCaught:SpecializationsRepositoryImpl.kt:SpecializationsRepositoryImpl$cacheError: Exception</ID>
     <ID>TooGenericExceptionCaught:SpecializationsRepositoryImpl.kt:SpecializationsRepositoryImpl$e: Exception</ID>
     <ID>TooGenericExceptionCaught:SpecializationsRepositoryImpl.kt:SpecializationsRepositoryImpl$error: Exception</ID>
-    <ID>TooGenericExceptionThrown:InterviewRepositoryImpl.kt:InterviewRepositoryImpl$throw Exception("Empty response")</ID>
+    <ID>TooManyFunctions:PlatformAudioManager.ios.kt:IosAudioManager : PlatformAudioManager</ID>
+    <ID>UnusedParameter:GeminiLiveSession.kt:isActive: Boolean</ID>
+    <ID>UnusedParameter:GeminiLiveSession.kt:onAiResponseReceived: (String) -&gt; Unit = {}</ID>
+    <ID>UnusedParameter:GeminiLiveSession.kt:onMute: () -&gt; Unit</ID>
+    <ID>UnusedParameter:GeminiLiveSession.kt:onTranscriptReceived: (String) -&gt; Unit = {}</ID>
+    <ID>UnusedParameter:GeminiLiveSession.kt:onUnmute: () -&gt; Unit</ID>
   </CurrentIssues>
 </SmellBaseline>

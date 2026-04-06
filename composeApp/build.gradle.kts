@@ -69,6 +69,7 @@ kotlin {
             implementation(libs.ktor.serialization.json)
             implementation(libs.napier)
             implementation(libs.ktor.client.auth)
+            implementation(libs.ktor.client.websockets)
             implementation(libs.multiplatform.settings)
             implementation(libs.multiplatform.settings.no.arg)
             implementation(libs.androidx.datastore)

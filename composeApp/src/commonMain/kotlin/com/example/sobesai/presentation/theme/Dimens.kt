@@ -15,8 +15,8 @@ object AppDimens {
         val Tiny = 8.dp
         val Small = 16.dp
         val Normal = 24.dp
+        val Large = 32.dp
         val ExtraLarge = 40.dp
-
     }
 
     object Components {
@@ -44,6 +44,12 @@ object AppDimens {
         val None = 0.dp
         val Small = 16.dp
         val Normal = 24.dp
+    }
+
+    object Radius {
+        val Small = 8.dp
+        val Normal = 12.dp
+        val Large = 16.dp
     }
 
     object IconSize {

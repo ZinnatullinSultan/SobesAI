@@ -10,11 +10,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +28,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.sobesai.domain.model.Specialization
 import com.example.sobesai.presentation.components.AppButton
 import com.example.sobesai.presentation.components.AppTopBar
@@ -44,6 +52,7 @@ fun SpecializationScreen(
     onBackClick: () -> Unit,
     onProfileClick: () -> Unit,
     onStartInterview: (Long, DifficultyLevel) -> Unit,
+    onStartLiveInterview: (Long, DifficultyLevel) -> Unit,
     viewModel: SpecializationViewModel = koinViewModel(parameters = { parametersOf(id) })
 ) {
     val state by viewModel.state.collectAsState()
@@ -54,6 +63,7 @@ fun SpecializationScreen(
         onProfileClick = onProfileClick,
         onLevelSelected = { viewModel.onLevelSelected(it) },
         onStartInterview = onStartInterview,
+        onStartLiveInterview = onStartLiveInterview,
         onRetry = { viewModel.retry() }
     )
 }
@@ -66,6 +76,7 @@ private fun SpecializationContent(
     onProfileClick: () -> Unit,
     onLevelSelected: (DifficultyLevel) -> Unit,
     onStartInterview: (Long, DifficultyLevel) -> Unit,
+    onStartLiveInterview: (Long, DifficultyLevel) -> Unit,
     onRetry: () -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -168,6 +179,24 @@ private fun SpecializationContent(
                                 },
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                             )
+                            Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Small))
+                            OutlinedButton(
+                                onClick = {
+                                    onStartLiveInterview(
+                                        specialization.id,
+                                        state.selectedLevel
+                                    )
+                                },
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Mic,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Голосовое собеседование")
+                            }
                             Spacer(modifier = Modifier.height(bottomSpacerHeight))
                         }
                     }
@@ -190,6 +219,7 @@ fun PreviewSpecializationScreen() {
         onLevelSelected = {},
         onProfileClick = {},
         onStartInterview = { _, _ -> },
+        onStartLiveInterview = { _, _ -> },
         onRetry = {}
     )
 }
