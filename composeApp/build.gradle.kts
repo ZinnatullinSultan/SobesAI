@@ -29,6 +29,8 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.client.okhttp)
+            implementation(libs.appauth)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -44,6 +46,18 @@ kotlin {
             implementation(libs.coil.network.ktor)
             implementation(libs.jetbrains.icons.compose)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.negotiation)
+            implementation(libs.ktor.serialization.json)
+            implementation(libs.napier)
+            implementation(libs.ktor.client.auth)
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.no.arg)
+
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -61,6 +75,7 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        manifestPlaceholders["appAuthRedirectScheme"] = "com.example.sobesai"
     }
     packaging {
         resources {

@@ -15,6 +15,8 @@ object AppDimens {
         val Tiny = 8.dp
         val Small = 16.dp
         val Normal = 24.dp
+        val ExtraLarge = 40.dp
+
     }
 
     object Components {
@@ -23,5 +25,18 @@ object AppDimens {
         val ButtonHeight = 50.dp
         val ButtonMaxWeight = 400.dp
         val CardElevation = 4.dp
+        val ProgressIndicatorSize = 24.dp
+        val ArrangementSpaceSmall = 12.dp
+        val DifficultyCardHeight = 160.dp
+        val BorderStroke = 2.dp
+        val CornerShape = 16.dp
+    }
+    object CornerShape{
+        val Small = 16.dp
+        val Normal = 24.dp
+    }
+    object IconSize{
+        val Small = 16.dp
+        val Large = 32.dp
     }
 }

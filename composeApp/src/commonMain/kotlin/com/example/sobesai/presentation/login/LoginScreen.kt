@@ -10,14 +10,13 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,14 +29,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.sobesai.core.rememberAuthManager
+import com.example.sobesai.data.local.TokenStorage
 import com.example.sobesai.presentation.components.AppButton
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
@@ -46,44 +45,45 @@ import org.jetbrains.compose.resources.stringResource
 import sobesai.composeapp.generated.resources.Res
 import sobesai.composeapp.generated.resources.app_title
 import sobesai.composeapp.generated.resources.email_label
-import sobesai.composeapp.generated.resources.email_placeholder
 import sobesai.composeapp.generated.resources.login_button
+import sobesai.composeapp.generated.resources.login_button_git
 import sobesai.composeapp.generated.resources.login_error_text
-import sobesai.composeapp.generated.resources.login_password_hide
-import sobesai.composeapp.generated.resources.login_password_show
 import sobesai.composeapp.generated.resources.login_title
 import sobesai.composeapp.generated.resources.password_label
-import sobesai.composeapp.generated.resources.password_placeholder
-
-@Preview
-@Composable
-fun PreviewLoginScreen() {
-    LoginScreen(
-        viewModel = LoginViewModel(),
-        onNavigateToMain = {}
-    )
-}
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel,
+    viewModel: LoginViewModel = viewModel(),
     onNavigateToMain: () -> Unit
 ) {
     val scrollState = rememberScrollState()
-
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
     val state by viewModel.state.collectAsState()
 
+    val authManager = rememberAuthManager()
+
+    val currentToken by TokenStorage.token.collectAsState()
+
+    LaunchedEffect(currentToken) {
+        if (currentToken != null) {
+            onNavigateToMain()
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
                 is LoginUiEvent.LoginSuccessEvent -> onNavigateToMain()
+                is LoginUiEvent.StartOAuthEvent -> {
+                    authManager.startOAuthFlow(event.provider)
+                }
             }
         }
     }
+
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -108,71 +108,28 @@ fun LoginScreen(
                 style = AppTypography.titleLarge
             )
             Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Normal))
+
             OutlinedTextField(
                 value = state.username,
                 onValueChange = { viewModel.onUsernameChanged(it) },
-                label = {
-                    Text(stringResource(Res.string.email_label))
-                },
-                placeholder = {
-                    Text(stringResource(Res.string.email_placeholder))
-                },
+                label = { Text(stringResource(Res.string.email_label)) },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                isError = state.error != null,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    }
-                )
+                singleLine = true
             )
             Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Tiny))
 
             OutlinedTextField(
                 value = state.password,
                 onValueChange = { viewModel.onPasswordChanged(it) },
-                label = {
-                    Text(stringResource(Res.string.password_label))
-                },
-                placeholder = {
-                    Text(stringResource(Res.string.password_placeholder))
-                },
+                label = { Text(stringResource(Res.string.password_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                isError = state.error != null,
-                visualTransformation = if (isPasswordVisible) VisualTransformation.None
-                else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        keyboardController?.hide()
-                        viewModel.onLoginClicked()
-                    }
-                ),
+                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    val image = if (isPasswordVisible) {
-                        Icons.Filled.Visibility
-                    } else {
-                        Icons.Filled.VisibilityOff
-                    }
-
-                    val description = if (isPasswordVisible) {
-                        stringResource(Res.string.login_password_hide)
-                    } else {
-                        stringResource(Res.string.login_password_show)
-                    }
-
                     IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                         Icon(
-                            imageVector = image,
-                            contentDescription = description
+                            imageVector = if (isPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                            contentDescription = null
                         )
                     }
                 }
@@ -196,8 +153,23 @@ fun LoginScreen(
                 text = stringResource(Res.string.login_button)
             )
 
+            Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Normal))
+
+            OutlinedButton(
+                onClick = { viewModel.onGitHubLoginClicked() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(Res.string.login_button_git))
+            }
         }
     }
+}
 
-
+@Preview
+@Composable
+fun PreviewLoginScreen() {
+    LoginScreen(
+        viewModel = LoginViewModel(),
+        onNavigateToMain = {}
+    )
 }

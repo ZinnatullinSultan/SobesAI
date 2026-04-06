@@ -1,5 +1,6 @@
 package com.example.sobesai.presentation.login
 
-sealed class LoginUiEvent {
-    object LoginSuccessEvent : LoginUiEvent()
+sealed interface LoginUiEvent {
+    object LoginSuccessEvent : LoginUiEvent
+    data class StartOAuthEvent(val provider: String) : LoginUiEvent
 }

@@ -14,7 +14,20 @@
     <string name="login_password_show">Показать пароль</string>
     <string name="login_password_hide">Скрыть пароль</string>
     <string name="login_button">Войти</string>
+    <string name="login_button_git">Войти через GitHub</string>
 
     <string name="main_title">Выберите направление</string>
     <string name="main_icon_description">Закрепить</string>
+    <string name="main_refresh_button">Повторить</string>
+    <string name="main_empty_state_text">Ничего не найдено</string>
+    <string name="main_search_placeholder">Поиск направления...</string>
+    <string name="main_error_list">Не удалось загрузить данные</string>
+
+    <string name="main_query_error">Ошибка запроса</string>
+
+    <string name="specialization_description">Тренажер для подготовки к собеседованию на позицию %1$s. Выберите уровень для начала.</string>
+    <string name="specialization_start_interview">Начать интервью</string>
+    <string name="specialization_difficulty_junior">Начать с основ</string>
+    <string name="specialization_difficulty_middle">Углубить знания</string>
+    <string name="specialization_difficulty_senior">Продвинутые темы</string>
 </resources>

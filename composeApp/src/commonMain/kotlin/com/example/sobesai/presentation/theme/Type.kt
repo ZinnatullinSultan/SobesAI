@@ -39,7 +39,8 @@ val AppTypography: Typography
             fontFamily = DancingScriptFontFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 40.sp,
-            lineHeight = 44.sp
+            lineHeight = 44.sp,
+            brush = Brush.linearGradient(colors = TitleGradient)
         ),
         titleLarge = TextStyle(
             fontSize = 32.sp

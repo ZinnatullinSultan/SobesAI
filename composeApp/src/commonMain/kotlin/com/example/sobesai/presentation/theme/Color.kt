@@ -18,3 +18,4 @@ val TextError = Color(0xFFFF0000)
 
 val PinIconActive = Color(0xFFFFC107)
 val PinIconDefault = Color.Gray.copy(alpha = 0.3f)
+val Border = Color(0xFF8E77F0)

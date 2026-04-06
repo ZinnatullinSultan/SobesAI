@@ -2,7 +2,7 @@ package com.example.sobesai.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sobesai.data.LoginRepository
+import com.example.sobesai.data.repository.LoginRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -56,6 +56,12 @@ class LoginViewModel(
             _state.update {
                 it.copy(error = exception.message)
             }
+        }
+    }
+
+    fun onGitHubLoginClicked() {
+        viewModelScope.launch {
+            _events.emit(LoginUiEvent.StartOAuthEvent("github"))
         }
     }
 }

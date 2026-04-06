@@ -27,12 +27,6 @@ import sobesai.composeapp.generated.resources.start_button
 import sobesai.composeapp.generated.resources.welcome_image
 import sobesai.composeapp.generated.resources.welcome_image_desc
 
-@Preview
-@Composable
-fun PreviewWelcome() {
-    WelcomeScreen({})
-}
-
 @Composable
 fun WelcomeScreen(onNavigateToLogin: () -> Unit) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()){
@@ -74,6 +68,10 @@ fun WelcomeScreen(onNavigateToLogin: () -> Unit) {
             }
         }
     }
+}
 
-
+@Preview
+@Composable
+fun PreviewWelcome() {
+    WelcomeScreen({})
 }
