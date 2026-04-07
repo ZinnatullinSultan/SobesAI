@@ -6,7 +6,9 @@ import com.example.sobesai.data.remote.api.SpecializationsApi
 import com.example.sobesai.domain.model.Specialization
 import com.example.sobesai.domain.repository.SpecializationsRepository
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 private const val LOG_TAG_SPECIALIZATIONS = "SPECIALIZATIONS_REPO"
 
@@ -19,41 +21,43 @@ class SpecializationsRepositoryImpl(
         offset: Int,
         limit: Int
     ): Result<List<Specialization>> {
-        return try {
+        return runCatching {
             val response = api.getSpecializations(query, offset, limit)
             val specializations = response.map { it.toDomain() }
             localDataSource.saveSpecializations(specializations)
             Napier.d(tag = LOG_TAG_SPECIALIZATIONS) { "Специализации сохранены в кэш: ${specializations.size} шт." }
-            Result.success(specializations)
-        } catch (error: Exception) {
+            specializations
+        }.recoverCatching { error ->
+            if (error is CancellationException) throw error
             Napier.e(
                 tag = LOG_TAG_SPECIALIZATIONS,
                 throwable = error
             ) { "Ошибка при загрузке специализаций с сервера, пробуем кэш" }
-            try {
-                val cachedData = if (query.isNotEmpty()) {
-                    localDataSource.searchSpecializations(query)
-                } else {
-                    localDataSource.getSpecializationsPaginated(offset, limit)
-                }
-                if (cachedData.isNotEmpty()) {
-                    Napier.d(tag = LOG_TAG_SPECIALIZATIONS) { "Возвращаем ${cachedData.size} специализаций из кэша" }
-                    Result.success(cachedData)
-                } else {
-                    Result.failure(error)
-                }
-            } catch (cacheError: Exception) {
-                Napier.e(
-                    tag = LOG_TAG_SPECIALIZATIONS,
-                    throwable = cacheError
-                ) { "Кэш также недоступен" }
-                Result.failure(error)
+            val cachedData = if (query.isNotEmpty()) {
+                localDataSource.searchSpecializations(query)
+            } else {
+                localDataSource.getSpecializationsPaginated(offset, limit)
+            }
+            if (cachedData.isNotEmpty()) {
+                Napier.d(tag = LOG_TAG_SPECIALIZATIONS) { "Возвращаем ${cachedData.size} специализаций из кэша" }
+                cachedData
+            } else {
+                Napier.e(tag = LOG_TAG_SPECIALIZATIONS) { "Кэш также недоступен" }
+                throw error
             }
         }
     }
 
     override fun observeSpecializations(): Flow<List<Specialization>> {
-        return localDataSource.observeAllSpecializations()
+        return runCatching {
+            localDataSource.observeAllSpecializations()
+        }.getOrElse { error ->
+            Napier.e(
+                tag = LOG_TAG_SPECIALIZATIONS,
+                throwable = error
+            ) { "Ошибка при создании Flow специализаций" }
+            flowOf(emptyList())
+        }
     }
 
     override suspend fun updatePinStatus(
@@ -83,21 +87,21 @@ class SpecializationsRepositoryImpl(
     }
 
     override suspend fun getSpecializationById(id: Long): Result<Specialization> {
-        return try {
+        return runCatching {
             val response = api.getSpecializationById(id)
             val specialization = response.toDomain()
             localDataSource.saveSpecialization(specialization)
-            Result.success(specialization)
-        } catch (error: Exception) {
+            specialization
+        }.recoverCatching { error ->
+            if (error is CancellationException) throw error
             Napier.e(
                 tag = LOG_TAG_SPECIALIZATIONS,
                 throwable = error
             ) { "Ошибка при загрузке специализации $id с сервера, пробуем кэш" }
-
-            localDataSource.getSpecializationById(id)?.let {
-                Napier.d(tag = LOG_TAG_SPECIALIZATIONS) { "Возвращаем специализацию $id из кэша" }
-                Result.success(it)
-            } ?: Result.failure(error)
+            localDataSource.getSpecializationById(id)
+                ?: throw error
+        }.onSuccess {
+            Napier.d(tag = LOG_TAG_SPECIALIZATIONS) { "Возвращаем специализацию $id из кэша" }
         }
     }
 }

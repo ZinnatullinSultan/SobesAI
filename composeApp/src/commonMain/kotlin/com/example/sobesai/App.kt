@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.sobesai.domain.model.AppState
 import com.example.sobesai.navigation.AppRoutes
 import com.example.sobesai.presentation.MainViewModel
 import com.example.sobesai.presentation.interview.InterviewScreen
@@ -34,7 +35,7 @@ fun App(
         Napier.d(tag = LOG_TAG_NAVIGATION) { "LaunchedEffect triggered, state=$state" }
         val currentRoute = navController.currentDestination?.route
         when (state) {
-            is MainViewModel.AppState.Login -> {
+            is AppState.Login -> {
                 Napier.d(tag = LOG_TAG_NAVIGATION) { "Navigating to Login" }
                 if (currentRoute != AppRoutes.LoginRoute::class.qualifiedName) {
                     navController.navigate(AppRoutes.LoginRoute) {
@@ -43,7 +44,7 @@ fun App(
                 }
             }
 
-            is MainViewModel.AppState.Main -> {
+            is AppState.Main -> {
                 val shouldResetToMain = currentRoute == null ||
                         currentRoute == AppRoutes.LoginRoute::class.qualifiedName ||
                         currentRoute == AppRoutes.WelcomeRoute::class.qualifiedName
@@ -56,7 +57,7 @@ fun App(
                 }
             }
 
-            is MainViewModel.AppState.OnBoarding -> {
+            is AppState.OnBoarding -> {
                 Napier.d(tag = LOG_TAG_NAVIGATION) { "Navigating to Welcome" }
                 if (currentRoute != AppRoutes.WelcomeRoute::class.qualifiedName) {
                     navController.navigate(AppRoutes.WelcomeRoute) {

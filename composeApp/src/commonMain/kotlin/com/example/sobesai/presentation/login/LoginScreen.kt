@@ -39,7 +39,7 @@ fun LoginScreen(
                     authManager.startOAuthFlow(event.provider)
                 }
 
-                else -> {}
+                is LoginUiEvent.LoginSuccessEvent -> {}
             }
         }
     }

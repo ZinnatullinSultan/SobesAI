@@ -2,6 +2,7 @@ package com.example.sobesai.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sobesai.domain.model.AppState
 import com.example.sobesai.domain.usecase.onboarding.GetInitialAppStateUseCase
 import com.example.sobesai.navigation.AppRoutes
 import io.github.aakira.napier.Napier
@@ -17,12 +18,6 @@ private const val STOP_TIMEOUT_MS = 5000L
 class MainViewModel(
     getInitialAppStateUseCase: GetInitialAppStateUseCase
 ) : ViewModel() {
-    sealed interface AppState {
-        object Loading : AppState
-        object OnBoarding : AppState
-        object Login : AppState
-        object Main : AppState
-    }
 
     val appState: StateFlow<AppState> = getInitialAppStateUseCase()
         .onEach { state ->

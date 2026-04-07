@@ -12,17 +12,19 @@ import com.example.sobesai.data.local.getDatabaseBuilder
 import com.example.sobesai.data.local.provideDataStore
 import com.liftric.kvault.KVault
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 actual fun platformModule(): Module = module {
     single<DataStore<Preferences>> { provideDataStore(DataStoreContext()) }
-    
+
     single { KVault("secure_tokens") }
-    single { SecureTokenStorage(get()) }
+    singleOf(::SecureTokenStorage)
 
     single<AppDatabase> { getDatabaseBuilder(PlatformContext()).build() }
 
     single { get<AppDatabase>().specializationDao() }
 
-    single<LocalDataSource> { LocalDataSourceImpl(get()) }
+    singleOf(::LocalDataSourceImpl) { bind<LocalDataSource>() }
 }

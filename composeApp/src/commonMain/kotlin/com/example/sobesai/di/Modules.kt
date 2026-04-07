@@ -1,6 +1,8 @@
 package com.example.sobesai.di
 
 import com.example.sobesai.data.local.AppDatabase
+import com.example.sobesai.data.local.OnboardingStorage
+import com.example.sobesai.data.local.ProfileStorage
 import com.example.sobesai.data.remote.api.AuthApi
 import com.example.sobesai.data.remote.api.InterviewApi
 import com.example.sobesai.data.remote.api.SpecializationsApi
@@ -35,7 +37,9 @@ import com.example.sobesai.presentation.profile.ProfileViewModel
 import com.example.sobesai.presentation.specialization.SpecializationViewModel
 import com.example.sobesai.presentation.welcome.WelcomeViewModel
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
@@ -50,7 +54,9 @@ val appModule = module {
     includes(platformModule())
 
     single { get<AppDatabase>().interviewDao() }
-    single<SettingsRepository> { SettingsRepositoryImpl(get(), get()) }
+
+    singleOf(::OnboardingStorage)
+    singleOf(::ProfileStorage)
 
     single(named(QUALIFIER_SUPABASE)) { createHttpClient(get()) }
     single(named(QUALIFIER_GEMINI)) { createGeminiClient() }
@@ -59,20 +65,10 @@ val appModule = module {
     single { SpecializationsApi(get(named(QUALIFIER_SUPABASE))) }
     single { InterviewApi(get(named(QUALIFIER_GEMINI))) }
 
-    single<LoginRepository> { LoginRepositoryImpl(get(), get()) }
-    single<SpecializationsRepository> {
-        SpecializationsRepositoryImpl(
-            api = get(),
-            localDataSource = get()
-        )
-    }
-    single<InterviewRepository> {
-        InterviewRepositoryImpl(
-            api = get(),
-            interviewDao = get(),
-            promptProvider = get()
-        )
-    }
+    singleOf(::SettingsRepositoryImpl) { bind<SettingsRepository>() }
+    singleOf(::LoginRepositoryImpl) { bind<LoginRepository>() }
+    singleOf(::SpecializationsRepositoryImpl) { bind<SpecializationsRepository>() }
+    singleOf(::InterviewRepositoryImpl) { bind<InterviewRepository>() }
 
     factoryOf(::GetProfileUseCase)
     factoryOf(::LoginUseCase)
@@ -86,7 +82,8 @@ val appModule = module {
     factoryOf(::SortSpecializationsUseCase)
     factoryOf(::StartInterviewUseCase)
     factoryOf(::SendChatMessageUseCase)
-    factory { InterviewPromptProvider() }
+
+    factoryOf(::InterviewPromptProvider)
 
     viewModelOf(::MainViewModel)
     viewModelOf(::MainScreenViewModel)
