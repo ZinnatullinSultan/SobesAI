@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +19,7 @@ import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import sobesai.composeapp.generated.resources.Res
 import sobesai.composeapp.generated.resources.app_description
 import sobesai.composeapp.generated.resources.app_title
@@ -28,10 +28,21 @@ import sobesai.composeapp.generated.resources.welcome_image
 import sobesai.composeapp.generated.resources.welcome_image_desc
 
 @Composable
-fun WelcomeScreen(onNavigateToLogin: () -> Unit) {
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()){
+fun WelcomeScreen(
+    viewModel: WelcomeViewModel = koinViewModel()
+) {
+    WelcomeScreenContent(
+        onStartClick = { viewModel.onStartClicked() }
+    )
+}
+
+@Composable
+private fun WelcomeScreenContent(
+    onStartClick: () -> Unit
+) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val isLandscape = maxWidth > maxHeight
-        val imageSize = if(isLandscape) AppDimens.Components.WelcomeImageSizeSmall
+        val imageSize = if (isLandscape) AppDimens.Components.WelcomeImageSizeSmall
         else AppDimens.Components.WelcomeImageSize
 
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -63,15 +74,15 @@ fun WelcomeScreen(onNavigateToLogin: () -> Unit) {
                 )
                 AppButton(
                     text = stringResource(Res.string.start_button),
-                    onClick = onNavigateToLogin,
+                    onClick = onStartClick,
                 )
             }
         }
     }
 }
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
 fun PreviewWelcome() {
-    WelcomeScreen({})
+    WelcomeScreenContent({})
 }

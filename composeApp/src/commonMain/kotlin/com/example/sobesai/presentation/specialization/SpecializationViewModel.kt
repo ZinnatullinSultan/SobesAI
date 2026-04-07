@@ -1,4 +1,4 @@
-package com.example.sobesai.presentation.Specialization
+package com.example.sobesai.presentation.specialization
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,7 +19,7 @@ data class SpecializationUiState(
 )
 
 class SpecializationViewModel(
-    private val repository: SpecializationsRepository = SpecializationsRepository(),
+    private val repository: SpecializationsRepository,
     private val id: Long
 ) : ViewModel() {
     private val _state = MutableStateFlow(SpecializationUiState())

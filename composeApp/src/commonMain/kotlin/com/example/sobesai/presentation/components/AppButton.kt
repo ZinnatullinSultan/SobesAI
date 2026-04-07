@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
 
@@ -31,8 +32,9 @@ fun AppButton(
             disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
         ),
         modifier = modifier
+
             .height(AppDimens.Components.ButtonHeight)
-            .widthIn(max = AppDimens.Components.ButtonMaxWeight)
+            .widthIn(max = AppDimens.Components.ButtonMaxWidth)
             .fillMaxWidth()
     )
     {
@@ -41,4 +43,13 @@ fun AppButton(
             style = AppTypography.labelLarge
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewAppButton() {
+    AppButton(
+        text = "Нажми",
+        onClick = {},
+    )
 }

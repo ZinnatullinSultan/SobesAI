@@ -1,8 +1,9 @@
-package com.example.sobesai.presentation.Specialization
+package com.example.sobesai.presentation.specialization
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,58 +12,62 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.example.sobesai.domain.model.Specialization
 import com.example.sobesai.presentation.components.AppButton
+import com.example.sobesai.presentation.components.AppTopBar
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.AppTypography
 import com.example.sobesai.presentation.theme.Border
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import sobesai.composeapp.generated.resources.Res
-import sobesai.composeapp.generated.resources.app_title
 import sobesai.composeapp.generated.resources.specialization_description
 import sobesai.composeapp.generated.resources.specialization_difficulty_junior
 import sobesai.composeapp.generated.resources.specialization_difficulty_middle
 import sobesai.composeapp.generated.resources.specialization_difficulty_senior
 import sobesai.composeapp.generated.resources.specialization_start_interview
 
+
 @Composable
 fun SpecializationScreen(
     id: Long,
     onBackClick: () -> Unit,
+    onProfileClick: () -> Unit,
     onStartInterview: (Long, DifficultyLevel) -> Unit,
-    viewModel: SpecializationViewModel = viewModel { SpecializationViewModel(id = id) }
+    viewModel: SpecializationViewModel = koinViewModel(parameters = { parametersOf(id) })
 ) {
     val state by viewModel.state.collectAsState()
+    val scrollState = rememberScrollState()
 
     SpecializationContent(
         state = state,
         onBackClick = onBackClick,
+        onProfileClick = onProfileClick,
+        modifier = Modifier.verticalScroll(scrollState),
         onLevelSelected = { viewModel.onLevelSelected(it) },
         onStartInterview = onStartInterview
     )
@@ -70,74 +75,101 @@ fun SpecializationScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SpecializationContent(
+private fun SpecializationContent(
     state: SpecializationUiState,
     onBackClick: () -> Unit,
+    onProfileClick: () -> Unit,
     onLevelSelected: (DifficultyLevel) -> Unit,
-    onStartInterview: (Long, DifficultyLevel) -> Unit
+    onStartInterview: (Long, DifficultyLevel) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val specialization = state.specialization ?: return
 
     Scaffold(
         topBar = {
-            SpecializationTopBar(onBackClick = onBackClick)
+            AppTopBar(
+                onBackClick = onBackClick,
+                onProfileClick = onProfileClick
+            )
         },
     ) { padding ->
-        Column(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = AppDimens.Padding.Large),
-            horizontalAlignment = Alignment.Start
+
         ) {
-            Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Normal))
+            val isLandscape = maxWidth > maxHeight
 
-            Text(
-                text = specialization.title,
-                style = AppTypography.headlineLarge
-            )
+            val horizontalPadding =
+                if (isLandscape) AppDimens.Padding.Normal else AppDimens.Padding.Large
+            val horizontalAlignment =
+                if (isLandscape) Alignment.CenterHorizontally else Alignment.Start
+            val topSpacerHeight =
+                if (isLandscape) AppDimens.SpacerHeight.Tiny else AppDimens.SpacerHeight.Normal
+            val bottomSpacerHeight =
+                if (isLandscape) AppDimens.SpacerHeight.Normal else AppDimens.SpacerHeight.ExtraLarge
+            val sectionSpacerHeight =
+                if (isLandscape) AppDimens.SpacerHeight.Small else AppDimens.SpacerHeight.ExtraLarge
+            val cardHeight = if (isLandscape) 80.dp else AppDimens.Components.DifficultyCardHeight
+            val textStyle =
+                if (isLandscape) AppTypography.headlineMedium else AppTypography.headlineLarge
 
-            Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Small))
-
-            Text(
-                text = stringResource(
-                    Res.string.specialization_description,
-                    specialization.title
-                ),
-                style = AppTypography.labelSmall
-            )
-
-            Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.ExtraLarge))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(AppDimens.Components.ArrangementSpaceSmall)
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = horizontalPadding),
+                horizontalAlignment = horizontalAlignment
             ) {
-                DifficultyCard(
-                    level = DifficultyLevel.Junior,
-                    isSelected = state.selectedLevel == DifficultyLevel.Junior,
-                    onClick = { onLevelSelected(DifficultyLevel.Junior) },
-                    modifier = Modifier.weight(1f)
+                Spacer(modifier = Modifier.height(topSpacerHeight))
+
+                Text(
+                    text = specialization.title,
+                    style = textStyle
                 )
-                DifficultyCard(
-                    level = DifficultyLevel.Middle,
-                    isSelected = state.selectedLevel == DifficultyLevel.Middle,
-                    onClick = { onLevelSelected(DifficultyLevel.Middle) },
-                    modifier = Modifier.weight(1f)
+
+                Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Tiny))
+
+                Text(
+                    text = stringResource(
+                        Res.string.specialization_description,
+                        specialization.title
+                    ),
+                    style = AppTypography.labelSmall
                 )
-                DifficultyCard(
-                    level = DifficultyLevel.Senior,
-                    isSelected = state.selectedLevel == DifficultyLevel.Senior,
-                    onClick = { onLevelSelected(DifficultyLevel.Senior) },
-                    modifier = Modifier.weight(1f)
+
+                Spacer(modifier = Modifier.height(sectionSpacerHeight))
+
+                Row(
+                    modifier = Modifier.widthIn(max = AppDimens.Components.TextFieldMaxWidth)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(AppDimens.Components.ArrangementSpaceSmall)
+                ) {
+                    DifficultyLevel.entries.forEach { level ->
+                        DifficultyCard(
+                            level = level,
+                            isSelected = state.selectedLevel == level,
+                            onClick = { onLevelSelected(level) },
+                            cardHeight = cardHeight,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                if (!isLandscape) {
+                    Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Normal))
+                } else {
+                    Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Small))
+                }
+
+                AppButton(
+                    text = stringResource(Res.string.specialization_start_interview),
+                    onClick = { onStartInterview(specialization.id, state.selectedLevel) },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
+
+                Spacer(modifier = Modifier.height(bottomSpacerHeight))
             }
-            Spacer(modifier = Modifier.weight(1f))
-            AppButton(
-                text = stringResource(Res.string.specialization_start_interview),
-                onClick = { onStartInterview(specialization.id, state.selectedLevel) },
-            )
-            Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.ExtraLarge))
         }
     }
 }
@@ -147,6 +179,7 @@ fun DifficultyCard(
     level: DifficultyLevel,
     isSelected: Boolean,
     onClick: () -> Unit,
+    cardHeight: Dp = AppDimens.Components.DifficultyCardHeight,
     modifier: Modifier = Modifier
 ) {
     val borderColor = if (isSelected) Border else Color.Transparent
@@ -154,7 +187,7 @@ fun DifficultyCard(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(AppDimens.Components.DifficultyCardHeight)
+                .height(cardHeight)
                 .clickable { onClick() },
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface,
@@ -194,18 +227,6 @@ fun DifficultyCard(
                     level.name,
                     style = AppTypography.labelLarge
                 )
-//                Spacer(modifier = Modifier.height(4.dp))
-//                Text(
-//                    text = when (level) {
-//                        DifficultyLevel.Junior -> "Базовые вопросы, JVM"
-//                        DifficultyLevel.Middle -> "Архитектура, Kotlin, Тесты"
-//                        DifficultyLevel.Senior -> "Системный дизайн, High-Load"
-//                    },
-//                    color = Color.Gray,
-//                    fontSize = 10.sp,
-//                    textAlign = TextAlign.Center,
-//                    lineHeight = 12.sp
-//                )
             }
         }
         Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Tiny))
@@ -221,39 +242,6 @@ fun DifficultyCard(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SpecializationTopBar(onBackClick: () -> Unit) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                stringResource(Res.string.app_title),
-                style = AppTypography.headlineLarge,
-
-                )
-        },
-        navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = null,
-                )
-            }
-        },
-        actions = {
-            Icon(
-                Icons.Default.Person,
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(AppDimens.Padding.Normal)
-                    .size(AppDimens.IconSize.Large)
-                    .clip(CircleShape)
-            )
-        },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent)
-    )
-}
-
 @Preview
 @Composable
 fun PreviewSpecializationScreen() {
@@ -264,6 +252,7 @@ fun PreviewSpecializationScreen() {
         ),
         onBackClick = {},
         onLevelSelected = {},
+        onProfileClick = {},
         onStartInterview = { _, _ -> }
     )
 }

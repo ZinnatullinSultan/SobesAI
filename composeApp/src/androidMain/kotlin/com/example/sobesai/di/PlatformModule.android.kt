@@ -1,0 +1,26 @@
+package com.example.sobesai.di
+
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import com.example.sobesai.data.local.AppDatabase
+import com.example.sobesai.data.local.DataStoreContext
+import com.example.sobesai.data.local.LocalDataSource
+import com.example.sobesai.data.local.LocalDataSourceImpl
+import com.example.sobesai.data.local.PlatformContext
+import com.example.sobesai.data.local.getDatabaseBuilder
+import com.example.sobesai.data.local.provideDataStore
+import com.example.sobesai.data.local.provideSecureTokenStorage
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.Module
+import org.koin.dsl.module
+
+actual fun platformModule(): Module = module {
+    single<DataStore<Preferences>> { provideDataStore(DataStoreContext(androidContext())) }
+    single { provideSecureTokenStorage(DataStoreContext(androidContext())) }
+
+    single<AppDatabase> { getDatabaseBuilder(PlatformContext(androidContext())).build() }
+
+    single { get<AppDatabase>().specializationDao() }
+
+    single<LocalDataSource> { LocalDataSourceImpl(get()) }
+}
