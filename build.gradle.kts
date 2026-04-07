@@ -7,4 +7,17 @@ plugins {
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.detekt) apply false
+}
+tasks.register<Copy>("installGitHooks") {
+    from(file("$rootDir/scripts/pre-commit.sh"))
+    into(file("$rootDir/.git/hooks"))
+    rename { "pre-commit" }
+    filePermissions {
+        unix(493)
+    }
+}
+
+tasks.named("prepareKotlinBuildScriptModel") {
+    dependsOn("installGitHooks")
 }

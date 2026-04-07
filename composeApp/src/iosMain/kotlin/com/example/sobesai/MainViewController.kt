@@ -8,6 +8,5 @@ fun MainViewController() = ComposeUIViewController {
     startKoin {
         modules(appModule)
     }
-
     App()
 }

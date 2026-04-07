@@ -35,8 +35,8 @@ import sobesai.composeapp.generated.resources.profile_user_name_default
 
 @Composable
 fun ProfileScreen(
+    onBackClick: () -> Unit,
     viewModel: ProfileViewModel = koinViewModel(),
-    onBackClick: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -60,7 +60,8 @@ private fun ProfileScreenContent(
         topBar = {
             AppTopBar(
                 onBackClick = onBackClick,
-                onProfileClick = null
+                onProfileClick = null,
+                onClearClick = null
             )
         }
     ) { paddingValues ->
@@ -77,9 +78,7 @@ private fun ProfileScreenContent(
                 text = stringResource(Res.string.profile_screen_title),
                 style = AppTypography.displaySmall
             )
-
             Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.ExtraLarge))
-
             Card(
                 modifier = Modifier
                     .widthIn(max = AppDimens.Components.TextFieldMaxWidth)
@@ -96,9 +95,7 @@ private fun ProfileScreenContent(
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.Normal))
-
             AppButton(
                 text = stringResource(Res.string.profile_quit_button),
                 onClick = logout

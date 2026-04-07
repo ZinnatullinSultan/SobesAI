@@ -2,14 +2,13 @@ package com.example.sobesai.presentation.specialization
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sobesai.data.repository.SpecializationsRepository
 import com.example.sobesai.domain.model.Specialization
+import com.example.sobesai.domain.usecase.specialization.GetSpecializationUseCase
+import com.example.sobesai.presentation.specialization.components.DifficultyLevel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-enum class DifficultyLevel { Junior, Middle, Senior }
 
 data class SpecializationUiState(
     val specialization: Specialization? = null,
@@ -19,7 +18,7 @@ data class SpecializationUiState(
 )
 
 class SpecializationViewModel(
-    private val repository: SpecializationsRepository,
+    private val getSpecializationUseCase: GetSpecializationUseCase,
     private val id: Long
 ) : ViewModel() {
     private val _state = MutableStateFlow(SpecializationUiState())
@@ -29,10 +28,14 @@ class SpecializationViewModel(
         loadSpecialization()
     }
 
+    fun retry() {
+        loadSpecialization()
+    }
+
     private fun loadSpecialization() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
-            repository.getSpecializationById(id)
+            _state.update { it.copy(isLoading = true, error = null) }
+            getSpecializationUseCase(id)
                 .onSuccess { item ->
                     _state.update { it.copy(specialization = item, isLoading = false) }
                 }

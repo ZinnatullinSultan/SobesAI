@@ -20,6 +20,7 @@ actual fun getDatabaseBuilder(context: PlatformContext): RoomDatabase.Builder<Ap
     )
         .setDriver(BundledSQLiteDriver())
         .setQueryCoroutineContext(Dispatchers.IO)
+        .fallbackToDestructiveMigration(true)
 }
 
 @OptIn(ExperimentalForeignApi::class)

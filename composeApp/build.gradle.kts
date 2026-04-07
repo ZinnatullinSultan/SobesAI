@@ -8,12 +8,15 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
+    alias(libs.plugins.detekt)
 }
 
 kotlin {
     androidTarget {
+        @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
+            freeCompilerArgs.add("-Xexpect-actual-classes")
         }
     }
 
@@ -34,7 +37,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.appauth)
             implementation(libs.koin.android)
-}
+        }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -64,6 +67,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
+            implementation(libs.kvault)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -85,6 +89,12 @@ android {
         versionCode = 1
         versionName = "1.0"
         manifestPlaceholders["appAuthRedirectScheme"] = "com.example.sobesai"
+        addManifestPlaceholders(
+            mapOf(
+                "authScheme" to "com.example.sobesai",
+                "authHost" to "login-callback"
+            )
+        )
     }
     packaging {
         resources {
@@ -100,10 +110,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    sourceSets["main"].apply {
-        manifest.srcFile("src/androidMain/AndroidManifest.xml")
-        res.srcDirs("src/androidMain/res")
-    }
 }
 
 dependencies {
@@ -115,3 +121,10 @@ room {
     schemaDirectory("$projectDir/schemas")
 }
 
+detekt {
+    toolVersion = libs.versions.detekt.get()
+    config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+    buildUponDefaultConfig = true
+    source.setFrom(files("src"))
+    baseline = file("$rootDir/config/detekt/detekt-baseline.xml")
+}

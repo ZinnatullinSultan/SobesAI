@@ -7,19 +7,21 @@ import com.example.sobesai.data.local.DataStoreContext
 import com.example.sobesai.data.local.LocalDataSource
 import com.example.sobesai.data.local.LocalDataSourceImpl
 import com.example.sobesai.data.local.PlatformContext
+import com.example.sobesai.data.local.SecureTokenStorage
 import com.example.sobesai.data.local.getDatabaseBuilder
 import com.example.sobesai.data.local.provideDataStore
-import com.example.sobesai.data.local.provideSecureTokenStorage
+import com.liftric.kvault.KVault
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 actual fun platformModule(): Module = module {
     single<DataStore<Preferences>> { provideDataStore(DataStoreContext(androidContext())) }
-    single { provideSecureTokenStorage(DataStoreContext(androidContext())) }
+    
+    single { KVault(androidContext(), "secure_tokens") }
+    single { SecureTokenStorage(get()) }
 
     single<AppDatabase> { getDatabaseBuilder(PlatformContext(androidContext())).build() }
-
     single { get<AppDatabase>().specializationDao() }
 
     single<LocalDataSource> { LocalDataSourceImpl(get()) }

@@ -50,7 +50,9 @@ val AppTypography: Typography
             brush = Brush.linearGradient(colors = TitleGradient)
         ),
         titleLarge = TextStyle(
-            fontSize = 32.sp
+            fontSize = 32.sp,
+            lineHeight = 36.sp,
+            fontWeight = FontWeight.Bold,
         ),
         titleMedium = TextStyle(
             fontSize = 24.sp,
@@ -68,13 +70,25 @@ val AppTypography: Typography
             lineHeight = 28.sp,
             color = MaterialTheme.colorScheme.onBackground
         ),
-
+        bodySmall = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontWeight = FontWeight.Normal,
+            fontSize = 16.sp,
+            lineHeight = 20.sp,
+            color = MaterialTheme.colorScheme.onBackground
+        ),
         // Кнопки
         labelLarge = TextStyle(
             fontFamily = FontFamily.Default,
             fontWeight = FontWeight.Medium,
             fontSize = 20.sp,
             lineHeight = 28.sp,
+        ),
+        labelMedium = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontSize = 18.sp,
+            lineHeight = 22.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         ),
         labelSmall = TextStyle(
             fontFamily = FontFamily.Default,

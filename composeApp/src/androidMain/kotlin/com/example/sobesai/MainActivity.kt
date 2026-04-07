@@ -17,9 +17,10 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
+private const val LOG_TAG_AUTH = "AUTH"
+
 class MainActivity : ComponentActivity() {
     private val settingsRepository: SettingsRepository by inject()
-
     private val authManager: AndroidAuthManager by lazy {
         AndroidAuthManager(this, settingsRepository)
     }
@@ -30,7 +31,6 @@ class MainActivity : ComponentActivity() {
         Napier.base(DebugAntilog())
 
         handleAuthIntent(intent)
-
         val insetsController = WindowCompat.getInsetsController(window, window.decorView)
 
         setContent {
@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             val handled = authManager.handleOAuthCallback(intent?.dataString)
             if (handled) {
-                Napier.d(tag = "AUTH") { "OAuth callback обработан в AuthManager" }
+                Napier.d(tag = LOG_TAG_AUTH) { "OAuth callback обработан в AuthManager" }
             }
         }
     }

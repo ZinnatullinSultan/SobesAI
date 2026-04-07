@@ -7,14 +7,20 @@
 
     <string name="login_title">Вход в систему</string>
     <string name="email_label">Email (Логин)</string>
+    <string name="name_label">Имя</string>
     <string name="email_placeholder">Введите ваш email</string>
+    <string name="name_placeholder">Введите ваш имя</string>
     <string name="password_label">Пароль</string>
     <string name="password_placeholder">Введите ваш пароль</string>
     <string name="login_error_text">Неизвестная ошибка</string>
     <string name="login_password_show">Показать пароль</string>
     <string name="login_password_hide">Скрыть пароль</string>
-    <string name="login_button">Войти</string>
+    <string name="login_auth_button">Войти</string>
+    <string name="login_register_button">Зарегистрироваться</string>
     <string name="login_button_git">Войти через GitHub</string>
+    <string name="login_register_success">Регистрация прошла успешна! Теперь можете авторизоваться</string>
+    <string name="login_already_registered">Уже есть аккаунт? Выполнить вход</string>
+    <string name="login_not_registered">Нет аккаунта? Зарегистрироваться</string>
 
     <string name="main_title">Выберите направление</string>
     <string name="main_pin_icon_description">Закрепить</string>
@@ -25,8 +31,8 @@
     <string name="main_query_error">Ошибка запроса</string>
     <string name="main_profile_icon_description">Ошибка запроса</string>
 
-
-    <string name="specialization_description">Тренажер для подготовки к собеседованию на позицию %1$s. Выберите уровень для начала.</string>
+    <string name="specialization_description">Тренажер для подготовки к собеседованию
+        на позицию %1$s. Выберите уровень для начала.</string>
     <string name="specialization_start_interview">Начать интервью</string>
     <string name="specialization_difficulty_junior">Начать с основ</string>
     <string name="specialization_difficulty_middle">Углубить знания</string>
@@ -36,4 +42,10 @@
     <string name="profile_screen_title">Профиль</string>
     <string name="profile_login_label">Логин: </string>
     <string name="profile_quit_button">Выйти из аккаунта</string>
+
+    <string name="interview_clear_icon_description">Очистить чат</string>
+    <string name="interview_title">Позиция: </string>
+    <string name="interview_difficult">Уровень: </string>
+    <string name="interview_input_placeholder">Введите ответ...</string>
+    <string name="interview_ai_typing">Интервьюер печатает...</string>
 </resources>

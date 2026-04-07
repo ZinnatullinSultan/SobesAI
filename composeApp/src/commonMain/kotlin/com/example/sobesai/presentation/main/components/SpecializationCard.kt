@@ -41,13 +41,12 @@ fun SpecializationCard(
             .fillMaxWidth()
             .padding(vertical = AppDimens.Padding.Small)
             .clickable { onItemClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = AppDimens.Components.CardElevation),
+        elevation = CardDefaults.cardElevation(defaultElevation = AppDimens.Elevation.Small),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface
         ),
-
-        ) {
+    ) {
         Column(
             modifier = Modifier.padding(
                 top = AppDimens.Padding.Tiny,
@@ -74,7 +73,6 @@ fun SpecializationCard(
                     )
                 }
             }
-
             Spacer(modifier = Modifier.height(AppDimens.SpacerHeight.ExtraTiny))
             Text(
                 text = specialization.description,
