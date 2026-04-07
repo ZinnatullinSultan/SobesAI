@@ -8,6 +8,9 @@ import com.example.sobesai.domain.repository.InterviewRepository
 import com.example.sobesai.domain.usecase.interview.SendChatMessageUseCase
 import com.example.sobesai.domain.usecase.interview.StartInterviewUseCase
 import com.example.sobesai.domain.usecase.specialization.GetSpecializationUseCase
+import com.example.sobesai.presentation.interview.ui.InterviewEffect
+import com.example.sobesai.presentation.interview.ui.InterviewIntent
+import com.example.sobesai.presentation.interview.ui.InterviewState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -1,8 +1,8 @@
 package com.example.sobesai.di
 
-import com.example.sobesai.data.local.AppDatabase
-import com.example.sobesai.data.local.OnboardingStorage
-import com.example.sobesai.data.local.ProfileStorage
+import com.example.sobesai.data.local.database.AppDatabase
+import com.example.sobesai.data.local.storage.OnboardingStorage
+import com.example.sobesai.data.local.storage.ProfileStorage
 import com.example.sobesai.data.remote.api.AuthApi
 import com.example.sobesai.data.remote.api.InterviewApi
 import com.example.sobesai.data.remote.api.SpecializationsApi

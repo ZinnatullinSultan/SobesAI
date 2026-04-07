@@ -1,76 +1,163 @@
 <?xml version="1.0" ?>
 <SmellBaseline>
-  <ManuallySuppressedIssues/>
-  <CurrentIssues>
-    <ID>LongMethod:App.kt:@Composable fun App</ID>
-    <ID>LongMethod:LoginFormFields.kt:@Composable fun LoginFormFields</ID>
-    <ID>LongMethod:LoginScreen.kt:@Composable private fun LoginScreenContent</ID>
-    <ID>LongMethod:NetworkClient.kt:fun createHttpClient: HttpClient</ID>
-    <ID>LongMethod:SpecializationScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable private fun SpecializationContent</ID>
-    <ID>MagicNumber:AppTopBar.kt:0.9F</ID>
-    <ID>MagicNumber:InterviewRepositoryImpl.kt:InterviewRepositoryImpl$200</ID>
-    <ID>MagicNumber:MainScreenViewModel.kt:MainScreenViewModel$500</ID>
-    <ID>MagicNumber:NetworkClient.kt:15000</ID>
-    <ID>MagicNumber:OpenRouterClient.kt:60000</ID>
-    <ID>MagicNumber:SecureTokenStorage.android.kt:SecureTokenStorage$12</ID>
-    <ID>MagicNumber:SpecializationScreen.kt:3</ID>
-    <ID>MatchingDeclarationName:DataStore.android.kt:DataStoreContext</ID>
-    <ID>MatchingDeclarationName:DataStore.ios.kt:DataStoreContext</ID>
-    <ID>MatchingDeclarationName:DatabaseBuilder.android.kt:PlatformContext</ID>
-    <ID>MatchingDeclarationName:DatabaseBuilder.ios.kt:PlatformContext</ID>
-    <ID>MatchingDeclarationName:DatabaseBuilder.kt:PlatformContext</ID>
-    <ID>MatchingDeclarationName:Dimens.kt:AppDimens</ID>
-    <ID>MatchingDeclarationName:NetworkClient.kt:NetworkConstants</ID>
-    <ID>MaxLineLength:NetworkClient.kt:val</ID>
-    <ID>MaxLineLength:SpecializationDao.kt:SpecializationDao$@Query("SELECT * FROM specializations WHERE title LIKE '%' || :query || '%' ORDER BY isPinned DESC, pinOrder DESC, id ASC")</ID>
-    <ID>NewLineAtEndOfFile:AppButton.kt:com.example.sobesai.presentation.components.AppButton.kt</ID>
-    <ID>NewLineAtEndOfFile:AppTopBar.kt:com.example.sobesai.presentation.components.AppTopBar.kt</ID>
-    <ID>NewLineAtEndOfFile:AuthManager.kt:com.example.sobesai.core.AuthManager.kt</ID>
-    <ID>NewLineAtEndOfFile:Color.kt:com.example.sobesai.presentation.theme.Color.kt</ID>
-    <ID>NewLineAtEndOfFile:CompleteOnboardingUseCase.kt:com.example.sobesai.domain.usecase.onboarding.CompleteOnboardingUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:DataStore.kt:com.example.sobesai.data.local.DataStore.kt</ID>
-    <ID>NewLineAtEndOfFile:Dimens.kt:com.example.sobesai.presentation.theme.Dimens.kt</ID>
-    <ID>NewLineAtEndOfFile:EmptyState.kt:com.example.sobesai.presentation.main.components.EmptyState.kt</ID>
-    <ID>NewLineAtEndOfFile:ErrorState.kt:com.example.sobesai.presentation.main.components.ErrorState.kt</ID>
-    <ID>NewLineAtEndOfFile:GetInitialAppStateUseCase.kt:com.example.sobesai.domain.usecase.onboarding.GetInitialAppStateUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:GetSpecializationUseCase.kt:com.example.sobesai.domain.usecase.specialization.GetSpecializationUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:GetSpecializationsUseCase.kt:com.example.sobesai.domain.usecase.specialization.GetSpecializationsUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:LoadingState.kt:com.example.sobesai.presentation.main.components.LoadingState.kt</ID>
-    <ID>NewLineAtEndOfFile:LoginFormFields.kt:com.example.sobesai.presentation.login.components.LoginFormFields.kt</ID>
-    <ID>NewLineAtEndOfFile:LoginHeader.kt:com.example.sobesai.presentation.login.components.LoginHeader.kt</ID>
-    <ID>NewLineAtEndOfFile:LoginRepositoryImpl.kt:com.example.sobesai.data.repository.LoginRepositoryImpl.kt</ID>
-    <ID>NewLineAtEndOfFile:LoginScreen.kt:com.example.sobesai.presentation.login.LoginScreen.kt</ID>
-    <ID>NewLineAtEndOfFile:LoginUiEvent.kt:com.example.sobesai.presentation.login.LoginUiEvent.kt</ID>
-    <ID>NewLineAtEndOfFile:LoginUiState.kt:com.example.sobesai.presentation.login.LoginUiState.kt</ID>
-    <ID>NewLineAtEndOfFile:LoginUseCase.kt:com.example.sobesai.domain.usecase.auth.LoginUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:LogoutUseCase.kt:com.example.sobesai.domain.usecase.auth.LogoutUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:MainActivity.kt:com.example.sobesai.MainActivity.kt</ID>
-    <ID>NewLineAtEndOfFile:MainApplication.kt:com.example.sobesai.MainApplication.kt</ID>
-    <ID>NewLineAtEndOfFile:MainViewController.kt:com.example.sobesai.MainViewController.kt</ID>
-    <ID>NewLineAtEndOfFile:MainViewModel.kt:com.example.sobesai.presentation.MainViewModel.kt</ID>
-    <ID>NewLineAtEndOfFile:OpenRouterClient.kt:com.example.sobesai.data.remote.OpenRouterClient.kt</ID>
-    <ID>NewLineAtEndOfFile:OpenRouterDto.kt:com.example.sobesai.data.remote.dto.OpenRouterDto.kt</ID>
-    <ID>NewLineAtEndOfFile:ProfileIcon.kt:com.example.sobesai.presentation.components.ProfileIcon.kt</ID>
-    <ID>NewLineAtEndOfFile:ProfileScreen.kt:com.example.sobesai.presentation.profile.ProfileScreen.kt</ID>
-    <ID>NewLineAtEndOfFile:SearchTopBar.kt:com.example.sobesai.presentation.main.components.SearchTopBar.kt</ID>
-    <ID>NewLineAtEndOfFile:SendChatMessageUseCase.kt:com.example.sobesai.domain.usecase.interview.SendChatMessageUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:SettingsRepository.kt:com.example.sobesai.domain.repository.SettingsRepository.kt</ID>
-    <ID>NewLineAtEndOfFile:SettingsRepositoryImpl.kt:com.example.sobesai.data.repository.SettingsRepositoryImpl.kt</ID>
-    <ID>NewLineAtEndOfFile:SortSpecializationsUseCase.kt:com.example.sobesai.domain.usecase.specialization.SortSpecializationsUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:SpecializationCard.kt:com.example.sobesai.presentation.main.components.SpecializationCard.kt</ID>
-    <ID>NewLineAtEndOfFile:SpecializationDto.kt:com.example.sobesai.data.remote.dto.SpecializationDto.kt</ID>
-    <ID>NewLineAtEndOfFile:SpecializationList.kt:com.example.sobesai.presentation.main.components.SpecializationList.kt</ID>
-    <ID>NewLineAtEndOfFile:SpecializationViewModel.kt:com.example.sobesai.presentation.specialization.SpecializationViewModel.kt</ID>
-    <ID>NewLineAtEndOfFile:StartInterviewUseCase.kt:com.example.sobesai.domain.usecase.interview.StartInterviewUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:TogglePinUseCase.kt:com.example.sobesai.domain.usecase.specialization.TogglePinUseCase.kt</ID>
-    <ID>NewLineAtEndOfFile:Type.kt:com.example.sobesai.presentation.theme.Type.kt</ID>
-    <ID>NewLineAtEndOfFile:WelcomeScreen.kt:com.example.sobesai.presentation.welcome.WelcomeScreen.kt</ID>
-    <ID>NewLineAtEndOfFile:WelcomeViewModel.kt:com.example.sobesai.presentation.welcome.WelcomeViewModel.kt</ID>
-    <ID>ReturnCount:AuthManager.kt:AndroidAuthManager$override suspend fun handleOAuthCallback: Boolean</ID>
-    <ID>TooGenericExceptionCaught:InterviewRepositoryImpl.kt:InterviewRepositoryImpl$e: Exception</ID>
-    <ID>TooGenericExceptionCaught:SpecializationsRepositoryImpl.kt:SpecializationsRepositoryImpl$cacheError: Exception</ID>
-    <ID>TooGenericExceptionCaught:SpecializationsRepositoryImpl.kt:SpecializationsRepositoryImpl$e: Exception</ID>
-    <ID>TooGenericExceptionCaught:SpecializationsRepositoryImpl.kt:SpecializationsRepositoryImpl$error: Exception</ID>
-    <ID>TooGenericExceptionThrown:InterviewRepositoryImpl.kt:InterviewRepositoryImpl$throw Exception("Empty response")</ID>
-  </CurrentIssues>
+    <ManuallySuppressedIssues />
+    <CurrentIssues>
+        <ID>LongMethod:App.kt:@Composable fun App</ID>
+        <ID>LongMethod:LoginFormFields.kt:@Composable fun LoginFormFields</ID>
+        <ID>LongMethod:LoginScreen.kt:@Composable private fun LoginScreenContent</ID>
+        <ID>LongMethod:NetworkClient.kt:fun createHttpClient: HttpClient</ID>
+        <ID>LongMethod:SpecializationScreen.kt:@OptIn(ExperimentalMaterial3Api::class) @Composable
+            private fun SpecializationContent
+        </ID>
+        <ID>MagicNumber:AppTopBar.kt:0.9F</ID>
+        <ID>MagicNumber:InterviewRepositoryImpl.kt:InterviewRepositoryImpl$200</ID>
+        <ID>MagicNumber:MainScreenViewModel.kt:MainScreenViewModel$500</ID>
+        <ID>MagicNumber:NetworkClient.kt:15000</ID>
+        <ID>MagicNumber:OpenRouterClient.kt:60000</ID>
+        <ID>MagicNumber:SecureTokenStorage.android.kt:SecureTokenStorage$12</ID>
+        <ID>MagicNumber:SpecializationScreen.kt:3</ID>
+        <ID>MatchingDeclarationName:DataStore.android.kt:DataStoreContext</ID>
+        <ID>MatchingDeclarationName:DataStore.ios.kt:DataStoreContext</ID>
+        <ID>MatchingDeclarationName:DatabaseBuilder.android.kt:PlatformContext</ID>
+        <ID>MatchingDeclarationName:DatabaseBuilder.ios.kt:PlatformContext</ID>
+        <ID>MatchingDeclarationName:DatabaseBuilder.kt:PlatformContext</ID>
+        <ID>MatchingDeclarationName:Dimens.kt:AppDimens</ID>
+        <ID>MatchingDeclarationName:NetworkClient.kt:NetworkConstants</ID>
+        <ID>MaxLineLength:NetworkClient.kt:val</ID>
+        <ID>MaxLineLength:SpecializationDao.kt:SpecializationDao$@Query("SELECT * FROM
+            specializations WHERE title LIKE '%' || :query || '%' ORDER BY isPinned DESC, pinOrder
+            DESC, id ASC")
+        </ID>
+        <ID>NewLineAtEndOfFile:AppButton.kt:com.example.sobesai.presentation.widgets.AppButton.kt
+        </ID>
+        <ID>NewLineAtEndOfFile:AppTopBar.kt:com.example.sobesai.presentation.widgets.AppTopBar.kt
+        </ID>
+        <ID>NewLineAtEndOfFile:AuthManager.kt:com.example.sobesai.core.AuthManager.kt</ID>
+        <ID>NewLineAtEndOfFile:Color.kt:com.example.sobesai.presentation.theme.Color.kt</ID>
+        <ID>
+            NewLineAtEndOfFile:CompleteOnboardingUseCase.kt:com.example.sobesai.domain.usecase.onboarding.CompleteOnboardingUseCase.kt
+        </ID>
+        <ID>NewLineAtEndOfFile:DataStore.kt:com.example.sobesai.data.local.DataStore.kt</ID>
+        <ID>NewLineAtEndOfFile:Dimens.kt:com.example.sobesai.presentation.theme.Dimens.kt</ID>
+        <ID>
+            NewLineAtEndOfFile:EmptyState.kt:com.example.sobesai.presentation.main.widgets.EmptyState.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:ErrorState.kt:com.example.sobesai.presentation.main.widgets.ErrorState.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:GetInitialAppStateUseCase.kt:com.example.sobesai.domain.usecase.onboarding.GetInitialAppStateUseCase.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:GetSpecializationUseCase.kt:com.example.sobesai.domain.usecase.specialization.GetSpecializationUseCase.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:GetSpecializationsUseCase.kt:com.example.sobesai.domain.usecase.specialization.GetSpecializationsUseCase.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:LoadingState.kt:com.example.sobesai.presentation.main.widgets.LoadingState.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:LoginFormFields.kt:com.example.sobesai.presentation.login.widgets.LoginFormFields.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:LoginHeader.kt:com.example.sobesai.presentation.login.widgets.LoginHeader.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:LoginRepositoryImpl.kt:com.example.sobesai.data.repository.LoginRepositoryImpl.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:LoginScreen.kt:com.example.sobesai.presentation.login.LoginScreen.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:LoginUiEvent.kt:com.example.sobesai.presentation.login.LoginUiEvent.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:LoginUiState.kt:com.example.sobesai.presentation.login.LoginUiState.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:LoginUseCase.kt:com.example.sobesai.domain.usecase.auth.LoginUseCase.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:LogoutUseCase.kt:com.example.sobesai.domain.usecase.auth.LogoutUseCase.kt
+        </ID>
+        <ID>NewLineAtEndOfFile:MainActivity.kt:com.example.sobesai.MainActivity.kt</ID>
+        <ID>NewLineAtEndOfFile:MainApplication.kt:com.example.sobesai.MainApplication.kt</ID>
+        <ID>NewLineAtEndOfFile:MainViewController.kt:com.example.sobesai.MainViewController.kt</ID>
+        <ID>NewLineAtEndOfFile:MainViewModel.kt:com.example.sobesai.presentation.MainViewModel.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:OpenRouterClient.kt:com.example.sobesai.data.remote.OpenRouterClient.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:OpenRouterDto.kt:com.example.sobesai.data.remote.dto.OpenRouterDto.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:ProfileIcon.kt:com.example.sobesai.presentation.widgets.ProfileIcon.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:ProfileScreen.kt:com.example.sobesai.presentation.profile.ProfileScreen.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:SearchTopBar.kt:com.example.sobesai.presentation.main.widgets.SearchTopBar.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:SendChatMessageUseCase.kt:com.example.sobesai.domain.usecase.interview.SendChatMessageUseCase.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:SettingsRepository.kt:com.example.sobesai.domain.repository.SettingsRepository.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:SettingsRepositoryImpl.kt:com.example.sobesai.data.repository.SettingsRepositoryImpl.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:SortSpecializationsUseCase.kt:com.example.sobesai.domain.usecase.specialization.SortSpecializationsUseCase.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:SpecializationCard.kt:com.example.sobesai.presentation.main.widgets.SpecializationCard.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:SpecializationDto.kt:com.example.sobesai.data.remote.dto.SpecializationDto.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:SpecializationList.kt:com.example.sobesai.presentation.main.widgets.SpecializationList.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:SpecializationViewModel.kt:com.example.sobesai.presentation.specialization.SpecializationViewModel.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:StartInterviewUseCase.kt:com.example.sobesai.domain.usecase.interview.StartInterviewUseCase.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:TogglePinUseCase.kt:com.example.sobesai.domain.usecase.specialization.TogglePinUseCase.kt
+        </ID>
+        <ID>NewLineAtEndOfFile:Type.kt:com.example.sobesai.presentation.theme.Type.kt</ID>
+        <ID>
+            NewLineAtEndOfFile:WelcomeScreen.kt:com.example.sobesai.presentation.welcome.WelcomeScreen.kt
+        </ID>
+        <ID>
+            NewLineAtEndOfFile:WelcomeViewModel.kt:com.example.sobesai.presentation.welcome.WelcomeViewModel.kt
+        </ID>
+        <ID>ReturnCount:AuthManager.kt:AndroidAuthManager$override suspend fun handleOAuthCallback:
+            Boolean
+        </ID>
+        <ID>TooGenericExceptionCaught:InterviewRepositoryImpl.kt:InterviewRepositoryImpl$e:
+            Exception
+        </ID>
+        <ID>
+            TooGenericExceptionCaught:SpecializationsRepositoryImpl.kt:SpecializationsRepositoryImpl$cacheError:
+            Exception
+        </ID>
+        <ID>
+            TooGenericExceptionCaught:SpecializationsRepositoryImpl.kt:SpecializationsRepositoryImpl$e:
+            Exception
+        </ID>
+        <ID>
+            TooGenericExceptionCaught:SpecializationsRepositoryImpl.kt:SpecializationsRepositoryImpl$error:
+            Exception
+        </ID>
+        <ID>TooGenericExceptionThrown:InterviewRepositoryImpl.kt:InterviewRepositoryImpl$throw
+            Exception("Empty response")
+        </ID>
+    </CurrentIssues>
 </SmellBaseline>

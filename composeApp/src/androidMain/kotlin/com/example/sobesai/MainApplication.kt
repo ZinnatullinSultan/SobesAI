@@ -1,7 +1,7 @@
 package com.example.sobesai
 
 import android.app.Application
-import com.example.sobesai.core.TracerAntilog
+import com.example.sobesai.core.utils.TracerAntilog
 import com.example.sobesai.di.appModule
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier

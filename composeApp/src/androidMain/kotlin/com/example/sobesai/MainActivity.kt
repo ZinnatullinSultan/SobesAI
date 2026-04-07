@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.sobesai.core.AndroidAuthManager
+import com.example.sobesai.core.auth.AndroidAuthManager
 import com.example.sobesai.domain.repository.SettingsRepository
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch

@@ -1,6 +1,6 @@
 package com.example.sobesai.data.repository
 
-import com.example.sobesai.data.local.dao.InterviewDao
+import com.example.sobesai.data.local.database.dao.InterviewDao
 import com.example.sobesai.data.mapper.toDomain
 import com.example.sobesai.data.mapper.toEntity
 import com.example.sobesai.data.mapper.toGeminiContent
@@ -19,6 +19,7 @@ import io.github.aakira.napier.Napier
 import io.ktor.client.call.body
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
+import kotlinx.io.IOException
 
 private const val LOG_TAG_INTERVIEW = "INTERVIEW_REPO"
 
@@ -47,7 +48,7 @@ class InterviewRepositoryImpl(
             interviewDao.insertMessage(userMsg.toEntity(specId, difficulty))
 
             performAiRequest(specId, specializationTitle, difficulty, history, userMessage)
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             Napier.e(
                 tag = LOG_TAG_INTERVIEW,
                 throwable = e
@@ -97,8 +98,11 @@ class InterviewRepositoryImpl(
             val aiMsg = ChatMessage(MessageRole.MODEL, aiText)
             interviewDao.insertMessage(aiMsg.toEntity(specId, difficulty))
             Result.success(aiMsg)
-        } catch (e: Exception) {
-            Napier.e(tag = LOG_TAG_INTERVIEW, throwable = e) { "Сбой при запросе к ИИ" }
+        } catch (e: IOException) {
+            Napier.e(tag = LOG_TAG_INTERVIEW, throwable = e) { "Сбой при запросе к ИИ (сеть)" }
+            Result.failure(e)
+        } catch (e: IllegalStateException) {
+            Napier.e(tag = LOG_TAG_INTERVIEW, throwable = e) { "Сбой при запросе к ИИ (API)" }
             Result.failure(e)
         }
     }
@@ -121,7 +125,7 @@ class InterviewRepositoryImpl(
                 emptyList(),
                 initialPrompt
             ).map { listOf(it) }
-        } catch (e: Exception) {
+        } catch (e: IOException) {
             Result.failure(e)
         }
     }

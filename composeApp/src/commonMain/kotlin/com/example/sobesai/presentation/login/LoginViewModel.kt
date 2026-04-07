@@ -2,9 +2,11 @@ package com.example.sobesai.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sobesai.core.toNormalMessage
+import com.example.sobesai.core.utils.toNormalMessage
 import com.example.sobesai.domain.usecase.auth.LoginUseCase
 import com.example.sobesai.domain.usecase.auth.RegisterUseCase
+import com.example.sobesai.presentation.login.model.LoginUiEvent
+import com.example.sobesai.presentation.login.model.LoginUiState
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow

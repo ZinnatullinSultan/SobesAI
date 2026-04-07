@@ -1,8 +1,8 @@
 package com.example.sobesai.data.repository
 
-import com.example.sobesai.data.local.OnboardingStorage
-import com.example.sobesai.data.local.ProfileStorage
-import com.example.sobesai.data.local.SecureTokenStorage
+import com.example.sobesai.data.local.storage.OnboardingStorage
+import com.example.sobesai.data.local.storage.ProfileStorage
+import com.example.sobesai.data.local.storage.SecureTokenStorage
 import com.example.sobesai.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

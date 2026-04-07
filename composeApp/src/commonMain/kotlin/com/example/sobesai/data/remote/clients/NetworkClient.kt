@@ -1,7 +1,7 @@
 package com.example.sobesai.data.remote.clients
 
-import com.example.sobesai.core.PATH_AUTH
-import com.example.sobesai.core.SUPABASE_URL
+import com.example.sobesai.core.utils.PATH_AUTH
+import com.example.sobesai.core.utils.SUPABASE_URL
 import com.example.sobesai.data.remote.dto.RefreshTokenRequest
 import com.example.sobesai.data.remote.dto.RefreshTokenResponse
 import com.example.sobesai.domain.repository.SettingsRepository

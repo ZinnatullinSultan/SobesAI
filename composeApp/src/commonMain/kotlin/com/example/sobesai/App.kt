@@ -11,13 +11,13 @@ import androidx.navigation.toRoute
 import com.example.sobesai.domain.model.AppState
 import com.example.sobesai.navigation.AppRoutes
 import com.example.sobesai.presentation.MainViewModel
-import com.example.sobesai.presentation.interview.InterviewScreen
-import com.example.sobesai.presentation.login.LoginScreen
-import com.example.sobesai.presentation.main.MainScreen
-import com.example.sobesai.presentation.profile.ProfileScreen
-import com.example.sobesai.presentation.specialization.SpecializationScreen
+import com.example.sobesai.presentation.interview.ui.InterviewScreen
+import com.example.sobesai.presentation.login.ui.LoginScreen
+import com.example.sobesai.presentation.main.ui.MainScreen
+import com.example.sobesai.presentation.profile.ui.ProfileScreen
+import com.example.sobesai.presentation.specialization.ui.SpecializationScreen
 import com.example.sobesai.presentation.theme.AppTheme
-import com.example.sobesai.presentation.welcome.WelcomeScreen
+import com.example.sobesai.presentation.welcome.ui.WelcomeScreen
 import io.github.aakira.napier.Napier
 import org.koin.compose.viewmodel.koinViewModel
 

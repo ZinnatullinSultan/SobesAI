@@ -12,6 +12,7 @@ gen/
 *.class
 *.jar
 *.output
+*.jks
 
 output-metadata.json
 
@@ -31,3 +32,6 @@ Thumbs.db
 .konan/
 .kotlin/
 *.klib
+
+composeApp/debug/
+composeApp/release/

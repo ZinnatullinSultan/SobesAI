@@ -1,6 +1,6 @@
 package com.example.sobesai.data.mapper
 
-import com.example.sobesai.data.local.entity.ChatMessageEntity
+import com.example.sobesai.data.local.database.entity.ChatMessageEntity
 import com.example.sobesai.domain.model.ChatMessage
 import com.example.sobesai.domain.model.MessageRole
 

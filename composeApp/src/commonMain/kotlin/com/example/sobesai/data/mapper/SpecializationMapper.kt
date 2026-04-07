@@ -1,6 +1,6 @@
 package com.example.sobesai.data.mapper
 
-import com.example.sobesai.data.local.entity.SpecializationEntity
+import com.example.sobesai.data.local.database.entity.SpecializationEntity
 import com.example.sobesai.data.remote.dto.SpecializationDto
 import com.example.sobesai.domain.model.Specialization
 import kotlin.time.Clock

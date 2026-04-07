@@ -1,6 +1,6 @@
 package com.example.sobesai.data.remote.api
 
-import com.example.sobesai.core.PATH_REST
+import com.example.sobesai.core.utils.PATH_REST
 import com.example.sobesai.data.remote.dto.SpecializationDto
 import com.example.sobesai.data.remote.dto.UpdatePinDto
 import io.ktor.client.HttpClient

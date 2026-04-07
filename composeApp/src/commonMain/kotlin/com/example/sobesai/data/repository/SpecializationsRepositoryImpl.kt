@@ -1,6 +1,6 @@
 package com.example.sobesai.data.repository
 
-import com.example.sobesai.data.local.LocalDataSource
+import com.example.sobesai.data.local.datasource.LocalDataSource
 import com.example.sobesai.data.mapper.toDomain
 import com.example.sobesai.data.remote.api.SpecializationsApi
 import com.example.sobesai.domain.model.Specialization
@@ -9,6 +9,7 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.io.IOException
 
 private const val LOG_TAG_SPECIALIZATIONS = "SPECIALIZATIONS_REPO"
 
@@ -80,7 +81,7 @@ class SpecializationsRepositoryImpl(
                         it.copy(isPinned = isPinned, pinOrder = pinOrder)
                     )
                 }
-            } catch (e: Exception) {
+            } catch (e: IOException) {
                 Napier.w(tag = LOG_TAG_SPECIALIZATIONS) { "Не удалось обновить кэш после изменения закрепления: $e" }
             }
         }

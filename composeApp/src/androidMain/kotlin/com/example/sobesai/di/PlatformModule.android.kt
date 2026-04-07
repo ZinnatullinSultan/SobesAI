@@ -2,14 +2,14 @@ package com.example.sobesai.di
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.example.sobesai.data.local.AppDatabase
-import com.example.sobesai.data.local.DataStoreContext
-import com.example.sobesai.data.local.LocalDataSource
-import com.example.sobesai.data.local.LocalDataSourceImpl
-import com.example.sobesai.data.local.PlatformContext
-import com.example.sobesai.data.local.SecureTokenStorage
-import com.example.sobesai.data.local.getDatabaseBuilder
-import com.example.sobesai.data.local.provideDataStore
+import com.example.sobesai.data.local.database.AppDatabase
+import com.example.sobesai.data.local.database.PlatformContext
+import com.example.sobesai.data.local.database.getDatabaseBuilder
+import com.example.sobesai.data.local.datasource.LocalDataSource
+import com.example.sobesai.data.local.datasource.LocalDataSourceImpl
+import com.example.sobesai.data.local.storage.DataStoreContext
+import com.example.sobesai.data.local.storage.SecureTokenStorage
+import com.example.sobesai.data.local.storage.provideDataStore
 import com.liftric.kvault.KVault
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module

@@ -36,8 +36,7 @@ class LoginRepositoryImpl(
             val loginResponse: LoginResponse = response.body()
             Napier.d(tag = LOG_TAG) { "Вход в систему прошел успешно, токены сохранены" }
             val nameToSave = loginResponse.user?.metadata?.displayName
-                ?: loginResponse.user?.email
-                ?: ""
+                ?: loginResponse.user?.email.orEmpty()
 
             settingsRepository.saveTokens(
                 accessToken = loginResponse.accessToken,
