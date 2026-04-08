@@ -28,7 +28,10 @@ class MainApplication : Application(), HasTracerConfiguration {
             androidContext(this@MainApplication)
             modules(appModule)
         }
-        Napier.base(DebugAntilog())
-        Napier.base(TracerAntilog())
+        if (BuildConfig.DEBUG) {
+            Napier.base(DebugAntilog())
+        } else {
+            Napier.base(TracerAntilog())
+        }
     }
 }

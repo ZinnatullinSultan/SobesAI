@@ -90,7 +90,7 @@
             NewLineAtEndOfFile:OpenRouterClient.kt:com.example.sobesai.data.remote.OpenRouterClient.kt
         </ID>
         <ID>
-            NewLineAtEndOfFile:OpenRouterDto.kt:com.example.sobesai.data.remote.dto.OpenRouterDto.kt
+            NewLineAtEndOfFile:OpenRouterDto.kt:com.example.sobesai.data.remote.model.OpenRouterDto.kt
         </ID>
         <ID>
             NewLineAtEndOfFile:ProfileIcon.kt:com.example.sobesai.presentation.widgets.ProfileIcon.kt
@@ -117,7 +117,7 @@
             NewLineAtEndOfFile:SpecializationCard.kt:com.example.sobesai.presentation.main.widgets.SpecializationCard.kt
         </ID>
         <ID>
-            NewLineAtEndOfFile:SpecializationDto.kt:com.example.sobesai.data.remote.dto.SpecializationDto.kt
+            NewLineAtEndOfFile:SpecializationDto.kt:com.example.sobesai.data.remote.model.SpecializationDto.kt
         </ID>
         <ID>
             NewLineAtEndOfFile:SpecializationList.kt:com.example.sobesai.presentation.main.widgets.SpecializationList.kt

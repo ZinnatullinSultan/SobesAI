@@ -27,6 +27,7 @@ import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.widgets.ProfileIcon
 import org.jetbrains.compose.resources.stringResource
 import sobesai.composeapp.generated.resources.Res
+import sobesai.composeapp.generated.resources.main_clear_icon_description
 import sobesai.composeapp.generated.resources.main_search_placeholder
 
 @Composable
@@ -72,7 +73,7 @@ fun SearchTopBar(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Clear,
-                            contentDescription = null
+                            contentDescription = stringResource(Res.string.main_clear_icon_description)
                         )
                     }
                 }

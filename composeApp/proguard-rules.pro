@@ -1,6 +1,6 @@
 # Сохраняем модели данных для сериализации
 -keepattributes *Annotation*, Signature, InnerClasses
--keepclassmembers class com.example.sobesai.data.remote.dto.** { *; }
+-keepclassmembers class com.example.sobesai.data.remote.model.** { *; }
 
 # Koin
 -keepclassmembers class * {

@@ -25,11 +25,13 @@
     <string name="main_title">Выберите направление</string>
     <string name="main_pin_icon_description">Закрепить</string>
     <string name="main_refresh_button">Повторить</string>
+    <string name="main_clear_icon_description">Очистить поле</string>
     <string name="main_empty_state_text">Ничего не найдено</string>
     <string name="main_search_placeholder">Поиск направления...</string>
     <string name="main_error_list">Не удалось загрузить данные</string>
     <string name="main_query_error">Ошибка запроса</string>
     <string name="main_profile_icon_description">Ошибка запроса</string>
+
 
     <string name="specialization_description">Тренажер для подготовки к собеседованию
         на позицию %1$s. Выберите уровень для начала.</string>

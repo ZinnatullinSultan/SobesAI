@@ -1,7 +1,7 @@
 package com.example.sobesai.data.mapper
 
-import com.example.sobesai.data.remote.dto.GeminiContent
-import com.example.sobesai.data.remote.dto.GeminiPart
+import com.example.sobesai.data.remote.model.GeminiContent
+import com.example.sobesai.data.remote.model.GeminiPart
 import com.example.sobesai.domain.model.ChatMessage
 import com.example.sobesai.domain.model.MessageRole
 

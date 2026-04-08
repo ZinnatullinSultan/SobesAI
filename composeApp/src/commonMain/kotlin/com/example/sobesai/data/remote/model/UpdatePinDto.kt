@@ -1,4 +1,4 @@
-package com.example.sobesai.data.remote.dto
+package com.example.sobesai.data.remote.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

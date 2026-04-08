@@ -14,8 +14,8 @@ plugins {
 
 tracer {
     create("defaultConfig") {
-        pluginToken = "lolkN5aUiDzvuOsohBmGpJrPjvulLBunIopyvYlP0iV3"
-        appToken = "BvQLD6vZyKk9Ue5vcXkquDltTNsuVPvbLNTOSSJaz4Mc"
+        pluginToken = project.findProperty("TRACER_PLUGIN_TOKEN").toString()
+        appToken = project.findProperty("TRACER_APP_TOKEN").toString()
         uploadMapping = true
     }
     create("debug") {
@@ -135,6 +135,9 @@ android {
 
             signingConfig = signingConfigs.getByName("release")
         }
+    }
+    buildFeatures {
+        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

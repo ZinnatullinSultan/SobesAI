@@ -1,8 +1,8 @@
 package com.example.sobesai.data.remote.api
 
 import com.example.sobesai.core.utils.PATH_AUTH
-import com.example.sobesai.data.remote.dto.LoginRequest
-import com.example.sobesai.data.remote.dto.RegisterRequest
+import com.example.sobesai.data.remote.model.LoginRequest
+import com.example.sobesai.data.remote.model.RegisterRequest
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody

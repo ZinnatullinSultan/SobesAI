@@ -2,8 +2,8 @@ package com.example.sobesai.data.remote.clients
 
 import com.example.sobesai.core.utils.PATH_AUTH
 import com.example.sobesai.core.utils.SUPABASE_URL
-import com.example.sobesai.data.remote.dto.RefreshTokenRequest
-import com.example.sobesai.data.remote.dto.RefreshTokenResponse
+import com.example.sobesai.data.remote.model.RefreshTokenRequest
+import com.example.sobesai.data.remote.model.RefreshTokenResponse
 import com.example.sobesai.domain.repository.SettingsRepository
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient

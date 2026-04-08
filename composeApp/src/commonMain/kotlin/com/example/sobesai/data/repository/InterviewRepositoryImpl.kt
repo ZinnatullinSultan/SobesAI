@@ -6,10 +6,10 @@ import com.example.sobesai.data.mapper.toEntity
 import com.example.sobesai.data.mapper.toGeminiContent
 import com.example.sobesai.data.mapper.toGeminiContentList
 import com.example.sobesai.data.remote.api.InterviewApi
-import com.example.sobesai.data.remote.dto.GeminiPart
-import com.example.sobesai.data.remote.dto.GeminiRequest
-import com.example.sobesai.data.remote.dto.GeminiResponse
-import com.example.sobesai.data.remote.dto.GeminiSystemInstruction
+import com.example.sobesai.data.remote.model.GeminiPart
+import com.example.sobesai.data.remote.model.GeminiRequest
+import com.example.sobesai.data.remote.model.GeminiResponse
+import com.example.sobesai.data.remote.model.GeminiSystemInstruction
 import com.example.sobesai.domain.model.ChatMessage
 import com.example.sobesai.domain.model.EmptyAiResponseException
 import com.example.sobesai.domain.model.MessageRole

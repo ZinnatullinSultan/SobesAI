@@ -1,10 +1,10 @@
 package com.example.sobesai.data.repository
 
 import com.example.sobesai.data.remote.api.AuthApi
-import com.example.sobesai.data.remote.dto.LoginRequest
-import com.example.sobesai.data.remote.dto.LoginResponse
-import com.example.sobesai.data.remote.dto.RegisterRequest
-import com.example.sobesai.data.remote.dto.UserMetadataDto
+import com.example.sobesai.data.remote.model.LoginRequest
+import com.example.sobesai.data.remote.model.LoginResponse
+import com.example.sobesai.data.remote.model.RegisterRequest
+import com.example.sobesai.data.remote.model.UserMetadataDto
 import com.example.sobesai.domain.model.SupabaseApiException
 import com.example.sobesai.domain.repository.LoginRepository
 import com.example.sobesai.domain.repository.SettingsRepository
