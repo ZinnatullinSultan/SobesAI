@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package com.example.sobesai.presentation.theme
 
 import androidx.compose.ui.unit.dp

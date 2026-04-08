@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package com.example.sobesai.data.local.database
 
 import android.content.Context
