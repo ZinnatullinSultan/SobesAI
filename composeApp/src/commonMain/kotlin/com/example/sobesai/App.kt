@@ -115,7 +115,7 @@ fun App(
                 InterviewScreen(
                     specId = route.specId,
                     difficulty = route.difficulty,
-                    onBackClick = { navController.popBackStack() },
+                    onBackClick = { navController.popBackStack() }
                 )
             }
         }

@@ -12,7 +12,6 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.sobesai.core.AndroidAuthManager
 import com.example.sobesai.domain.repository.SettingsRepository
-import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -28,7 +27,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        Napier.base(DebugAntilog())
 
         handleAuthIntent(intent)
         val insetsController = WindowCompat.getInsetsController(window, window.decorView)

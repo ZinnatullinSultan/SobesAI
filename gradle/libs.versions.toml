@@ -28,6 +28,8 @@ sqlite = "2.6.2"
 ksp = "2.3.6"
 detekt = "2.0.0-alpha.2"
 kvault = "1.12.0"
+leakcanary = "2.14"
+tracer = "1.1.7"
 
 
 [libraries]
@@ -74,6 +76,9 @@ androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.r
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 kvault = { module = "com.liftric:kvault", version.ref = "kvault" }
+leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
+tracer-platform = { module = "ru.ok.tracer:tracer-platform", version.ref = "tracer" }
+tracer-crash-report = { module = "ru.ok.tracer:tracer-crash-report" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -85,3 +90,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidx-room = { id = "androidx.room", version.ref = "room" }
 detekt = { id = "dev.detekt", version.ref = "detekt" }
+tracer = { id = "ru.ok.tracer", version.ref = "tracer" }

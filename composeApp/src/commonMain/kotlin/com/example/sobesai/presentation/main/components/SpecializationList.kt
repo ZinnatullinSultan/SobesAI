@@ -44,7 +44,7 @@ fun SpecializationList(
             onLoadNextPage()
         }
     }
-    
+
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),

@@ -9,6 +9,17 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.tracer)
+}
+
+tracer {
+    create("defaultConfig") {
+        pluginToken = "lolkN5aUiDzvuOsohBmGpJrPjvulLBunIopyvYlP0iV3"
+        appToken = "BvQLD6vZyKk9Ue5vcXkquDltTNsuVPvbLNTOSSJaz4Mc"
+        uploadMapping = true
+    }
+    create("debug") {
+    }
 }
 
 kotlin {
@@ -101,9 +112,25 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    signingConfigs {
+        create("release") {
+            storeFile = file(project.findProperty("KEY_STORE_PATH") ?: "keystore.jks")
+            storePassword = project.findProperty("KEY_STORE_PASSWORD").toString()
+            keyAlias = project.findProperty("KEY_ALIAS").toString()
+            keyPassword = project.findProperty("KEY_PASSWORD").toString()
+        }
+    }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
@@ -114,7 +141,10 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+    debugImplementation(libs.leakcanary.android)
     add("kspAndroid", libs.androidx.room.compiler)
+    implementation(platform(libs.tracer.platform))
+    implementation(libs.tracer.crash.report)
 }
 
 room {
@@ -128,3 +158,4 @@ detekt {
     source.setFrom(files("src"))
     baseline = file("$rootDir/config/detekt/detekt-baseline.xml")
 }
+

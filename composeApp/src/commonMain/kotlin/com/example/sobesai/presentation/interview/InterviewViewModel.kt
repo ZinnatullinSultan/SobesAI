@@ -36,6 +36,12 @@ class InterviewViewModel(
             is InterviewIntent.Init -> initInterview(intent.specId, intent.difficulty)
             is InterviewIntent.SendMessage -> sendMessage(intent.text)
             InterviewIntent.ClearHistory -> clearHistory()
+            InterviewIntent.ShowClearHistoryDialog -> {
+                _state.update { it.copy(showClearHistoryDialog = true) }
+            }
+            InterviewIntent.HideClearHistoryDialog -> {
+                _state.update { it.copy(showClearHistoryDialog = false) }
+            }
             InterviewIntent.Retry -> retryLastAction()
             InterviewIntent.BackClicked -> {
                 viewModelScope.launch { _effects.send(InterviewEffect.NavigateBack) }
@@ -111,7 +117,7 @@ class InterviewViewModel(
         val title = _state.value.specializationTitle
 
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, messages = emptyList()) }
+            _state.update { it.copy(isLoading = true, messages = emptyList(), showClearHistoryDialog = false) }
             interviewRepository.clearInterviewHistory(specId, difficulty)
             startInterviewUseCase(specId, title, difficulty)
                 .onSuccess { messages ->
