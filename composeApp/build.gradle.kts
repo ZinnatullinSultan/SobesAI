@@ -112,9 +112,25 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    signingConfigs {
+        create("release") {
+            storeFile = file(project.findProperty("KEY_STORE_PATH") ?: "keystore.jks")
+            storePassword = project.findProperty("KEY_STORE_PASSWORD").toString()
+            keyAlias = project.findProperty("KEY_ALIAS").toString()
+            keyPassword = project.findProperty("KEY_PASSWORD").toString()
+        }
+    }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
@@ -142,3 +158,4 @@ detekt {
     source.setFrom(files("src"))
     baseline = file("$rootDir/config/detekt/detekt-baseline.xml")
 }
+

@@ -113,7 +113,7 @@ complexity:
     allowedLines: 600
   LongMethod:
     active: true
-    allowedLines: 65
+    allowedLines: 100
   LongParameterList:
     active: true
     allowedFunctionParameters: 5

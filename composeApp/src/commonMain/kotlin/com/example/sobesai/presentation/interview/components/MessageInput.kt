@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +27,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.example.sobesai.presentation.theme.AppDimens
 import com.example.sobesai.presentation.theme.Border
 import com.example.sobesai.presentation.theme.SurfaceLight
@@ -49,9 +52,13 @@ fun MessageInput(
         }
     }
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
     Surface(
         tonalElevation = AppDimens.Elevation.Normal,
         color = Color.Transparent,
+        modifier = Modifier.navigationBarsPadding()
     ) {
         Row(
             modifier = Modifier
@@ -68,8 +75,8 @@ fun MessageInput(
                 enabled = !isLoading,
                 shape = RoundedCornerShape(AppDimens.CornerShape.Normal),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = MaterialTheme.colorScheme.background,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
                     focusedBorderColor = Border,
                     unfocusedBorderColor = Border,
                     cursorColor = Color.White
@@ -78,7 +85,11 @@ fun MessageInput(
             )
             Spacer(modifier = Modifier.size(AppDimens.SpacerHeight.Tiny))
             FilledIconButton(
-                onClick = handleSend,
+                onClick = {
+                    handleSend()
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
+                },
                 modifier = Modifier.size(AppDimens.IconSize.Huge),
                 enabled = !isLoading && !isSending && text.isNotBlank(),
                 colors = IconButtonDefaults.filledIconButtonColors(
