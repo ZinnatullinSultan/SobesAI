@@ -102,7 +102,7 @@ private fun LoginScreenContent(
     }
 }
 
-@Preview
+@Preview(locale = "en")
 @Composable
 fun PreviewLoginScreen() {
     LoginScreenContent(

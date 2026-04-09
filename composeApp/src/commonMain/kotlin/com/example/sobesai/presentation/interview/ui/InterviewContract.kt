@@ -1,6 +1,7 @@
 package com.example.sobesai.presentation.interview.ui
 
 import com.example.sobesai.domain.model.ChatMessage
+import org.jetbrains.compose.resources.StringResource
 
 data class InterviewState(
     val messages: List<ChatMessage> = emptyList(),
@@ -8,7 +9,7 @@ data class InterviewState(
     val difficultyLevel: String = "",
     val isLoading: Boolean = false,
     val isTyping: Boolean = false,
-    val error: String? = null,
+    val error: StringResource? = null,
     val showClearHistoryDialog: Boolean = false
 )
 

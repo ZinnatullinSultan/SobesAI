@@ -1,5 +1,7 @@
 package com.example.sobesai.di
 
+import com.example.sobesai.core.utils.LanguageProvider
+import com.example.sobesai.core.utils.SystemLanguageProvider
 import com.example.sobesai.data.local.database.AppDatabase
 import com.example.sobesai.data.local.storage.OnboardingStorage
 import com.example.sobesai.data.local.storage.ProfileStorage
@@ -57,6 +59,7 @@ val appModule = module {
 
     singleOf(::OnboardingStorage)
     singleOf(::ProfileStorage)
+    singleOf(::SystemLanguageProvider) { bind<LanguageProvider>() }
 
     single(named(QUALIFIER_SUPABASE)) { createHttpClient(get()) }
     single(named(QUALIFIER_GEMINI)) { createGeminiClient() }

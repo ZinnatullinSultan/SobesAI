@@ -2,6 +2,7 @@ package com.example.sobesai.presentation.interview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sobesai.core.utils.toInterviewErrorMessage
 import com.example.sobesai.domain.model.ChatMessage
 import com.example.sobesai.domain.model.MessageRole
 import com.example.sobesai.domain.repository.InterviewRepository
@@ -42,9 +43,11 @@ class InterviewViewModel(
             InterviewIntent.ShowClearHistoryDialog -> {
                 _state.update { it.copy(showClearHistoryDialog = true) }
             }
+
             InterviewIntent.HideClearHistoryDialog -> {
                 _state.update { it.copy(showClearHistoryDialog = false) }
             }
+
             InterviewIntent.Retry -> retryLastAction()
             InterviewIntent.BackClicked -> {
                 viewModelScope.launch { _effects.send(InterviewEffect.NavigateBack) }
@@ -74,7 +77,12 @@ class InterviewViewModel(
                     _effects.send(InterviewEffect.ScrollToBottom)
                 }
                 .onFailure { e ->
-                    _state.update { it.copy(isLoading = false, error = e.message) }
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            error = e.toInterviewErrorMessage()
+                        )
+                    }
                 }
         }
     }
@@ -109,7 +117,14 @@ class InterviewViewModel(
                     lastUserMessage = null
                 }
                 .onFailure { e ->
-                    _state.update { it.copy(isTyping = false, error = e.message) }
+                    // Удаляем сообщение пользователя и показываем ошибку
+                    _state.update {
+                        it.copy(
+                            messages = it.messages.dropLast(1),
+                            isTyping = false,
+                            error = e.toInterviewErrorMessage()
+                        )
+                    }
                 }
         }
     }
@@ -120,7 +135,13 @@ class InterviewViewModel(
         val title = _state.value.specializationTitle
 
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, messages = emptyList(), showClearHistoryDialog = false) }
+            _state.update {
+                it.copy(
+                    isLoading = true,
+                    messages = emptyList(),
+                    showClearHistoryDialog = false
+                )
+            }
             interviewRepository.clearInterviewHistory(specId, difficulty)
             startInterviewUseCase(specId, title, difficulty)
                 .onSuccess { messages ->
@@ -133,7 +154,12 @@ class InterviewViewModel(
                     _effects.send(InterviewEffect.ScrollToBottom)
                 }
                 .onFailure { e ->
-                    _state.update { it.copy(isLoading = false, error = e.message) }
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            error = e.toInterviewErrorMessage()
+                        )
+                    }
                 }
         }
     }

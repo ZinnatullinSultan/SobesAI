@@ -1,5 +1,6 @@
 package com.example.sobesai.data.repository
 
+import com.example.sobesai.core.utils.LanguageProvider
 import com.example.sobesai.data.local.database.dao.InterviewDao
 import com.example.sobesai.data.mapper.toDomain
 import com.example.sobesai.data.mapper.toEntity
@@ -26,7 +27,8 @@ private const val LOG_TAG_INTERVIEW = "INTERVIEW_REPO"
 class InterviewRepositoryImpl(
     private val api: InterviewApi,
     private val interviewDao: InterviewDao,
-    private val promptProvider: InterviewPromptProvider
+    private val promptProvider: InterviewPromptProvider,
+    private val languageProvider: LanguageProvider
 ) : InterviewRepository {
     override suspend fun getInterviewHistory(specId: Long, difficulty: String): List<ChatMessage> {
         return interviewDao.getMessages(specId, difficulty).map { it.toDomain() }
@@ -46,7 +48,6 @@ class InterviewRepositoryImpl(
         return try {
             val userMsg = ChatMessage(MessageRole.USER, userMessage)
             interviewDao.insertMessage(userMsg.toEntity(specId, difficulty))
-
             performAiRequest(specId, specializationTitle, difficulty, history, userMessage)
         } catch (e: IOException) {
             Napier.e(
@@ -67,12 +68,14 @@ class InterviewRepositoryImpl(
         return try {
             val contents = history.toGeminiContentList() +
                     ChatMessage(text = lastText, role = MessageRole.USER).toGeminiContent()
+            val language = languageProvider.getLanguageTag()
             val systemInstruction = GeminiSystemInstruction(
                 parts = listOf(
                     GeminiPart(
                         text = promptProvider.getSystemPrompt(
                             specializationTitle,
-                            difficulty
+                            difficulty,
+                            language
                         )
                     )
                 )
@@ -117,7 +120,12 @@ class InterviewRepositoryImpl(
             if (history.isNotEmpty()) {
                 return Result.success(history)
             }
-            val initialPrompt = promptProvider.getInitialUserPrompt(specializationTitle, difficulty)
+            val language = languageProvider.getLanguageTag()
+            val initialPrompt = promptProvider.getInitialUserPrompt(
+                specializationTitle,
+                difficulty,
+                language
+            )
             performAiRequest(
                 specId,
                 specializationTitle,

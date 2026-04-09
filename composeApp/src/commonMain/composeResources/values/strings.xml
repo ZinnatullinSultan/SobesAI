@@ -1,70 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_title">Sobes AI</string>
-    <string name="app_description">Твой личный ИИ-интервьюер</string>
-    <string name="welcome_image_desc">Иллюстрация приветствия</string>
-    <string name="start_button">Начать подготовку</string>
+    <string name="app_description">Your personal AI interviewer</string>
+    <string name="welcome_image_desc">Welcome illustration</string>
+    <string name="start_button">Start preparation</string>
 
-    <string name="login_title">Вход в систему</string>
-    <string name="email_label">Email (Логин)</string>
-    <string name="name_label">Имя</string>
-    <string name="email_placeholder">Введите ваш email</string>
-    <string name="name_placeholder">Введите ваш имя</string>
-    <string name="password_label">Пароль</string>
-    <string name="password_placeholder">Введите ваш пароль</string>
-    <string name="login_error_text">Неизвестная ошибка</string>
-    <string name="login_password_show">Показать пароль</string>
-    <string name="login_password_hide">Скрыть пароль</string>
-    <string name="login_auth_button">Войти</string>
-    <string name="login_register_button">Зарегистрироваться</string>
-    <string name="login_button_git">Войти через GitHub</string>
-    <string name="login_register_success">Регистрация прошла успешна! Теперь можете авторизоваться</string>
-    <string name="login_already_registered">Уже есть аккаунт? Выполнить вход</string>
-    <string name="login_not_registered">Нет аккаунта? Зарегистрироваться</string>
+    <string name="login_title">Sign In</string>
+    <string name="email_label">Email (Login)</string>
+    <string name="name_label">Name</string>
+    <string name="email_placeholder">Enter your email</string>
+    <string name="name_placeholder">Enter your name</string>
+    <string name="password_label">Password</string>
+    <string name="password_placeholder">Enter your password</string>
+    <string name="login_error_text">Unknown error</string>
+    <string name="login_password_show">Show password</string>
+    <string name="login_password_hide">Hide password</string>
+    <string name="login_auth_button">Sign In</string>
+    <string name="login_register_button">Sign Up</string>
+    <string name="login_button_git">Sign in with GitHub</string>
+    <string name="login_register_success">Registration successful! You can now sign in</string>
+    <string name="login_already_registered">Already have an account? Sign In</string>
+    <string name="login_not_registered">Don't have an account? Sign Up</string>
 
-    <string name="main_title">Выберите направление</string>
-    <string name="main_pin_icon_description">Закрепить</string>
-    <string name="main_refresh_button">Повторить</string>
-    <string name="main_clear_icon_description">Очистить поле</string>
-    <string name="main_empty_state_text">Ничего не найдено</string>
-    <string name="main_search_placeholder">Поиск направления...</string>
-    <string name="main_error_list">Не удалось загрузить данные</string>
-    <string name="main_query_error">Ошибка запроса</string>
-    <string name="main_profile_icon_description">Ошибка запроса</string>
+    <string name="main_title">Choose direction</string>
+    <string name="main_pin_icon_description">Pin</string>
+    <string name="main_refresh_button">Retry</string>
+    <string name="main_clear_icon_description">Clear field</string>
+    <string name="main_empty_state_text">Nothing found</string>
+    <string name="main_search_placeholder">Search direction...</string>
+    <string name="main_error_list">Failed to load data</string>
+    <string name="main_query_error">Request error</string>
+    <string name="main_profile_icon_description">Profile</string>
 
 
-    <string name="specialization_description">Тренажер для подготовки к собеседованию
-        на позицию %1$s. Выберите уровень для начала.</string>
-    <string name="specialization_start_interview">Начать интервью</string>
-    <string name="specialization_difficulty_junior">Начать с основ</string>
-    <string name="specialization_difficulty_middle">Углубить знания</string>
-    <string name="specialization_difficulty_senior">Продвинутые темы</string>
+    <string name="specialization_description">Interview simulator for %1$s position. Choose a level to start.</string>
+    <string name="specialization_start_interview">Start interview</string>
+    <string name="specialization_difficulty_junior">Start with basics</string>
+    <string name="specialization_difficulty_middle">Deepen knowledge</string>
+    <string name="specialization_difficulty_senior">Advanced topics</string>
 
-    <string name="profile_user_name_default">Пользователь</string>
-    <string name="profile_screen_title">Профиль</string>
-    <string name="profile_login_label">Логин: </string>
-    <string name="profile_quit_button">Выйти из аккаунта</string>
+    <string name="profile_user_name_default">User</string>
+    <string name="profile_screen_title">Profile</string>
+    <string name="profile_login_label">Login: </string>
+    <string name="profile_quit_button">Sign out</string>
 
-    <string name="interview_clear_icon_description">Очистить чат</string>
-    <string name="interview_title">Позиция: </string>
-    <string name="interview_difficult">Уровень: </string>
-    <string name="interview_input_placeholder">Введите ответ...</string>
-    <string name="interview_ai_typing">Интервьюер печатает...</string>
+    <string name="interview_clear_icon_description">Clear chat</string>
+    <string name="interview_title">Position: </string>
+    <string name="interview_difficult">Level: </string>
+    <string name="interview_input_placeholder">Enter your answer...</string>
+    <string name="interview_ai_typing">Interviewer is typing...</string>
 
-    <string name="interview_dialog_clear_title">Очистить историю?</string>
-    <string name="interview_dialog_clear_text">Это действие удалит все сообщения в этом диалоге и начнет интервью заново.</string>
-    <string name="interview_dialog_clear_confirm">Очистить</string>
-    <string name="interview_dialog_clear_dismiss">Отмена</string>
+    <string name="interview_dialog_clear_title">Clear history?</string>
+    <string name="interview_dialog_clear_text">This action will delete all messages in this dialog and restart the interview.</string>
+    <string name="interview_dialog_clear_confirm">Clear</string>
+    <string name="interview_dialog_clear_dismiss">Cancel</string>
+
+    <!-- Interview Error Messages -->
+    <string name="interview_error_title">Oops! Something went wrong</string>
+    <string name="interview_error_retry">Try again</string>
+    <string name="interview_error_network">Connection error. Check your internet and try again</string>
+    <string name="interview_error_server">AI server is temporarily unavailable. Try again in a few minutes</string>
+    <string name="interview_error_empty_response">AI couldn't process your request. Try rephrasing your message</string>
+    <string name="interview_error_session">Session expired. Please log in again</string>
+    <string name="interview_error_too_many_requests">Too many requests. Wait a bit and try again</string>
 
     <!-- Error Messages -->
-    <string name="error_invalid_email">Введите корректный адрес электронной почты</string>
-    <string name="error_email_validation_failed">Не удалось проверить этот email. Проверьте правильность написания</string>
-    <string name="error_email_not_confirmed">Почта не подтверждена. Проверьте ваш почтовый ящик</string>
-    <string name="error_user_already_registered">Этот email уже занят другим пользователем</string>
-    <string name="error_invalid_credentials">Неверный логин или пароль</string>
-    <string name="error_password_too_short">Пароль слишком короткий (минимум 6 символов)</string>
-    <string name="error_rate_limit">Слишком много попыток. Попробуйте через 5 минут</string>
-    <string name="error_no_internet">Нет подключения к интернету</string>
-    <string name="error_timeout">Сервер отвечает слишком долго</string>
-    <string name="error_generic">Произошла ошибка. Попробуйте позже</string>
+    <string name="error_invalid_email">Please enter a valid email address</string>
+    <string name="error_email_validation_failed">Could not verify this email. Check the spelling</string>
+    <string name="error_email_not_confirmed">Email not confirmed. Check your inbox</string>
+    <string name="error_user_already_registered">This email is already taken by another user</string>
+    <string name="error_invalid_credentials">Invalid login or password</string>
+    <string name="error_password_too_short">Password is too short (minimum 6 characters)</string>
+    <string name="error_rate_limit">Too many attempts. Try again in 5 minutes</string>
+    <string name="error_no_internet">No internet connection</string>
+    <string name="error_timeout">Server is taking too long to respond</string>
+    <string name="error_generic">An error occurred. Please try again later</string>
 </resources>
