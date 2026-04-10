@@ -5,5 +5,6 @@ data class Specialization(
     val title: String,
     val description: String,
     val isPinned: Boolean = false,
-    val pinOrder: Int? = null
+    val pinOrder: Int? = null,
+    val imageUrl: String? = null
 )

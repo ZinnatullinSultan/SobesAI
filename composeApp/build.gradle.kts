@@ -51,6 +51,7 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.coil.svg)
             implementation(libs.appauth)
             implementation(libs.koin.android)
             implementation(libs.firebase.messaging)

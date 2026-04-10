@@ -11,7 +11,8 @@ fun SpecializationDto.toDomain(): Specialization {
         title = title,
         description = description.orEmpty(),
         isPinned = isPinned,
-        pinOrder = pinOrder
+        pinOrder = pinOrder,
+        imageUrl = imageUrl.normalizeImageUrl()
     )
 }
 
@@ -21,11 +22,12 @@ fun SpecializationEntity.toDomain(): Specialization {
         title = title,
         description = description,
         isPinned = isPinned,
-        pinOrder = pinOrder
+        pinOrder = pinOrder,
+        imageUrl = imageUrl.normalizeImageUrl()
     )
 }
 
-fun Specialization.toEntity(imageUrl: String? = null): SpecializationEntity {
+fun Specialization.toEntity(): SpecializationEntity {
     return SpecializationEntity(
         id = id,
         title = title,
@@ -35,4 +37,14 @@ fun Specialization.toEntity(imageUrl: String? = null): SpecializationEntity {
         imageUrl = imageUrl,
         cachedAt = Clock.System.now().toEpochMilliseconds()
     )
+}
+
+private fun String?.normalizeImageUrl(): String? {
+    if (this.isNullOrBlank()) return null
+    val trimmed = this.trim()
+
+    return when {
+        trimmed.startsWith("http://") || trimmed.startsWith("https://") -> trimmed
+        else -> "https://$trimmed"
+    }
 }
