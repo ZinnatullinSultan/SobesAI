@@ -7,6 +7,7 @@ import com.example.sobesai.data.local.database.PlatformContext
 import com.example.sobesai.data.local.database.getDatabaseBuilder
 import com.example.sobesai.data.local.datasource.LocalDataSource
 import com.example.sobesai.data.local.datasource.LocalDataSourceImpl
+import com.example.sobesai.core.push.PushRegistrar
 import com.example.sobesai.data.local.storage.DataStoreContext
 import com.example.sobesai.data.local.storage.SecureTokenStorage
 import com.example.sobesai.data.local.storage.provideDataStore
@@ -22,6 +23,7 @@ actual fun platformModule(): Module = module {
 
     single { KVault(androidContext(), "secure_tokens") }
     singleOf(::SecureTokenStorage)
+    singleOf(::PushRegistrar)
 
     single<AppDatabase> { getDatabaseBuilder(PlatformContext(androidContext())).build() }
     single { get<AppDatabase>().specializationDao() }

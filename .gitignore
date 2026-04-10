@@ -35,3 +35,6 @@ Thumbs.db
 
 composeApp/debug/
 composeApp/release/
+# Firebase
+google-services.json
+GoogleService-Info.plist

@@ -46,6 +46,7 @@ fun createHttpClient(settingsRepository: SettingsRepository): HttpClient {
         }
         install(Auth) {
             bearer {
+                sendWithoutRequest { true }
                 loadTokens {
                     val accessToken = settingsRepository.authToken.first()
                     val refreshToken = settingsRepository.refreshToken.first()

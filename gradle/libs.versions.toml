@@ -7,29 +7,31 @@ androidx-activity = "1.13.0"
 androidx-appcompat = "1.7.1"
 androidx-core = "1.18.0"
 androidx-espresso = "3.7.0"
-androidx-lifecycle = "2.9.6"
+androidx-lifecycle = "2.10.0"
 androidx-testExt = "1.3.0"
-composeMultiplatform = "1.10.2"
+composeMultiplatform = "1.10.3"
 junit = "4.13.2"
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 kotlinx-serialization = "1.10.0"
 material3 = "1.10.0-alpha05"
 coil = "3.4.0"
 jetbrains-navigation = "2.9.2"
 jetbrains-icons = "1.7.3"
-ktor = "3.4.1"
+ktor = "3.4.2"
 napier = "2.7.1"
 appauth = "0.11.1"
 multiplatformSettings = "1.3.0"
 androidx-datastore = "1.2.1"
-koin = "4.1.1"
+koin = "4.2.0"
 room = "2.8.4"
 sqlite = "2.6.2"
 ksp = "2.3.6"
 detekt = "2.0.0-alpha.2"
 kvault = "1.12.0"
 leakcanary = "2.14"
-tracer = "1.1.7"
+tracer = "1.2.3"
+googleServices = "4.4.4"
+firebaseMessaging = "24.1.2"
 
 
 [libraries]
@@ -79,6 +81,7 @@ kvault = { module = "com.liftric:kvault", version.ref = "kvault" }
 leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 tracer-platform = { module = "ru.ok.tracer:tracer-platform", version.ref = "tracer" }
 tracer-crash-report = { module = "ru.ok.tracer:tracer-crash-report" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx", version.ref = "firebaseMessaging" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -91,3 +94,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidx-room = { id = "androidx.room", version.ref = "room" }
 detekt = { id = "dev.detekt", version.ref = "detekt" }
 tracer = { id = "ru.ok.tracer", version.ref = "tracer" }
+googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices" }

@@ -10,6 +10,8 @@ plugins {
     alias(libs.plugins.androidx.room)
     alias(libs.plugins.detekt)
     alias(libs.plugins.tracer)
+    alias(libs.plugins.googleServices)
+
 }
 
 tracer {
@@ -51,6 +53,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.appauth)
             implementation(libs.koin.android)
+            implementation(libs.firebase.messaging)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -151,6 +154,7 @@ dependencies {
     add("kspAndroid", libs.androidx.room.compiler)
     implementation(platform(libs.tracer.platform))
     implementation(libs.tracer.crash.report)
+    implementation(libs.firebase.messaging)
 }
 
 room {
