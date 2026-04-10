@@ -49,6 +49,13 @@
     <string name="interview_difficult">Уровень: </string>
     <string name="interview_input_placeholder">Введите ответ...</string>
     <string name="interview_ai_typing">Интервьюер печатает...</string>
+    <string name="interview_mic_start">Начать голосовой ввод</string>
+    <string name="interview_mic_stop">Остановить голосовой ввод</string>
+    <string name="interview_voice_error_unavailable">Голосовой ввод недоступен на этом устройстве</string>
+    <string name="interview_voice_error_permission">Нет доступа к микрофону</string>
+    <string name="interview_voice_error_no_match">Не удалось распознать речь. Повторите попытку</string>
+    <string name="interview_voice_error_network">Ошибка сети при распознавании речи</string>
+    <string name="interview_voice_error_unknown">Ошибка голосового ввода. Попробуйте снова</string>
 
     <string name="interview_dialog_clear_title">Очистить историю?</string>
     <string name="interview_dialog_clear_text">Это действие удалит все сообщения в этом диалоге и начнет интервью заново.</string>

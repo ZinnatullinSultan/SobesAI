@@ -15,5 +15,9 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone access is needed for voice input in interview chat.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Speech recognition is needed to convert your voice into interview answers.</string>
 </dict>
 </plist>

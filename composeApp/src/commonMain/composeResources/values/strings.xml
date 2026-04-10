@@ -49,6 +49,13 @@
     <string name="interview_difficult">Level: </string>
     <string name="interview_input_placeholder">Enter your answer...</string>
     <string name="interview_ai_typing">Interviewer is typing...</string>
+    <string name="interview_mic_start">Start voice input</string>
+    <string name="interview_mic_stop">Stop voice input</string>
+    <string name="interview_voice_error_unavailable">Voice input is unavailable on this device</string>
+    <string name="interview_voice_error_permission">Microphone permission is denied</string>
+    <string name="interview_voice_error_no_match">Couldn't recognize speech. Try again</string>
+    <string name="interview_voice_error_network">Voice recognition network error</string>
+    <string name="interview_voice_error_unknown">Voice input failed. Try again</string>
 
     <string name="interview_dialog_clear_title">Clear history?</string>
     <string name="interview_dialog_clear_text">This action will delete all messages in this dialog and restart the interview.</string>
